@@ -71,7 +71,8 @@ A responsive and accessible front-end interface for an AI-powered mental health 
 
 ## Screenshots
 
-(Coming soon)
+![image](https://github.com/user-attachments/assets/a0eb1ac7-848b-4596-83e2-669ee46ebd40)
+
 
 ## License
 
