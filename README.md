@@ -1,90 +1,77 @@
-# AI-Powered Mental Health Chatbot
+# 🧠 MindMuseAI – Mental Health Companion
 
-A responsive and accessible front-end interface for an AI-powered mental health chatbot web application. The interface is designed to be clean, calming, and user-friendly.
+**MindMuse AI** is an AI-powered mental health chatbot designed to help users track their emotional well-being, receive guidance, and gain insights into their mental health progress. The app empowers users to better understand their mental state, develop coping strategies, and access helpful resources — all through a beautifully crafted, accessible web experience.
 
-## Features
+---
 
-### Chat Interface
-- Central chat window for interacting with the AI chatbot
-- Clear distinction between user and bot messages
-- Timestamps for each message
-- Loading indicator when the chatbot is processing a response
+## 🌟 Key Features
 
-### User Input Area
-- Text input field for typing messages
-- Send button adjacent to the input field
-- Support for pressing 'Enter' to send messages
+### 🧠 Emotion Recognition
+- Detects emotional tone from user input using AI (currently DeepSeek API).
+- Plans to use fine-tuned ML/NLP models in future for deeper understanding.
 
-### Mood Tracker
-- Sidebar that allows users to select their current mood
-- Visual representations (emojis) for each mood
-- View mood history over time through a simple chart
+### 💡 Mental Health Advice
+- Offers actionable tips and resources on:
+  - Managing anxiety
+  - Controlling stress
+  - Overcoming depression
+- Chatbot suggests personalized advice based on user mood.
 
-### Resource Section
-- Links to mental health resources
-- Categorized resources for anxiety, depression, stress management, etc.
-- Emergency helplines
+### 🗓️ Mood Tracker & Progress Insights
+- Tracks emotions over time.
+- Visualizes mental health progress through dynamic graphs.
+- Stores all sessions and advice history for reflection.
 
-### Design Aesthetics
-- Soothing color palette with soft tones
-- Clean and modern typography for readability
-- Sufficient white space to avoid clutter
+### 🔐 Authentication System
+- Firebase-based user authentication.
+- Supports both:
+  - Google Sign-In
+  - Traditional Email/Password Sign-Up
 
-### Accessibility Features
-- High contrast between text and background
-- ARIA labels for screen readers
-- Keyboard navigation support
-- Skip links for better keyboard navigation
-- Respects user preference for reduced motion
+### 🧾 Profile Management
+- Edit name, view mood logs, and manage account settings.
+- Future-ready design includes model selection and voice settings.
 
-### Responsive Design
-- Fully responsive layout that works on desktops, tablets, and smartphones
-- Adaptive layout changes based on screen size
+### 🎙️ Voice Interaction
+- Integrated microphone feature using Web Speech API.
+- Users can speak with the chatbot via voice input.
 
-### Additional Features
-- Dark/Light mode toggle that respects system preferences
-- Feedback mechanism for users to rate the helpfulness of the chatbot's responses
+### 🛠️ Model Selection (Coming Soon)
+- Users will be able to choose between multiple AI models.
+- Easily switch between APIs or custom-trained models.
 
-## Technologies Used
+---
 
-- HTML5
-- CSS3 (with CSS Variables for theming)
-- JavaScript (ES6+)
-- Chart.js for data visualization
+## 💻 Tech Stack
 
-## How to Use
+| Area               | Technology                  |
+|--------------------|-----------------------------|
+| Frontend           | HTML, CSS, JavaScript       |
+| UI Assistance      | Cursor AI                   |
+| Backend            | Node.js, Express.js         |
+| Chatbot API        | DeepSeek API (for now)      |
+| Authentication     | Firebase Authentication     |
+| Database           | Firebase Firestore          |
+| Graphs & Logs      | Chart.js / Custom JS        |
+| Voice Support      | Web Speech API              |
+| Hosting (Optional) | Firebase Hosting / Vercel   |
 
-1. Open `index.html` in your web browser
-2. Interact with the chatbot by typing messages in the input field
-3. Track your mood using the mood selector in the sidebar
-4. Access mental health resources in the resources sidebar
-5. Toggle between light and dark mode using the button in the header
+---
 
-## Future Improvements
+## 🧪 Future Enhancements
 
-- Integration with a backend API for real chatbot functionality
-- User authentication for personalized experience
-- More detailed mood tracking and analysis
-- Expanded resources section with more categories and resources
-- Guided meditation and breathing exercises
-- Journal feature for users to record their thoughts and feelings
+- Fine-tuned ML/NLP model for emotion detection.
+- Offline support with PWA setup.
+- More model integration options (OpenAI, Claude, etc.).
+- Journal writing and AI feedback analysis.
+- Emergency support links and mental health resources.
 
-## Screenshots
-![image](https://github.com/user-attachments/assets/3939e308-4b3e-45c0-8245-072b8145e353)
-![image](https://github.com/user-attachments/assets/66b47276-21dc-42f2-b446-406094d34989)
-![image](https://github.com/user-attachments/assets/be3814df-b1cd-4691-b30a-8190048505bf)
-![image](https://github.com/user-attachments/assets/87abe104-78ea-4ac9-808c-bf824d75ca16)
-![image](https://github.com/user-attachments/assets/cc75a830-07f4-4abe-9d18-a809893dd0f3)
+---
 
+## 🚀 Getting Started
 
+1. **Clone the repository:**
+```bash
+git clone https://github.com/your-username/mindmuse-ai.git
+cd mindmuse-ai
 
-
-## License
-
-This project is open-source and available under the MIT License.
-
-## Acknowledgements
-
-- Font Awesome for icons
-- Chart.js for the mood history visualization
-- Google Fonts for the Poppins font family 
