@@ -70,8 +70,13 @@ A responsive and accessible front-end interface for an AI-powered mental health 
 - Journal feature for users to record their thoughts and feelings
 
 ## Screenshots
+![image](https://github.com/user-attachments/assets/3939e308-4b3e-45c0-8245-072b8145e353)
+![image](https://github.com/user-attachments/assets/66b47276-21dc-42f2-b446-406094d34989)
+![image](https://github.com/user-attachments/assets/be3814df-b1cd-4691-b30a-8190048505bf)
+![image](https://github.com/user-attachments/assets/87abe104-78ea-4ac9-808c-bf824d75ca16)
+![image](https://github.com/user-attachments/assets/cc75a830-07f4-4abe-9d18-a809893dd0f3)
 
-![image](https://github.com/user-attachments/assets/a0eb1ac7-848b-4596-83e2-669ee46ebd40)
+
 
 
 ## License
