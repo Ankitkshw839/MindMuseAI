@@ -68,11 +68,15 @@
 
 ---
 
-## 🚀 Getting Started
+## screenshots
+![image](https://github.com/user-attachments/assets/626184c2-724d-41f2-bb3f-c926318b6688)
+![image](https://github.com/user-attachments/assets/ccc2319a-760a-4516-a04e-c3f47865bf3a)
+![image](https://github.com/user-attachments/assets/6e73d450-a581-463b-8042-16f9b492b68f)
+![image](https://github.com/user-attachments/assets/a41022df-2df1-472b-a144-f3677e552e62)
+![image](https://github.com/user-attachments/assets/a99f4917-71a1-4616-af9e-8a14ba3cfba7)
+![image](https://github.com/user-attachments/assets/bb0cc09a-8da9-4e80-bbc0-9f29cc482827)
+![image](https://github.com/user-attachments/assets/c16d3403-381b-4fa8-aaf8-61b2cd7069e2)
 
-1. **Clone the repository:**
-```bash
-git clone https://github.com/your-username/mindmuse-ai.git
-cd mindmuse-ai
+
 
 
