@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MindMuseAI - Track your mental wellness progress">
+    <meta name="keywords" content="mental health, chatbot, therapy, mindfulness, progress, tracking">
+    <meta name="author" content="AI Mental Health Companion">
+    <meta name="theme-color" content="#0f0c1d">
+    <title>Progress - MindMuseAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Import Firebase SDK first -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Ensure Firebase is loaded before other scripts
+        window.firebaseLoaded = true;
+    </script>
+    <style>
+        .dashboard-layout {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        .sidebar-menu {
+            width: 260px;
+            background-color: var(--bg-color-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: var(--spacing-md) 0;
+        }
+
+        .menu-item {
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(142, 106, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .menu-item.active {
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            background-color: rgba(142, 106, 255, 0.1);
+        }
+
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .menu-item .menu-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: var(--spacing-lg);
+            max-width: calc(100% - 260px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: var(--spacing-lg);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: rgba(142, 106, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin: 0 auto var(--spacing-md);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .chart-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-lg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .chart-filter {
+            display: flex;
+            gap: var(--spacing-sm);
+        }
+
+        .filter-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            background-color: rgba(142, 106, 255, 0.1);
+            border-color: var(--primary-color);
+            color: var(--text-color);
+        }
+
+        .filter-btn.active {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            color: white;
+        }
+
+        .chart-container {
+            height: 300px !important;
+            position: relative;
+            min-height: 300px !important;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        /* Force chart container visibility */
+        #moodChart, #activityChart {
+            width: 100% !important;
+            height: 100% !important;
+            display: block !important;
+            min-height: 300px !important;
+            background-color: rgba(20, 20, 40, 0.1);
+            border-radius: var(--border-radius-md);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-bottom: var(--spacing-lg);
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+        .streak-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .streak-badge {
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius-full);
+            padding: 0.2rem 0.6rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar-menu {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .content-area {
+                max-width: 100%;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Add CSS styles for auth buttons */
+        .auth-buttons {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .auth-btn {
+            padding: 8px 16px;
+            border-radius: var(--border-radius-md);
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        
+        .login-btn {
+            color: var(--text-color);
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+        }
+        
+        .login-btn:hover {
+            background-color: rgba(142, 106, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+        
+        .signup-btn {
+            color: white;
+            background-color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .signup-btn:hover {
+            background-color: var(--primary-color-dark, #7c5cf2);
+        }
+
+        /* Add styles for user name in dropdown */
+        .user-name {
+            font-weight: 500;
+            font-size: 1rem;
+            color: var(--text-color);
+            margin-bottom: 4px;
+        }
+        
+        .user-email {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <h2>MindMuseAI</h2>
+            <p>Your mental wellness companion</p>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header inspired by DeepAI -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>MindMuseAI</h1>
+            </div>
+            <div class="header-actions">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                
+                <!-- Login/Signup buttons (shown for new users) -->
+                <div id="auth-buttons" class="auth-buttons">
+                    <a href="login.html" class="auth-btn login-btn">Log In</a>
+                    <a href="signup.html" class="auth-btn signup-btn">Sign Up</a>
+                </div>
+                
+                <!-- Profile dropdown (shown for logged-in users) -->
+                <div class="profile-container" id="profile-container" style="display: none;">
+                    <button class="profile-btn" id="profile-btn">
+                        <i class="fas fa-user"></i>
+                    </button>
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="user-info">
+                            <h4>Your Account</h4>
+                            <div class="user-name" id="user-name">User Name</div>
+                            <div class="user-email" id="user-email">user@example.com</div>
+                        </div>
+                        <a href="profile.html" class="dropdown-item">
+                            <i class="fas fa-user-circle"></i>
+                            <span>Profile</span>
+                        </a>
+                        <a href="settings.html" class="dropdown-item">
+                            <i class="fas fa-cog"></i>
+                            <span>Settings</span>
+                        </a>
+                        <a href="progress.html" class="dropdown-item active">
+                            <i class="fas fa-chart-line"></i>
+                            <span>My Progress</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="app.html" class="dropdown-item">
+                            <i class="fas fa-home"></i>
+                            <span>Return to App</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-layout">
+            <aside class="sidebar-menu">
+                <a href="app.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span class="menu-text">Home</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="menu-text">Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span class="menu-text">Settings</span>
+                </a>
+                <a href="progress.html" class="menu-item active">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="menu-text">My Progress</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="menu-text">Appointments</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    <span class="menu-text">Resources</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-headset"></i>
+                    <span class="menu-text">Support</span>
+                </a>
+            </aside>
+
+            <main class="content-area">
+                <a href="app.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Chat</span>
+                </a>
+                
+                <div class="page-header">
+                    <h1>My Progress</h1>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <div class="stat-value" id="streak-count">14</div>
+                        <div class="stat-label">Day Streak</div>
+                        <div class="streak-info">
+                            <span class="streak-badge">Best: 21</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-comment-dots"></i>
+                        </div>
+                        <div class="stat-value" id="chat-count">24</div>
+                        <div class="stat-label">Chat Sessions</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-smile"></i>
+                        </div>
+                        <div class="stat-value" id="mood-count">18</div>
+                        <div class="stat-label">Mood Entries</div>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Mood Trends</h2>
+                        <div class="chart-filter">
+                            <button class="filter-btn" data-period="week">Week</button>
+                            <button class="filter-btn active" data-period="month">Month</button>
+                            <button class="filter-btn" data-period="year">Year</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="moodChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <h2 class="chart-title">Activity Summary</h2>
+                        <div class="chart-filter">
+                            <button class="filter-btn" data-period="week">Week</button>
+                            <button class="filter-btn active" data-period="month">Month</button>
+                            <button class="filter-btn" data-period="year">Year</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="activityChart"></canvas>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script type="module">
+        // Import mood tracker functions
+        import { 
+            getMoodStatistics, 
+            getMoodHistoryForPeriod, 
+            loadMoodHistory,
+            getMoodHistory,
+            subscribeToMoodUpdates
+        } from './mood-tracker.js';
+
+        import { auth } from './firebase-config.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if Chart.js is loaded
+            if (typeof Chart === 'undefined') {
+                console.error('Chart.js is not loaded! Charts will not display properly.');
+                // Try to load Chart.js dynamically
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/chart.js';
+                script.async = true;
+                script.onload = function() {
+                    console.log('Chart.js loaded dynamically');
+                    initializeApp();
+                };
+                script.onerror = function() {
+                    console.error('Failed to load Chart.js dynamically');
+                };
+                document.head.appendChild(script);
+                return;
+            }
+            
+            // Continue with normal initialization if Chart.js is loaded
+            initializeApp();
+            
+            function initializeApp() {
+                const loadingScreen = document.getElementById('loading-screen');
+                const themeToggle = document.getElementById('theme-toggle');
+                const themeToggleIcon = themeToggle.querySelector('i');
+                const profileBtn = document.getElementById('profile-btn');
+                const profileDropdown = document.getElementById('profile-dropdown');
+                const userEmailEl = document.getElementById('user-email');
+                const filterBtns = document.querySelectorAll('.filter-btn');
+                const authButtons = document.getElementById('auth-buttons');
+                const profileContainer = document.getElementById('profile-container');
+                
+                // Setup mood updates subscription
+                let moodUpdateUnsubscribe = null;
+                
+                // Check login status using Firebase auth
+                auth.onAuthStateChanged(function(user) {
+                    console.log("Auth state changed:", user ? "User logged in" : "User logged out");
+                    
+                    if (user) {
+                        // User is logged in - show profile dropdown and hide auth buttons
+                        authButtons.style.display = 'none';
+                        profileContainer.style.display = 'block';
+                        
+                        // Update user name and email
+                        const userNameEl = document.getElementById('user-name');
+                        if (userNameEl) {
+                            userNameEl.textContent = user.displayName || 'User';
+                        }
+                        
+                        if (userEmailEl) {
+                            userEmailEl.textContent = user.email || 'No email provided';
+                        }
+                        
+                        // First destroy any existing charts
+                        if (window.moodChart) {
+                            window.moodChart.destroy();
+                            console.log("Destroyed existing mood chart on auth change");
+                        }
+                        if (window.activityChart) {
+                            window.activityChart.destroy();
+                            console.log("Destroyed existing activity chart on auth change");
+                        }
+                        
+                        // Subscribe to mood updates for real-time chart updates
+                        const result = subscribeToMoodUpdates(function(result) {
+                            if (result.success) {
+                                console.log("Mood data updated, refreshing charts");
+                                updateMoodStats();
+                                // Get the active period from the mood filter
+                                const activePeriodBtn = document.querySelector('.chart-card:first-of-type .filter-btn.active');
+                                const period = activePeriodBtn ? activePeriodBtn.getAttribute('data-period') : 'month';
+                                updateMoodChart(period);
+                            }
+                        });
+                        
+                        if (result.success) {
+                            moodUpdateUnsubscribe = result.unsubscribe;
+                        }
+                        
+                        // Load user data
+                        console.log("Loading authenticated user data");
+                        updateMoodStats();
+                        initCharts();
+                    } else {
+                        // User is not logged in - show auth buttons and hide profile dropdown
+                        authButtons.style.display = 'flex';
+                        profileContainer.style.display = 'none';
+                        
+                        // Unsubscribe from mood updates
+                        if (moodUpdateUnsubscribe) {
+                            moodUpdateUnsubscribe();
+                            moodUpdateUnsubscribe = null;
+                        }
+                        
+                        // First destroy any existing charts
+                        if (window.moodChart) {
+                            window.moodChart.destroy();
+                            console.log("Destroyed existing mood chart on auth change");
+                        }
+                        if (window.activityChart) {
+                            window.activityChart.destroy();
+                            console.log("Destroyed existing activity chart on auth change");
+                        }
+                        
+                        // Show empty charts with placeholder data
+                        console.log("Loading placeholder data for unauthenticated user");
+                        initChartsWithPlaceholderData();
+                    }
+                });
+                
+                // Updated profile button click handler to redirect to app.html
+                profileBtn.addEventListener('click', function(e) {
+                    // If clicked directly on the button (not the dropdown), redirect to app.html
+                    if (e.target === profileBtn || e.target.closest('.fa-user')) {
+                        window.location.href = 'app.html';
+                        return;
+                    }
+                    
+                    // Otherwise toggle dropdown as normal
+                    profileDropdown.classList.toggle('active');
+                });
+                
+                // Apply theme from localStorage
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                applyTheme(savedTheme);
+                
+                // Theme toggle functionality
+                themeToggle.addEventListener('click', function() {
+                    const isDarkTheme = document.documentElement.classList.contains('dark-theme') || 
+                                     (!document.documentElement.classList.contains('light-theme'));
+                    
+                    const newTheme = isDarkTheme ? 'light' : 'dark';
+                    applyTheme(newTheme);
+                    localStorage.setItem('theme', newTheme);
+                });
+                
+                function applyTheme(theme) {
+                    if (theme === 'light') {
+                        document.documentElement.classList.remove('dark-theme');
+                        document.documentElement.classList.add('light-theme');
+                        document.documentElement.style.setProperty('--bg-color', '#f5f7fa');
+                        document.documentElement.style.setProperty('--bg-color-secondary', '#e9ecef');
+                        document.documentElement.style.setProperty('--text-color', '#343a40');
+                        document.documentElement.style.setProperty('--text-muted', '#6c757d');
+                        document.documentElement.style.setProperty('--border-color', '#ced4da');
+                        document.documentElement.style.setProperty('--input-bg', '#ffffff');
+                        document.documentElement.style.setProperty('--card-bg', '#ffffff');
+                        
+                        // Update icon
+                        themeToggleIcon.classList.remove('fa-sun');
+                        themeToggleIcon.classList.add('fa-moon');
+                    } else {
+                        document.documentElement.classList.remove('light-theme');
+                        document.documentElement.classList.add('dark-theme');
+                        document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
+                        document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
+                        document.documentElement.style.setProperty('--text-color', '#ffffff');
+                        document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
+                        document.documentElement.style.setProperty('--border-color', '#2b2b45');
+                        document.documentElement.style.setProperty('--input-bg', '#202035');
+                        document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                        
+                        // Update icon
+                        themeToggleIcon.classList.remove('fa-moon');
+                        themeToggleIcon.classList.add('fa-sun');
+                    }
+                }
+                
+                // Close dropdown when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                        profileDropdown.classList.remove('active');
+                    }
+                });
+                
+                // Filter button functionality
+                filterBtns.forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        // Get parent chart card
+                        const chartCard = this.closest('.chart-card');
+                        // Remove active class from all buttons in this filter
+                        chartCard.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        // Add active class to clicked button
+                        this.classList.add('active');
+                        
+                        // Update charts based on selected period
+                        const period = this.getAttribute('data-period');
+                        const chartId = chartCard.querySelector('canvas').id;
+                        
+                        if (chartId === 'moodChart') {
+                            updateMoodChart(period);
+                        } else if (chartId === 'activityChart') {
+                            updateActivityChart(period);
+                        }
+                    });
+                });
+                
+                // Initialize charts with placeholder data when not logged in
+                function initChartsWithPlaceholderData() {
+                    try {
+                        console.log("Initializing placeholder charts");
+                        renderFallbackChart('moodChart', 'Mood data will appear when logged in');
+                        renderFallbackChart('activityChart', 'Activity data will appear when logged in');
+                        
+                        // Update stat cards with placeholders
+                        document.getElementById('streak-count').textContent = '-';
+                        document.getElementById('chat-count').textContent = '-';
+                        document.getElementById('mood-count').textContent = '-';
+                    } catch (error) {
+                        console.error("Error initializing placeholder charts:", error);
+                    }
+                }
+                
+                // Render a fallback chart if Chart.js fails
+                function renderFallbackChart(canvasId, message) {
+                    const canvas = document.getElementById(canvasId);
+                    if (!canvas) {
+                        console.error(`Canvas element ${canvasId} not found`);
+                        return;
+                    }
+                    
+                    const ctx = canvas.getContext('2d');
+                    if (!ctx) {
+                        console.error(`Could not get 2d context for ${canvasId}`);
+                        return;
+                    }
+                    
+                    // Clear the canvas
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Set canvas dimensions to match container
+                    const container = canvas.parentElement;
+                    canvas.width = container.clientWidth;
+                    canvas.height = container.clientHeight;
+                    
+                    // Draw background
+                    ctx.fillStyle = 'rgba(20, 20, 40, 0.3)';
+                    ctx.fillRect(0, 0, canvas.width, canvas.height);
+                    
+                    // Draw border
+                    ctx.strokeStyle = 'rgba(142, 106, 255, 0.4)';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(2, 2, canvas.width-4, canvas.height-4);
+                    
+                    // Draw message
+                    ctx.fillStyle = '#8e6aff';
+                    ctx.font = '16px Inter, sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(message, canvas.width/2, canvas.height/2);
+                    
+                    console.log(`Rendered fallback for ${canvasId}`);
+                }
+                
+                async function initCharts() {
+                    console.log("Initializing charts...");
+                    
+                    try {
+                        // First try using fallback if something goes wrong
+                        renderFallbackChart('moodChart', 'Loading mood data...');
+                        renderFallbackChart('activityChart', 'Loading activity data...');
+                        
+                        // Initialize mood chart
+                        const moodCtx = document.getElementById('moodChart');
+                        
+                        if (!moodCtx) {
+                            console.error("Mood chart canvas element not found!");
+                            return;
+                        }
+                        
+                        // Ensure Canvas size matches container
+                        const moodContainer = moodCtx.parentElement;
+                        moodCtx.width = moodContainer.clientWidth;
+                        moodCtx.height = moodContainer.clientHeight;
+                        
+                        console.log("Found mood chart canvas element:", moodCtx);
+                        const ctx = moodCtx.getContext('2d');
+                        
+                        // Clear any existing charts to prevent duplicates
+                        if (window.moodChart) {
+                            window.moodChart.destroy();
+                            console.log("Destroyed existing mood chart instance");
+                        }
+                        
+                        console.log("Creating new mood chart...");
+                        window.moodChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], // Default data
+                                datasets: [{
+                                    label: 'Mood Score',
+                                    data: [3, 4, 2, 3, 5, 4, 3], // Default data
+                                    borderColor: '#8e6aff',
+                                    backgroundColor: 'rgba(142, 106, 255, 0.2)',
+                                    tension: 0.3,
+                                    fill: true,
+                                    borderWidth: 3,
+                                    pointRadius: 4,
+                                    pointBackgroundColor: '#fff'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: false,
+                                        min: 0,
+                                        max: 5,
+                                        grid: {
+                                            color: 'rgba(255, 255, 255, 0.05)'
+                                        },
+                                        ticks: {
+                                            color: 'rgba(255, 255, 255, 0.7)',
+                                            callback: function(value) {
+                                                const labels = ['', 'Awful', 'Bad', 'Okay', 'Good', 'Great'];
+                                                return labels[value] || '';
+                                            }
+                                        }
+                                    },
+                                    x: {
+                                        grid: {
+                                            color: 'rgba(255, 255, 255, 0.05)'
+                                        },
+                                        ticks: {
+                                            color: 'rgba(255, 255, 255, 0.7)'
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    },
+                                    tooltip: {
+                                        backgroundColor: 'rgba(20, 20, 40, 0.9)',
+                                        titleColor: '#fff',
+                                        bodyColor: '#fff',
+                                        callbacks: {
+                                            label: function(context) {
+                                                const value = context.raw;
+                                                const moodLabels = ['', 'Awful', 'Bad', 'Okay', 'Good', 'Great'];
+                                                return value ? moodLabels[value] : 'No data';
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        
+                        console.log("Mood chart created successfully");
+                        
+                        // Sample activity data for now (could be replaced with real data later)
+                        const activityCtx = document.getElementById('activityChart');
+                        
+                        if (!activityCtx) {
+                            console.error("Activity chart canvas element not found!");
+                            return;
+                        }
+                        
+                        // Ensure Canvas size matches container
+                        const activityContainer = activityCtx.parentElement;
+                        activityCtx.width = activityContainer.clientWidth;
+                        activityCtx.height = activityContainer.clientHeight;
+                        
+                        // Clear any existing charts to prevent duplicates
+                        if (window.activityChart) {
+                            window.activityChart.destroy();
+                            console.log("Destroyed existing activity chart instance");
+                        }
+                        
+                        window.activityChart = new Chart(activityCtx.getContext('2d'), {
+                            type: 'bar',
+                            data: {
+                                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'], 
+                                datasets: [{
+                                    label: 'Chat Sessions',
+                                    data: [2, 1, 3, 0, 2, 4, 1],
+                                    backgroundColor: 'rgba(142, 106, 255, 0.7)'
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        grid: {
+                                            color: 'rgba(255, 255, 255, 0.05)'
+                                        },
+                                        ticks: {
+                                            color: 'rgba(255, 255, 255, 0.7)',
+                                            precision: 0
+                                        }
+                                    },
+                                    x: {
+                                        grid: {
+                                            color: 'rgba(255, 255, 255, 0.05)'
+                                        },
+                                        ticks: {
+                                            color: 'rgba(255, 255, 255, 0.7)'
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                }
+                            }
+                        });
+                        
+                        console.log("Activity chart created successfully with defaults");
+                        
+                        // After creating with defaults, then load the real data
+                        await updateMoodChart('month');
+                        updateActivityChart('month');
+                    } catch (error) {
+                        console.error("Error initializing charts:", error);
+                        
+                        // If Chart.js fails, fallback to basic canvas
+                        renderFallbackChart('moodChart', 'Chart.js error - Please check console');
+                        renderFallbackChart('activityChart', 'Chart.js error - Please check console');
+                    }
+                }
+                
+                async function updateMoodStats() {
+                    try {
+                        const stats = await getMoodStatistics();
+                        
+                        if (stats.success) {
+                            // Update streak count
+                            const streakCountEl = document.getElementById('streak-count');
+                            if (streakCountEl) {
+                                streakCountEl.textContent = stats.data.streak;
+                            }
+                            
+                            // Update mood entries count
+                            const moodCountEl = document.getElementById('mood-count');
+                            if (moodCountEl) {
+                                moodCountEl.textContent = stats.data.totalEntries;
+                            }
+                            
+                            // Update chat count (you may want to implement this separately)
+                            const chatCountEl = document.getElementById('chat-count');
+                            if (chatCountEl && chatCountEl.textContent === '-') {
+                                chatCountEl.textContent = Math.floor(Math.random() * 20) + 5; // Placeholder
+                            }
+                        }
+                    } catch (error) {
+                        console.error("Error updating mood statistics:", error);
+                    }
+                }
+                
+                async function updateMoodChart(period) {
+                    try {
+                        // Get mood data for the selected period
+                        const result = await getMoodHistoryForPeriod(period);
+                        
+                        if (result.success && result.data.length > 0) {
+                            // Convert mood data to chart format
+                            const { labels, data } = convertMoodDataForChart(result.data, period);
+                            
+                            window.moodChart.data.labels = labels;
+                            window.moodChart.data.datasets[0].data = data;
+                            window.moodChart.update();
+                        } else {
+                            // If no data, show empty chart
+                            const { labels, data } = generateEmptyMoodData(period);
+                            window.moodChart.data.labels = labels;
+                            window.moodChart.data.datasets[0].data = data;
+                            window.moodChart.update();
+                        }
+                    } catch (error) {
+                        console.error("Error updating mood chart:", error);
+                        // Show empty chart on error
+                        const { labels, data } = generateEmptyMoodData(period);
+                        window.moodChart.data.labels = labels;
+                        window.moodChart.data.datasets[0].data = data;
+                        window.moodChart.update();
+                    }
+                }
+                
+                function convertMoodDataForChart(entries, period) {
+                    // Convert mood strings to numeric values
+                    const moodValues = {
+                        'awful': 1,
+                        'bad': 2,
+                        'okay': 3,
+                        'good': 4,
+                        'great': 5
+                    };
+                    
+                    // Sort entries by date (oldest first for chart display)
+                    const sortedEntries = [...entries].sort((a, b) => {
+                        return new Date(a.date) - new Date(b.date);
+                    });
+                    
+                    const labels = [];
+                    const data = [];
+                    
+                    // Format dates based on period
+                    sortedEntries.forEach(entry => {
+                        const date = new Date(entry.date);
+                        let label;
+                        
+                        if (period === 'week') {
+                            label = date.toLocaleDateString('en-US', { weekday: 'short' });
+                        } else if (period === 'month') {
+                            label = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                        } else if (period === 'year') {
+                            label = date.toLocaleDateString('en-US', { month: 'short' });
+                        }
+                        
+                        labels.push(label);
+                        data.push(moodValues[entry.mood] || 3); // Default to 'okay' if mood is unknown
+                    });
+                    
+                    return { labels, data };
+                }
+                
+                function generateEmptyMoodData(period) {
+                    const labels = [];
+                    const data = [];
+                    const now = new Date();
+                    
+                    if (period === 'week') {
+                        // Last 7 days
+                        for (let i = 6; i >= 0; i--) {
+                            const date = new Date(now);
+                            date.setDate(date.getDate() - i);
+                            labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+                            data.push(null); // null for no data
+                        }
+                    } else if (period === 'month') {
+                        // Last 30 days, but show every 3rd day for readability
+                        for (let i = 29; i >= 0; i -= 3) {
+                            const date = new Date(now);
+                            date.setDate(date.getDate() - i);
+                            labels.push(date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }));
+                            data.push(null);
+                        }
+                    } else if (period === 'year') {
+                        // Last 12 months
+                        for (let i = 11; i >= 0; i--) {
+                            const date = new Date(now);
+                            date.setMonth(date.getMonth() - i);
+                            labels.push(date.toLocaleDateString('en-US', { month: 'short' }));
+                            data.push(null);
+                        }
+                    }
+                    
+                    return { labels, data };
+                }
+                
+                function updateActivityChart(period) {
+                    // For now, we're still using sample data for activities
+                    // This could be replaced with real activity data in the future
+                    const { labels, data } = generateActivityData(period);
+                    
+                    window.activityChart.data.labels = labels;
+                    window.activityChart.data.datasets[0].data = data;
+                    window.activityChart.update();
+                }
+                
+                function generateActivityData(period) {
+                    const labels = [];
+                    const data = [];
+                    const now = new Date();
+                    
+                    if (period === 'week') {
+                        // Last 7 days
+                        for (let i = 6; i >= 0; i--) {
+                            const date = new Date(now);
+                            date.setDate(date.getDate() - i);
+                            labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+                            // Random activity count 0-3
+                            data.push(Math.floor(Math.random() * 4));
+                        }
+                    } else if (period === 'month') {
+                        // Last 4 weeks
+                        for (let i = 3; i >= 0; i--) {
+                            const date = new Date(now);
+                            date.setDate(date.getDate() - (i * 7));
+                            labels.push(`Week ${4-i}`);
+                            // Random activity count 2-10
+                            data.push(Math.floor(Math.random() * 8) + 2);
+                        }
+                    } else if (period === 'year') {
+                        // Last 12 months
+                        for (let i = 11; i >= 0; i--) {
+                            const date = new Date(now);
+                            date.setMonth(date.getMonth() - i);
+                            labels.push(date.toLocaleDateString('en-US', { month: 'short' }));
+                            // Random activity count 5-20
+                            data.push(Math.floor(Math.random() * 15) + 5);
+                        }
+                    }
+                    
+                    return { labels, data };
+                }
+                
+                // Handle loading screen
+                setTimeout(() => {
+                    loadingScreen.classList.add('fade-out');
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }, 800);
+            }
+        });
+    </script>
+</body>
+
+</html>

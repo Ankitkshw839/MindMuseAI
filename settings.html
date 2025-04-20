@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MindMuseAI - App settings">
+    <meta name="keywords" content="mental health, chatbot, therapy, mindfulness, settings">
+    <meta name="theme-color" content="#0f0c1d">
+    <title>Settings - MindMuseAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        .dashboard-layout {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        .sidebar-menu {
+            width: 260px;
+            background-color: var(--bg-color-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: var(--spacing-md) 0;
+        }
+
+        .menu-item {
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(142, 106, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .menu-item.active {
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            background-color: rgba(142, 106, 255, 0.1);
+        }
+
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .menu-item .menu-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: var(--spacing-lg);
+            max-width: calc(100% - 260px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .settings-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: var(--spacing-xl);
+            overflow: hidden;
+        }
+
+        .settings-section {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(142, 106, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 0;
+        }
+
+        .section-description {
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-md);
+            font-size: 0.9rem;
+            margin-left: 44px;
+        }
+
+        .settings-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .settings-option:last-child {
+            border-bottom: none;
+        }
+
+        .option-info {
+            flex: 1;
+        }
+
+        .option-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .option-description {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Switch Toggle */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 26px;
+            margin-left: var(--spacing-md);
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--border-color);
+            transition: 0.3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Select Style */
+        .settings-select {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            color: var(--text-color);
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            min-width: 150px;
+        }
+
+        .settings-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        /* Button styles */
+        .save-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            padding: 0.7rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: var(--spacing-lg);
+        }
+
+        .save-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-bottom: var(--spacing-lg);
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar-menu {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .content-area {
+                max-width: 100%;
+            }
+        }
+
+        /* Navigation button styles */
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .nav-btn {
+            background-color: #2e0f6e;
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-full);
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background-color: #431ba5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(46, 15, 110, 0.3);
+        }
+
+        #back-home-btn {
+            background-color: #4c2ca6;
+            color: white;
+        }
+
+        #profile-page-btn {
+            background-color: #5a37b8;
+        }
+
+        #progress-page-btn {
+            background-color: #6b44cc;
+        }
+
+        #settings-page-btn {
+            background-color: #7c52e0;
+        }
+
+        /* Add an active state for the current page */
+        .nav-btn.active {
+            background-color: #aa324a;
+            box-shadow: 0 0 10px rgba(170, 50, 74, 0.5);
+        }
+
+        /* Responsive navigation */
+        @media (max-width: 992px) {
+            .header-actions {
+                gap: 0.5rem;
+            }
+            
+            .nav-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-btn span {
+                display: none;
+            }
+            
+            .nav-btn {
+                padding: 0.5rem;
+                border-radius: 50%;
+                aspect-ratio: 1/1;
+                justify-content: center;
+            }
+            
+            .nav-btn i {
+                font-size: 1rem;
+                margin: 0;
+            }
+            
+            .header-actions {
+                gap: 0.4rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <h2>MindMuseAI</h2>
+            <p>Your mental wellness companion</p>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <!-- Header inspired by DeepAI -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>MindMuseAI</h1>
+            </div>
+            <div class="header-actions">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <!-- Navigation buttons with clear styling -->
+                <a href="app.html" class="nav-btn" id="back-home-btn">
+                    <i class="fas fa-home"></i>
+                    <span>Back to App</span>
+                </a>
+                <a href="profile.html" class="nav-btn" id="profile-page-btn">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="progress.html" class="nav-btn" id="progress-page-btn">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Progress</span>
+                </a>
+                <a href="settings.html" class="nav-btn active" id="settings-page-btn">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <!-- Profile dropdown for account actions -->
+                <div class="profile-container" id="profile-container">
+                    <button class="profile-btn" id="profile-btn">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="user-info">
+                            <h4>Your Account</h4>
+                            <div class="user-email" id="user-email">user@example.com</div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="profile.html" class="dropdown-item">
+                            <i class="fas fa-user-circle"></i>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="app.html" class="dropdown-item">
+                            <i class="fas fa-home"></i>
+                            <span>Return to App</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="dashboard-layout">
+            <aside class="sidebar-menu">
+                <a href="index.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span class="menu-text">Home</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="menu-text">Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item active">
+                    <i class="fas fa-cog"></i>
+                    <span class="menu-text">Settings</span>
+                </a>
+                <a href="progress.html" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="menu-text">My Progress</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="menu-text">Appointments</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    <span class="menu-text">Resources</span>
+                </a>
+                <a href="#" class="menu-item">
+                    <i class="fas fa-headset"></i>
+                    <span class="menu-text">Support</span>
+                </a>
+            </aside>
+
+            <main class="content-area">
+                <a href="index.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Chat</span>
+                </a>
+                
+                <div class="page-header">
+                    <h1>Settings</h1>
+                </div>
+
+                <div class="settings-card">
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <h2 class="section-title">Notifications</h2>
+                        </div>
+                        <p class="section-description">Control when and how you receive notifications from MindMuseAI.</p>
+                        
+                        <div class="settings-option">
+                            <div class="option-info">
+                                <div class="option-title">Push Notifications</div>
+                                <div class="option-description">Receive notifications when you're not using the app</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="push-notifications" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        
+                        <div class="settings-option">
+                            <div class="option-info">
+                                <div class="option-title">Mood Tracking Reminders</div>
+                                <div class="option-description">Daily reminders to log your mood</div>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="mood-reminders" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-palette"></i>
+                            </div>
+                            <h2 class="section-title">Appearance</h2>
+                        </div>
+                        <p class="section-description">Customize the look and feel of MindMuseAI.</p>
+                        
+                        <div class="settings-option">
+                            <div class="option-info">
+                                <div class="option-title">Theme</div>
+                                <div class="option-description">Choose between light and dark mode</div>
+                            </div>
+                            <select class="settings-select" id="theme-select">
+                                <option value="dark">Dark</option>
+                                <option value="light">Light</option>
+                                <option value="system">Use System Setting</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <!-- New AI Model Settings Section -->
+                    <div class="settings-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-robot"></i>
+                            </div>
+                            <h2 class="section-title">AI Assistant</h2>
+                        </div>
+                        <p class="section-description">Customize your MindMuseBot AI assistant experience.</p>
+                        
+                        <div class="settings-option">
+                            <div class="option-info">
+                                <div class="option-title">AI Model</div>
+                                <div class="option-description">Select which AI model powers your conversations</div>
+                            </div>
+                            <select class="settings-select" id="ai-model-select">
+                                <option value="deepseek/deepseek-r1:free">DeepSeek R1 (Default)</option>
+                                <option value="anthropic/claude-3-sonnet:beta">Claude 3 Sonnet</option>
+                                <option value="meta-llama/llama-3-70b-instruct">Llama 3 70B</option>
+                                <option value="google/gemini-pro">Google Gemini Pro</option>
+                            </select>
+                        </div>
+                        
+                        <div class="settings-option">
+                            <div class="option-info">
+                                <div class="option-title">Response Style</div>
+                                <div class="option-description">Adjust how detailed the AI responses are</div>
+                            </div>
+                            <select class="settings-select" id="response-style-select">
+                                <option value="concise">Concise</option>
+                                <option value="balanced" selected>Balanced</option>
+                                <option value="detailed">Detailed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="save-btn" id="save-settings">Save Changes</button>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingScreen = document.getElementById('loading-screen');
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeToggleIcon = themeToggle.querySelector('i');
+            const profileBtn = document.getElementById('profile-btn');
+            const profileDropdown = document.getElementById('profile-dropdown');
+            const userEmailEl = document.getElementById('user-email');
+            const themeSelect = document.getElementById('theme-select');
+            const saveBtn = document.getElementById('save-settings');
+            
+            // Check login status
+           
+            // Set theme select based on saved theme
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            themeSelect.value = savedTheme;
+            applyTheme(savedTheme);
+            
+            // Theme toggle functionality
+            themeToggle.addEventListener('click', function() {
+                const isDarkTheme = document.documentElement.classList.contains('dark-theme') || 
+                                 (!document.documentElement.classList.contains('light-theme'));
+                
+                const newTheme = isDarkTheme ? 'light' : 'dark';
+                themeSelect.value = newTheme;
+                applyTheme(newTheme);
+                localStorage.setItem('theme', newTheme);
+            });
+            
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    document.documentElement.classList.remove('dark-theme');
+                    document.documentElement.classList.add('light-theme');
+                    document.documentElement.style.setProperty('--bg-color', '#f5f7fa');
+                    document.documentElement.style.setProperty('--bg-color-secondary', '#e9ecef');
+                    document.documentElement.style.setProperty('--text-color', '#343a40');
+                    document.documentElement.style.setProperty('--text-muted', '#6c757d');
+                    document.documentElement.style.setProperty('--border-color', '#ced4da');
+                    document.documentElement.style.setProperty('--input-bg', '#ffffff');
+                    document.documentElement.style.setProperty('--card-bg', '#ffffff');
+                    
+                    // Update icon
+                    themeToggleIcon.classList.remove('fa-sun');
+                    themeToggleIcon.classList.add('fa-moon');
+                } else {
+                    document.documentElement.classList.remove('light-theme');
+                    document.documentElement.classList.add('dark-theme');
+                    document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
+                    document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
+                    document.documentElement.style.setProperty('--text-color', '#ffffff');
+                    document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
+                    document.documentElement.style.setProperty('--border-color', '#2b2b45');
+                    document.documentElement.style.setProperty('--input-bg', '#202035');
+                    document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                    
+                    // Update icon
+                    themeToggleIcon.classList.remove('fa-moon');
+                    themeToggleIcon.classList.add('fa-sun');
+                }
+            }
+            
+            // Profile dropdown toggle
+            profileBtn.addEventListener('click', function() {
+                profileDropdown.classList.toggle('active');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.classList.remove('active');
+                }
+            });
+            
+            // Theme select change
+            themeSelect.addEventListener('change', function() {
+                const selectedTheme = this.value;
+                if (selectedTheme === 'system') {
+                    // Check system preference
+                    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    applyTheme(prefersDarkScheme ? 'dark' : 'light');
+                } else {
+                    applyTheme(selectedTheme);
+                    localStorage.setItem('theme', selectedTheme);
+                }
+            });
+            
+            // Save settings
+            saveBtn.addEventListener('click', function() {
+                // Save all settings to localStorage
+                const settings = {
+                    pushNotifications: document.getElementById('push-notifications').checked,
+                    moodReminders: document.getElementById('mood-reminders').checked,
+                    theme: document.getElementById('theme-select').value,
+                    aiModel: document.getElementById('ai-model-select').value,
+                    responseStyle: document.getElementById('response-style-select').value
+                };
+                
+                localStorage.setItem('settings', JSON.stringify(settings));
+                alert('Settings saved successfully!');
+            });
+            
+            // Load saved settings
+            const savedSettings = JSON.parse(localStorage.getItem('settings')) || {};
+            if (Object.keys(savedSettings).length > 0) {
+                // Apply saved settings
+                if (savedSettings.pushNotifications !== undefined) 
+                    document.getElementById('push-notifications').checked = savedSettings.pushNotifications;
+                if (savedSettings.moodReminders !== undefined) 
+                    document.getElementById('mood-reminders').checked = savedSettings.moodReminders;
+                if (savedSettings.theme !== undefined) 
+                    document.getElementById('theme-select').value = savedSettings.theme;
+                if (savedSettings.aiModel !== undefined) 
+                    document.getElementById('ai-model-select').value = savedSettings.aiModel;
+                if (savedSettings.responseStyle !== undefined) 
+                    document.getElementById('response-style-select').value = savedSettings.responseStyle;
+            }
+            
+            // Handle loading screen
+            setTimeout(() => {
+                loadingScreen.classList.add('fade-out');
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                }, 500);
+            }, 1000);
+        });
+    </script>
+</body>
+
+</html> 

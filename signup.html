@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MindMuseAI - Sign up for your mental health companion chatbot for emotional support and resources.">
+    <meta name="keywords" content="mental health, chatbot, therapy, mindfulness, signup">
+    <meta name="theme-color" content="#2e0f6e">
+    <title>MindMuseAI - Sign Up</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth-styles.css">
+    <!-- Add Firebase with type="module" -->
+    <script type="module" src="./firebase-config.js"></script>
+    <script type="module" src="./auth.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f0c1d 0%, #1a1533 100%);
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #ffffff;
+        }
+
+        .signup-container {
+            background: rgba(26, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 450px;
+            padding: 2.5rem;
+            margin: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .signup-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .signup-header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #7b68ee, #3a86ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+
+        .signup-header p {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-top: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            color: #ffffff;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #7b68ee;
+            box-shadow: 0 0 0 2px rgba(123, 104, 238, 0.25);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .validation-message {
+            position: absolute;
+            bottom: -1.2rem;
+            left: 0;
+            font-size: 0.75rem;
+            color: #ff5c5c;
+            display: none;
+        }
+
+        .terms-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .terms-container input[type="checkbox"] {
+            margin-top: 0.25rem;
+            cursor: pointer;
+        }
+
+        .terms-container label {
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.4;
+        }
+
+        .terms-container a {
+            color: #7b68ee;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .terms-container a:hover {
+            color: #9684f0;
+            text-decoration: underline;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #7b68ee, #3a86ff);
+            color: white;
+            box-shadow: 0 4px 12px rgba(123, 104, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(90deg, #6a57dd, #2975f1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(123, 104, 238, 0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(123, 104, 238, 0.3);
+        }
+
+        .btn-google {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 1rem;
+        }
+
+        .btn-google:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .signup-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+
+        .signup-footer a {
+            color: #7b68ee;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .signup-footer a:hover {
+            color: #9684f0;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: rgba(255, 92, 92, 0.2);
+            color: #ff5c5c;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            border-left: 3px solid #ff5c5c;
+            display: none;
+            word-wrap: break-word;
+            max-width: 100%;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .logo {
+            display: block;
+            margin: 0 auto 1.5rem;
+            width: 80px;
+            height: 80px;
+        }
+
+        .logo svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .logo-path {
+            fill: url(#logo-gradient);
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: -100% 0;
+            }
+            100% {
+                background-position: 200% 0;
+            }
+        }
+
+        .shimmer-effect {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        
+        /* Add password strength meter styles */
+        .password-strength-meter {
+            height: 4px;
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-top: 0.5rem;
+            border-radius: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .password-strength-meter span {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s ease-in-out;
+        }
+        
+        .strength-label {
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .weak span {
+            width: 25%;
+            background-color: #ff5c5c;
+        }
+        
+        .medium span {
+            width: 50%;
+            background-color: #ffbb33;
+        }
+        
+        .strong span {
+            width: 75%;
+            background-color: #33cc66;
+        }
+        
+        .very-strong span {
+            width: 100%;
+            background-color: #00cc99;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="signup-container">
+        <div class="signup-header">
+            <div class="logo">
+                <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="logo-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#7b68ee" />
+                            <stop offset="100%" stop-color="#3a86ff" />
+                        </linearGradient>
+                    </defs>
+                    <path class="logo-path" d="M50,10 C27.91,10 10,27.91 10,50 C10,72.09 27.91,90 50,90 C72.09,90 90,72.09 90,50 C90,27.91 72.09,10 50,10 Z M50,30 C61.05,30 70,38.95 70,50 C70,61.05 61.05,70 50,70 C38.95,70 30,61.05 30,50 C30,38.95 38.95,30 50,30 Z" />
+                </svg>
+            </div>
+            <h1>Create Account</h1>
+            <p>Join MindMuseAI and start your wellness journey today</p>
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+
+        <form id="signup-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="first-name">First Name</label>
+                    <input type="text" id="first-name" name="firstName" required>
+                    <div class="validation-message" id="first-name-validation">Please enter your first name</div>
+                    <div class="shimmer-effect"></div>
+                </div>
+                <div class="form-group">
+                    <label for="last-name">Last Name</label>
+                    <input type="text" id="last-name" name="lastName" required>
+                    <div class="validation-message" id="last-name-validation">Please enter your last name</div>
+                    <div class="shimmer-effect"></div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" required>
+                <div class="validation-message" id="email-validation">Please enter a valid email address</div>
+                <div class="shimmer-effect"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+                <div class="validation-message" id="password-validation">Password must be at least 6 characters</div>
+                <div class="password-strength-meter">
+                    <span></span>
+                </div>
+                <div class="strength-label"></div>
+                <div class="shimmer-effect"></div>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm-password">Confirm Password</label>
+                <input type="password" id="confirm-password" name="confirmPassword" required>
+                <div class="validation-message" id="confirm-password-validation">Passwords do not match</div>
+                <div class="shimmer-effect"></div>
+            </div>
+
+            <div class="terms-container">
+                <input type="checkbox" id="terms" name="terms" required>
+                <label for="terms">I agree to the <a href="terms.html">Terms of Service</a> and <a href="privacy.html">Privacy Policy</a></label>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i>
+                Create Account
+            </button>
+            
+            <button type="button" id="google-signup" class="btn btn-google">
+                <i class="fab fa-google"></i>
+                Sign up with Google
+            </button>
+        </form>
+
+        <div class="signup-footer">
+            Already have an account? <a href="login.html">Log in</a>
+        </div>
+    </div>
+
+    <script type="module">
+        import { 
+            signUpUser, 
+            signInWithGoogle 
+        } from './firebase-config.js';
+
+        // Form validation
+        const signupForm = document.getElementById('signup-form');
+        const firstNameInput = document.getElementById('first-name');
+        const lastNameInput = document.getElementById('last-name');
+        const emailInput = document.getElementById('email');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm-password');
+        const termsCheckbox = document.getElementById('terms');
+        const firstNameValidation = document.getElementById('first-name-validation');
+        const lastNameValidation = document.getElementById('last-name-validation');
+        const emailValidation = document.getElementById('email-validation');
+        const passwordValidation = document.getElementById('password-validation');
+        const confirmPasswordValidation = document.getElementById('confirm-password-validation');
+        const errorMessage = document.getElementById('error-message');
+        const googleSignupBtn = document.getElementById('google-signup');
+
+        // First name validation
+        firstNameInput.addEventListener('input', () => {
+            if (firstNameInput.value.trim() === '') {
+                firstNameValidation.style.display = 'block';
+                firstNameInput.style.borderColor = '#ff5c5c';
+            } else {
+                firstNameValidation.style.display = 'none';
+                firstNameInput.style.borderColor = '#7b68ee';
+            }
+        });
+
+        // Last name validation
+        lastNameInput.addEventListener('input', () => {
+            if (lastNameInput.value.trim() === '') {
+                lastNameValidation.style.display = 'block';
+                lastNameInput.style.borderColor = '#ff5c5c';
+            } else {
+                lastNameValidation.style.display = 'none';
+                lastNameInput.style.borderColor = '#7b68ee';
+            }
+        });
+
+        // Email validation
+        emailInput.addEventListener('input', () => {
+            const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
+            if (!isValid && emailInput.value.length > 0) {
+                emailValidation.style.display = 'block';
+                emailInput.style.borderColor = '#ff5c5c';
+            } else {
+                emailValidation.style.display = 'none';
+                emailInput.style.borderColor = emailInput.value.length > 0 ? '#7b68ee' : 'rgba(255, 255, 255, 0.1)';
+            }
+        });
+
+        // Password validation
+        passwordInput.addEventListener('input', () => {
+            if (passwordInput.value.length > 0 && passwordInput.value.length < 6) {
+                passwordValidation.style.display = 'block';
+                passwordInput.style.borderColor = '#ff5c5c';
+            } else {
+                passwordValidation.style.display = 'none';
+                passwordInput.style.borderColor = passwordInput.value.length > 0 ? '#7b68ee' : 'rgba(255, 255, 255, 0.1)';
+            }
+            
+            // Check password match if confirm password has input
+            if (confirmPasswordInput.value.length > 0) {
+                if (passwordInput.value !== confirmPasswordInput.value) {
+                    confirmPasswordValidation.style.display = 'block';
+                    confirmPasswordInput.style.borderColor = '#ff5c5c';
+                } else {
+                    confirmPasswordValidation.style.display = 'none';
+                    confirmPasswordInput.style.borderColor = '#7b68ee';
+                }
+            }
+        });
+
+        // Confirm password validation
+        confirmPasswordInput.addEventListener('input', () => {
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                confirmPasswordValidation.style.display = 'block';
+                confirmPasswordInput.style.borderColor = '#ff5c5c';
+            } else {
+                confirmPasswordValidation.style.display = 'none';
+                confirmPasswordInput.style.borderColor = confirmPasswordInput.value.length > 0 ? '#7b68ee' : 'rgba(255, 255, 255, 0.1)';
+            }
+        });
+
+        // Signup form submission
+        signupForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Basic validation
+            let isValid = true;
+            
+            if (firstNameInput.value.trim() === '') {
+                firstNameValidation.style.display = 'block';
+                firstNameInput.style.borderColor = '#ff5c5c';
+                isValid = false;
+            }
+            
+            if (lastNameInput.value.trim() === '') {
+                lastNameValidation.style.display = 'block';
+                lastNameInput.style.borderColor = '#ff5c5c';
+                isValid = false;
+            }
+            
+            if (!emailInput.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value)) {
+                emailValidation.style.display = 'block';
+                emailInput.style.borderColor = '#ff5c5c';
+                isValid = false;
+            }
+            
+            if (!passwordInput.value || passwordInput.value.length < 6) {
+                passwordValidation.style.display = 'block';
+                passwordInput.style.borderColor = '#ff5c5c';
+                isValid = false;
+            }
+            
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                confirmPasswordValidation.style.display = 'block';
+                confirmPasswordInput.style.borderColor = '#ff5c5c';
+                isValid = false;
+            }
+            
+            if (!termsCheckbox.checked) {
+                showError('You must agree to the Terms of Service and Privacy Policy');
+                isValid = false;
+            }
+            
+            if (!isValid) {
+                return;
+            }
+            
+            try {
+                // Show loading state
+                const submitBtn = signupForm.querySelector('button[type="submit"]');
+                const originalBtnText = submitBtn.innerHTML;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating account...';
+                submitBtn.disabled = true;
+                
+                // Create user data object
+                const userData = {
+                    firstName: firstNameInput.value.trim(),
+                    lastName: lastNameInput.value.trim(),
+                    email: emailInput.value,
+                    createdAt: new Date().toISOString(),
+                    preferences: {
+                        theme: 'dark',
+                        notifications: true
+                    }
+                };
+                
+                // Attempt to create account with Firebase
+                const userCredential = await signUpUser(
+                    emailInput.value, 
+                    passwordInput.value,
+                    userData
+                );
+                
+                // If successful, redirect to main app
+                if (userCredential) {
+                    window.location.href = 'app.html';
+                }
+            } catch (error) {
+                console.error('Signup error:', error);
+                
+                let errorMsg = 'Failed to create account. Please try again.';
+                
+                // Handle different Firebase error codes
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMsg = 'This email is already in use. Please log in or use a different email.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMsg = 'Invalid email address format.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMsg = 'Password is too weak. Please use a stronger password.';
+                        break;
+                    case 'auth/network-request-failed':
+                        errorMsg = 'Network error. Please check your connection and try again.';
+                        break;
+                }
+                
+                showError(errorMsg);
+                
+                // Reset button state
+                const submitBtn = signupForm.querySelector('button[type="submit"]');
+                submitBtn.innerHTML = originalBtnText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        // Google Sign Up
+        googleSignupBtn.addEventListener('click', async () => {
+            try {
+                // Show loading state
+                googleSignupBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Connecting...';
+                googleSignupBtn.disabled = true;
+                
+                // Attempt Google sign in/sign up
+                const user = await signInWithGoogle();
+                
+                // If successful, redirect to main app
+                if (user) {
+                    window.location.href = 'app.html';
+                }
+            } catch (error) {
+                console.error('Google sign up error:', error);
+                
+                let errorMsg = 'Failed to sign up with Google. Please try again.';
+                
+                // Handle Google sign up errors
+                if (error.code === 'auth/popup-closed-by-user') {
+                    errorMsg = 'Sign up was cancelled';
+                } else if (error.code === 'auth/popup-blocked') {
+                    errorMsg = 'Pop-up was blocked by your browser. Please allow pop-ups for this site';
+                }
+                
+                showError(errorMsg);
+                
+                // Reset button state
+                googleSignupBtn.innerHTML = '<i class="fab fa-google"></i> Sign up with Google';
+                googleSignupBtn.disabled = false;
+            }
+        });
+
+        // Helper function to show error messages
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            
+            // Scroll to error message
+            errorMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorMessage.style.display = 'none';
+            }, 5000);
+        }
+
+        // Apply shimmer effect to form inputs when focused
+        const formInputs = document.querySelectorAll('.form-group input');
+        formInputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                const shimmerElement = input.parentElement.querySelector('.shimmer-effect');
+                shimmerElement.style.opacity = '1';
+            });
+            
+            input.addEventListener('blur', () => {
+                const shimmerElement = input.parentElement.querySelector('.shimmer-effect');
+                shimmerElement.style.opacity = '0';
+            });
+        });
+    </script>
+
+    <script>
+        // Add additional script to show detailed error information
+        window.addEventListener('error', function(e) {
+            console.error('Global error:', e.message, e.filename, e.lineno);
+            const errorMessage = document.getElementById('error-message');
+            if (errorMessage) {
+                errorMessage.textContent = `JavaScript Error: ${e.message}`;
+                errorMessage.style.display = 'block';
+            }
+        });
+        
+        // Show Firebase SDK version for debugging
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM fully loaded");
+            try {
+                // Check if we're running on localhost or other development environment
+                const isLocalhost = 
+                    window.location.hostname === 'localhost' || 
+                    window.location.hostname === '127.0.0.1' ||
+                    window.location.hostname.includes('192.168.');
+                
+                if (isLocalhost) {
+                    console.log("Running on local development environment");
+                }
+            } catch (e) {
+                console.error("Error in startup script:", e);
+            }
+        });
+    </script>
+</body>
+
+</html> 

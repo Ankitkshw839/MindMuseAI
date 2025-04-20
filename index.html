@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MindMuseAI  - A mental health companion chatbot providing emotional support and resources">
+    <meta name="keywords" content="mental health, chatbot, therapy, mindfulness, mood tracker, anxiety, depression, stress">
+    <meta name="theme-color" content="#2e0f6e">
+    <title>MindMuseAI  - Mental Health Companion</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script type="module" src="./firebase-config.js"></script>
+    <script type="module" src="./auth.js"></script>
+    <style>
+        :root {
+            --primary-color: #2e0f6e;
+            --accent-color: #aa324a;
+            --gradient-start: #2e0f6e;
+            --gradient-end: #aa324a;
+            --text-color: #ffffff;
+            --bg-color: #f6f5fa;
+            --card-bg: #ffffff;
+            --border-radius-sm: 8px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 20px;
+            --border-radius-xl: 30px;
+            --border-radius-full: 9999px;
+            --spacing-xs: 0.5rem;
+            --spacing-sm: 1rem;
+            --spacing-md: 1.5rem;
+            --spacing-lg: 2rem;
+            --spacing-xl: 3rem;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #2e0f6e 0%, #aa324a 100%);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .welcome-container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--spacing-md);
+        }
+
+        .welcome-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: var(--spacing-md) 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .logo h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: var(--spacing-md);
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: white;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-sm);
+        }
+
+        .login-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-full);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .login-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .signup-btn {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin-left: 0.5rem;
+        }
+        
+        .signup-btn:hover {
+            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--spacing-xl) 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .curve-decoration {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .curve-decoration svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .hero-content {
+            max-width: 50%;
+        }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.9);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .main-heading {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: var(--spacing-md);
+            color: white;
+        }
+
+        .highlight {
+            color: white;
+            position: relative;
+            display: inline-block;
+        }
+
+        .highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            margin-bottom: var(--spacing-lg);
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .email-signup {
+            display: flex;
+            background: white;
+            border-radius: var(--border-radius-full);
+            padding: 0.5rem;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: var(--spacing-lg);
+            max-width: 450px;
+        }
+
+        .email-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 0.75rem;
+            color: #8a8a9d;
+        }
+
+        .email-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .email-input::placeholder {
+            color: #8a8a9d;
+        }
+
+        .start-btn {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--border-radius-full);
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .start-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .hero-image-container {
+            position: relative;
+            width: 45%;
+        }
+
+        .hero-image {
+            width: 100%;
+            max-width: 500px;
+            height: auto;
+            border-radius: var(--border-radius-xl);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .floating-card {
+            position: absolute;
+            background: white;
+            padding: var(--spacing-sm);
+            border-radius: var(--border-radius-md);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-bottom-right {
+            right: -20px;
+            bottom: 20px;
+        }
+
+        .mini-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+        }
+
+        .card-content h4 {
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .card-content p {
+            font-size: 0.8rem;
+            color: #8a8a9d;
+        }
+
+        .features-section {
+            padding: var(--spacing-xl) 0;
+            background-color: #f8f5ff; /* Light purple background */
+            border-radius: var(--border-radius-lg);
+            margin: 0 var(--spacing-md);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-lg);
+            color: var(--primary-color);
+            position: relative;
+            padding-bottom: var(--spacing-sm);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 2px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-lg);
+            padding: 0 var(--spacing-lg);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-md);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            color: #333;
+            font-weight: 400;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--border-radius-md);
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-sm);
+            box-shadow: 0 4px 12px rgba(46, 15, 110, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(46, 15, 110, 0.4);
+        }
+
+        .feature-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+            color: #2e0f6e;
+        }
+
+        .feature-description {
+            color: #444;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: var(--spacing-xl) 0;
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .cta-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .cta-description {
+            max-width: 600px;
+            margin: 0 auto var(--spacing-lg);
+            color: #666;
+        }
+
+        .enter-app-btn {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: var(--border-radius-full);
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(46, 15, 110, 0.3);
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .enter-app-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 25px rgba(46, 15, 110, 0.4);
+        }
+
+        @media (max-width: 992px) {
+            .hero-section {
+                flex-direction: column;
+                gap: var(--spacing-xl);
+                text-align: center;
+            }
+
+            .hero-content, .hero-image-container {
+                max-width: 100%;
+                width: 100%;
+            }
+
+            .email-signup {
+                margin: 0 auto var(--spacing-lg);
+            }
+
+            .floating-card {
+                display: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .welcome-header {
+                flex-wrap: wrap;
+                gap: var(--spacing-sm);
+            }
+
+            .nav-links {
+                order: 3;
+                width: 100%;
+                justify-content: center;
+                margin-top: var(--spacing-sm);
+            }
+
+            .main-heading {
+                font-size: 2.5rem;
+            }
+
+            .features-section {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .features-grid {
+                gap: var(--spacing-md);
+                padding: 0 var(--spacing-md);
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .feature-card {
+                padding: var(--spacing-md) var(--spacing-sm);
+            }
+        }
+
+        @media (max-width: 576px) {
+            .nav-links {
+                flex-wrap: wrap;
+                gap: var(--spacing-sm);
+            }
+
+            .main-heading {
+                font-size: 2rem;
+            }
+
+            .email-signup {
+                flex-direction: column;
+                background: transparent;
+                box-shadow: none;
+                gap: var(--spacing-sm);
+            }
+
+            .email-input-container {
+                display: flex;
+                background: white;
+                border-radius: var(--border-radius-full);
+                overflow: hidden;
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            }
+
+            .start-btn {
+                width: 100%;
+            }
+        }
+
+        .signup-option {
+            text-align: center;
+            margin-top: var(--spacing-sm);
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .signup-link {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+            padding-bottom: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .signup-link:hover {
+            border-bottom-color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="welcome-container">
+        <header class="welcome-header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>MindMuseAI </h1>
+            </div>
+            <nav class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#about">About</a>
+                <a href="#resources">Resources</a>
+                <a href="#contact">Contact</a>
+            </nav>
+            <div class="header-actions">
+                <a href="login.html" class="login-btn">Login</a>
+                <a href="signup.html" class="login-btn signup-btn">Sign Up</a>
+            </div>
+        </header>
+
+        <section class="hero-section">
+            <div class="curve-decoration">
+                <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 600" fill="none">
+                    <path d="M400,300 Q600,100 800,400" stroke="rgba(255, 255, 255, 0.3)" stroke-width="2" stroke-dasharray="5,5" fill="none" />
+                    <path d="M300,500 Q600,700 900,300" stroke="rgba(255, 255, 255, 0.3)" stroke-width="2" stroke-dasharray="5,5" fill="none" />
+                </svg>
+            </div>
+            <div class="hero-content">
+                <p class="subtitle">YOUR MENTAL WELLNESS COMPANION</p>
+                <h1 class="main-heading">Find <span class="highlight">peace</span> in your mental journey</h1>
+                <p class="hero-description">MindMuseAI  provides emotional support, resources, and tools to help you manage stress, anxiety, and improve your overall mental wellbeing.</p>
+                <div class="email-signup">
+                    <div class="email-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <input type="email" class="email-input" placeholder="Enter your email address">
+                    <button class="start-btn">Get Started</button>
+                </div>
+                <p class="signup-option">Or <a href="signup.html" class="signup-link">create an account</a> to get started.</p>
+            </div>
+            <div class="hero-image-container">
+                <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1000&auto=format&fit=crop" alt="Meditation visualization" class="hero-image">
+                <div class="floating-card card-bottom-right">
+                    <div class="mini-avatar">
+                        <i class="fas fa-smile"></i>
+                    </div>
+                    <div class="card-content">
+                        <h4>Mood Tracking</h4>
+                        <p>Track your emotional journey</p>
+                    </div>
+                </div>
+                </div>
+            </section>
+
+        <section class="features-section" id="features">
+            <h2 class="section-title">How MindMuseAI  Helps You</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comment-dots"></i>
+                    </div>
+                    <h3 class="feature-title">AI-Powered Chat Support</h3>
+                    <p class="feature-description">Connect with MindfulBot for immediate emotional support and guidance whenever you need it.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Mood Tracking</h3>
+                    <p class="feature-description">Monitor your emotional wellbeing over time with our intuitive mood tracking tools and visualizations.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headphones"></i>
+                    </div>
+                    <h3 class="feature-title">Guided Meditations</h3>
+                    <p class="feature-description">Access a library of calming meditations and mindfulness exercises to reduce stress and anxiety.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h3 class="feature-title">Mental Health Resources</h3>
+                    <p class="feature-description">Explore our curated collection of articles, guides, and resources on various mental health topics.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="cta-section">
+            <h2 class="cta-title">Ready to begin your mindfulness journey?</h2>
+            <p class="cta-description">Join thousands of users who have improved their mental wellbeing with MMindMuseAI 's supportive community and resources.</p>
+            <a href="login.html" class="enter-app-btn">Enter MindMuseAI </a>
+        </section>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Simple email validation
+            const emailInput = document.querySelector('.email-input');
+            const startBtn = document.querySelector('.start-btn');
+            
+            startBtn.addEventListener('click', function() {
+                const email = emailInput.value.trim();
+                if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    // Store email in localStorage
+                    localStorage.setItem('userEmail', email);
+                    // Redirect to signup page with email pre-filled
+                    window.location.href = 'signup.html?email=' + encodeURIComponent(email);
+                } else {
+                    alert('Please enter a valid email address');
+                    emailInput.focus();
+                }
+            });
+            
+            // Allow enter key to submit form
+            emailInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    startBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

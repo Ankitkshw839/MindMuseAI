@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MindMuseAI - A mental health companion chatbot providing emotional support and resources">
+    <meta name="keywords" content="mental health, chatbot, therapy, mindfulness, mood tracker, anxiety, depression, stress">
+    <meta name="theme-color" content="#2e0f6e">
+    <title>MindMuseAI - Mental Health Companion</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .login-btn {
+            background: linear-gradient(90deg, #2e0f6e 0%, #aa324a 100%);
+            color: var(--text-color);
+            border: none;
+            border-radius: var(--border-radius-full);
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 15, 110, 0.3);
+        }
+
+        .profile-container {
+            position: relative;
+        }
+
+        .profile-btn {
+            background: linear-gradient(135deg, #2e0f6e 0%, #aa324a 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .profile-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(142, 106, 255, 0.5);
+        }
+
+        .profile-dropdown {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: linear-gradient(135deg, rgba(46, 15, 110, 0.9) 0%, rgba(170, 50, 74, 0.9) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            width: 200px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none;
+            backdrop-filter: blur(5px);
+        }
+
+        .profile-dropdown.active {
+            display: block;
+        }
+
+        .dropdown-item {
+            padding: 0.7rem 1rem;
+            color: var(--text-color);
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.7rem;
+            transition: background-color 0.2s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .dropdown-item i {
+            color: white;
+            font-size: 0.9rem;
+            width: 20px;
+        }
+
+        .dropdown-divider {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 0.3rem 0;
+        }
+
+        .user-info {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+        }
+
+        .user-info .user-email {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.8rem;
+            margin-top: 0.2rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #2e0f6e 0%, #aa324a 50%, #2a7d27 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientAnimation 5s ease infinite;
+        }
+        
+        .app-title {
+            text-align: center;
+            font-size: 2.5rem;
+            color: white;
+            margin: 0;
+            padding: 1rem 0;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        
+        .chat-container {
+            margin-top: 1.5rem;
+        }
+
+        .nav-btn {
+            background-color: #2e0f6e;
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-full);
+            padding: 0.6rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background-color: #431ba5;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(46, 15, 110, 0.3);
+        }
+
+        #back-home-btn {
+            background-color: #4c2ca6;
+            color: white;
+        }
+
+        #profile-page-btn {
+            background-color: #5a37b8;
+        }
+
+        #progress-page-btn {
+            background-color: #6b44cc;
+        }
+
+        #settings-page-btn {
+            background-color: #7c52e0;
+        }
+
+        /* Chat history sidebar styles */
+        .chat-history-sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 260px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            z-index: 1000;
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+            transform: translateX(-100%);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .chat-history-sidebar.active {
+            transform: translateX(0);
+        }
+        
+        .sidebar-header {
+            padding: 1.2rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .sidebar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+        
+        .new-chat-btn {
+            background: linear-gradient(90deg, #2e0f6e, #aa324a);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            padding: 0.8rem 1rem;
+            width: 100%;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .new-chat-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(46, 15, 110, 0.3);
+        }
+        
+        .chat-list {
+            overflow-y: auto;
+            flex-grow: 1;
+            padding: 0.5rem;
+        }
+        
+        .chat-item {
+            padding: 0.8rem 1rem;
+            border-radius: var(--border-radius-md);
+            margin-bottom: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            transition: background-color 0.2s ease;
+        }
+        
+        .chat-item:hover {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .chat-item.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .chat-icon {
+            color: var(--text-muted);
+            font-size: 1rem;
+        }
+        
+        .chat-info {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+        
+        .chat-title {
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-color);
+        }
+        
+        .chat-timestamp {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.2rem;
+        }
+        
+        .chat-actions {
+            display: flex;
+            gap: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+        
+        .chat-item:hover .chat-actions {
+            opacity: 1;
+        }
+        
+        .chat-action-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0.2rem;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+        
+        .chat-action-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color);
+        }
+        
+        .toggle-sidebar-btn {
+            position: fixed;
+            left: 10px;
+            top: 70px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 999;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-sidebar-btn:hover {
+            background: var(--bg-color-secondary);
+        }
+        
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none;
+        }
+        
+        .sidebar-overlay.active {
+            display: block;
+        }
+        
+        /* Shift main content when sidebar is open */
+        .main-content.sidebar-active {
+            margin-left: 260px;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Responsive navigation */
+        @media (max-width: 992px) {
+            .header-actions {
+                gap: 0.5rem;
+            }
+            
+            .nav-btn {
+                padding: 0.5rem 0.8rem;
+                font-size: 0.8rem;
+            }
+            
+            .main-content.sidebar-active {
+                margin-left: 0;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .nav-btn span {
+                display: none;
+            }
+            
+            .nav-btn {
+                padding: 0.5rem;
+                border-radius: 50%;
+                aspect-ratio: 1/1;
+                justify-content: center;
+            }
+            
+            .nav-btn i {
+                font-size: 1rem;
+                margin: 0;
+            }
+            
+            .header-actions {
+                gap: 0.4rem;
+            }
+            
+            .chat-history-sidebar {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+        
+        /* Add an active state for the current page */
+        .nav-btn.active {
+            background-color: #aa324a;
+            box-shadow: 0 0 10px rgba(170, 50, 74, 0.5);
+        }
+        
+        /* Mood tracker styles */
+        .mood-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .mood-btn.active {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px rgba(142, 106, 255, 0.5);
+            border: 2px solid rgba(142, 106, 255, 0.8);
+        }
+        
+        .mood-btn.pulse {
+            animation: pulse-animation 0.5s ease-out;
+        }
+        
+        @keyframes pulse-animation {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(142, 106, 255, 0.7);
+            }
+            50% {
+                transform: scale(1.2);
+                box-shadow: 0 0 0 10px rgba(142, 106, 255, 0);
+            }
+            100% {
+                transform: scale(1.1);
+                box-shadow: 0 0 0 0 rgba(142, 106, 255, 0);
+            }
+        }
+        
+        .mood-chart {
+            height: 200px;
+            margin-top: 1rem;
+            position: relative;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .app-logo {
+            animation: pulse 3s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body class="gradient-bg">
+    <!-- Emergency loading screen handler - ensures the screen disappears even if JS errors occur -->
+    <script>
+        // Backup loading screen removal - will run regardless of other script errors
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.classList.add('fade-out');
+                    setTimeout(function() {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 2000); // Wait 2 seconds to ensure the page has loaded
+        });
+    </script>
+
+    <!-- Loading screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <h2 class="gradient-text">MindMuseAI</h2>
+            <p>Your mental wellness companion</p>
+        </div>
+    </div>
+
+    <!-- Chat History Sidebar -->
+    <aside class="chat-history-sidebar" id="chat-history-sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-title">Chat History</div>
+            <button class="chat-action-btn" id="close-sidebar-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <button class="new-chat-btn" id="new-chat-btn">
+            <i class="fas fa-plus"></i>
+            <span>New Chat</span>
+        </button>
+        <div class="chat-list" id="chat-list">
+            <!-- Chat history items will be populated here -->
+        </div>
+    </aside>
+    
+    <!-- Sidebar toggle button -->
+    <button class="toggle-sidebar-btn" id="toggle-sidebar-btn">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <!-- Overlay for mobile -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <div class="app-container">
+        <!-- Header inspired by DeepAI -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>MindMuseAI</h1>
+            </div>
+            <div class="header-actions">
+                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
+                    <i class="fas fa-sun"></i>
+                </button>
+                <!-- Navigation buttons with clear styling -->
+                <a href="index.html" class="nav-btn" id="back-home-btn">
+                    <i class="fas fa-home"></i>
+                    <span>Back to Home</span>
+                </a>
+                <a href="profile.html" class="nav-btn" id="profile-page-btn">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+                <a href="progress.html" class="nav-btn" id="progress-page-btn">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Progress</span>
+                </a>
+                <a href="settings.html" class="nav-btn" id="settings-page-btn">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </a>
+                <!-- New Logout Button -->
+                <a href="javascript:void(0);" class="nav-btn" id="visible-logout-btn" style="background-color: #aa324a;" onclick="(async function() { try { if(window.firebaseAuth) { await window.firebaseAuth.signOut(); } } catch(e) { console.error('Firebase logout error:', e); } localStorage.removeItem('isLoggedIn'); localStorage.removeItem('userEmail'); localStorage.removeItem('token'); sessionStorage.clear(); window.location.href = 'index.html'; })();">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Log out</span>
+                </a>
+                <!-- Profile dropdown for account actions -->
+                <div class="profile-container" id="profile-container">
+                    <button class="profile-btn" id="profile-btn">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                    <div class="profile-dropdown" id="profile-dropdown">
+                        <div class="user-info">
+                            <h4>Your Account</h4>
+                            <div class="user-email" id="user-email">user@example.com</div>
+                        </div>
+                        <div class="dropdown-divider"></div>
+                        <a href="profile.html" class="dropdown-item">
+                            <i class="fas fa-user-circle"></i>
+                            <span>My Profile</span>
+                        </a>
+                        <a href="javascript:void(0);" class="dropdown-item" id="logout-btn" onclick="(async function() { try { if(window.firebaseAuth) { await window.firebaseAuth.signOut(); } } catch(e) { console.error('Firebase logout error:', e); } localStorage.removeItem('isLoggedIn'); localStorage.removeItem('userEmail'); localStorage.removeItem('token'); sessionStorage.clear(); window.location.href = 'index.html'; })();">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Log out</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Centered app title -->
+        <h1 class="app-title">MindMuseAI</h1>
+
+        <main class="main-content" id="main-content">
+            <!-- Left sidebar for mood tracker -->
+            <aside class="sidebar mood-tracker">
+                <h2 class="gradient-text">Mood Tracker</h2>
+                <div class="mood-selector">
+                    <p>How are you feeling today?</p>
+                    <div class="mood-options">
+                        <button class="mood-btn" aria-label="Happy" data-mood="happy">
+                            <span class="mood-emoji">😊</span>
+                            <span class="mood-label">Happy</span>
+                        </button>
+                        <button class="mood-btn" aria-label="Sad" data-mood="sad">
+                            <span class="mood-emoji">😔</span>
+                            <span class="mood-label">Sad</span>
+                        </button>
+                        <button class="mood-btn" aria-label="Anxious" data-mood="anxious">
+                            <span class="mood-emoji">😰</span>
+                            <span class="mood-label">Anxious</span>
+                        </button>
+                        <button class="mood-btn" aria-label="Stressed" data-mood="stressed">
+                            <span class="mood-emoji">😖</span>
+                            <span class="mood-label">Stressed</span>
+                        </button>
+                        <button class="mood-btn" aria-label="Calm" data-mood="calm">
+                            <span class="mood-emoji">😌</span>
+                            <span class="mood-label">Calm</span>
+                        </button>
+                        <button class="mood-btn" aria-label="Energetic" data-mood="energetic">
+                            <span class="mood-emoji">⚡</span>
+                            <span class="mood-label">Energetic</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="sidebar-divider"></div>
+                <div class="mood-history">
+                    <h3 class="gradient-text">Mood History</h3>
+                    <div class="mood-chart">
+                        <canvas id="moodChart"></canvas>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Central chat area -->
+            <section class="chat-container">
+                <div class="chat-header">
+                    <h2 class="gradient-text">Chat with MindMuseAI Bot</h2>
+                </div>
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            <div class="message-text">
+                                <p>Hello! I'm MindMuseAI Bot, your mental health companion. How are you feeling today?</p>
+                            </div>
+                            <div class="message-timestamp">10:00 AM</div>
+                        </div>
+                        <div class="avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <form id="message-form">
+                        <input type="text" id="user-input" placeholder="Message AI Chat..." aria-label="Type your message">
+                        <button type="submit" id="send-button" aria-label="Send message">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Right sidebar for resources -->
+            <aside class="sidebar resources">
+                <h2 class="gradient-text">Mental Health Resources</h2>
+                
+                <div class="resource-category" data-category="anxiety">
+                    <h3 class="gradient-text"><i class="fas fa-heart-pulse"></i> <a href="https://adaa.org/understanding-anxiety/depression/tips" target="_blank" style="text-decoration: none; color: inherit;">Anxiety</a></h3>
+                    <ul>
+                        <li><a href="https://adaa.org/understanding-anxiety/depression/tips" target="_blank">Understanding Anxiety Disorders</a></li>
+                        <li><a href="https://adaa.org/understanding-anxiety/depression/tips" target="_blank">5 Breathing Techniques for Anxiety</a></li>
+                        <li><a href="https://adaa.org/understanding-anxiety/depression/tips" target="_blank">When to Seek Professional Help</a></li>
+                    </ul>
+                </div>
+                <div class="resource-category" data-category="depression">
+                    <h3 class="gradient-text"><i class="fas fa-cloud-rain"></i> <a href="https://adaa.org/understanding-anxiety/depression/tips" target="_blank" style="text-decoration: none; color: inherit;">Depression</a></h3>
+                    <ul>
+                        <li><a href="https://adaa.org/understanding-anxiety/depression/tips" target="_blank">Signs of Depression</a></li>
+                        <li><a href="https://adaa.org/understanding-anxiety/depression/tips" target="_blank">Self-Care Strategies for Depression</a></li>
+                        <li><a href="https://adaa.org/understanding-anxiety/depression/tips" target="_blank">Finding a Therapist</a></li>
+                    </ul>
+                </div>
+                <div class="resource-category" data-category="stress">
+                    <h3 class="gradient-text"><i class="fas fa-bolt"></i> <a href="https://www.webmd.com/balance/tips-to-control-stress" target="_blank" style="text-decoration: none; color: inherit;">Stress Management</a></h3>
+                    <ul>
+                        <li><a href="https://www.webmd.com/balance/tips-to-control-stress" target="_blank">Healthy Coping Mechanisms</a></li>
+                        <li><a href="https://www.healthline.com/nutrition/16-ways-relieve-stress-anxiety#reduce-caffeine" target="_blank">Meditation Guides for Beginners</a></li>
+                        <li><a href="https://www.webmd.com/balance/tips-to-control-stress" target="_blank">Stress and Physical Health</a></li>
+                    </ul>
+                </div>
+                <div class="resource-category" data-category="emergency">
+                    <h3 class="gradient-text"><i class="fas fa-phone"></i> Emergency Helplines</h3>
+                    <ul>
+                        <li><a href="tel:988" class="helpline">988 Suicide & Crisis Lifeline</a></li>
+                        <li><a href="tel:1-800-273-8255" class="helpline">1-800-273-8255 (TALK)</a></li>
+                        <li><a href="sms:741741" class="helpline">Text HOME to 741741</a></li>
+                    </ul>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Feedback modal -->
+    <div class="feedback-modal" id="feedback-modal">
+        <div class="feedback-content">
+            <h3 class="gradient-text">Was this response helpful?</h3>
+            <div class="feedback-options">
+                <button class="feedback-btn" data-rating="1" aria-label="Not helpful">
+                    <i class="fas fa-thumbs-down"></i>
+                </button>
+                <button class="feedback-btn" data-rating="2" aria-label="Somewhat helpful">
+                    <i class="fas fa-meh"></i>
+                </button>
+                <button class="feedback-btn" data-rating="3" aria-label="Very helpful">
+                    <i class="fas fa-thumbs-up"></i>
+                </button>
+            </div>
+            <textarea id="feedback-text" placeholder="Any additional feedback? (optional)" aria-label="Additional feedback"></textarea>
+            <div class="feedback-actions">
+                <button id="submit-feedback">Submit</button>
+                <button id="close-feedback">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="chat.js"></script>
+    <script src="script.js"></script>
+    <!-- Import Firebase -->
+    <script type="module">
+        import { auth } from './firebase-config.js';
+        
+        // Make auth available globally for logout functionality
+        window.firebaseAuth = auth;
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize elements
+            const loadingScreen = document.getElementById('loading-screen');
+            const themeToggle = document.getElementById('theme-toggle');
+            const themeToggleIcon = themeToggle.querySelector('i');
+            const profileBtn = document.getElementById('profile-btn');
+            const profileDropdown = document.getElementById('profile-dropdown');
+            const userEmailEl = document.getElementById('user-email');
+            
+            // Mood tracker elements
+            const moodButtons = document.querySelectorAll('.mood-btn');
+            const moodChart = document.getElementById('moodChart');
+            let moodHistory = JSON.parse(localStorage.getItem('moodHistory')) || [];
+            
+            // Mood values (for y-axis positioning)
+            const moodValues = {
+                'happy': 5,
+                'calm': 4,
+                'energetic': 3,
+                'anxious': 2,
+                'stressed': 1,
+                'sad': 0
+            };
+            
+            // Mood colors
+            const moodColors = {
+                'happy': 'rgba(255, 193, 7, 0.8)',
+                'sad': 'rgba(0, 123, 255, 0.8)',
+                'anxious': 'rgba(108, 117, 125, 0.8)',
+                'stressed': 'rgba(220, 53, 69, 0.8)',
+                'calm': 'rgba(40, 167, 69, 0.8)',
+                'energetic': 'rgba(255, 102, 0, 0.8)'
+            };
+            
+            // Mood emoji mapping
+            const moodEmojis = {
+                'happy': '😊',
+                'sad': '😔',
+                'anxious': '😰',
+                'stressed': '😖',
+                'calm': '😌',
+                'energetic': '⚡'
+            };
+            
+            // Initialize mood chart
+            let moodChartInstance = null;
+            
+            function initMoodChart() {
+                if (moodChartInstance) {
+                    moodChartInstance.destroy();
+                }
+                
+                // Prepare data for chart
+                const dates = moodHistory.map(entry => {
+                    const date = new Date(entry.timestamp);
+                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                });
+                
+                const moodData = moodHistory.map(entry => moodValues[entry.mood]);
+                
+                // Create gradient for the line
+                const ctx = moodChart.getContext('2d');
+                const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+                gradient.addColorStop(0, 'rgba(142, 106, 255, 0.8)');
+                gradient.addColorStop(1, 'rgba(142, 106, 255, 0.1)');
+                
+                // Configure chart
+                moodChartInstance = new Chart(moodChart, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [{
+                            label: 'Mood',
+                            data: moodData,
+                            borderColor: 'rgba(142, 106, 255, 0.8)',
+                            backgroundColor: gradient,
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: function(context) {
+                                const index = context.dataIndex;
+                                const mood = moodHistory[index]?.mood;
+                                return mood ? moodColors[mood] : '#fff';
+                            },
+                            pointRadius: 6,
+                            pointHoverRadius: 8
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                min: -0.5,
+                                max: 5.5,
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.05)'
+                                },
+                                ticks: {
+                                    callback: function(value) {
+                                        const moods = ['Sad', 'Stressed', 'Anxious', 'Energetic', 'Calm', 'Happy'];
+                                        return value >= 0 && value < moods.length ? moods[value] : '';
+                                    },
+                                    color: 'rgba(255, 255, 255, 0.6)',
+                                    font: {
+                                        size: 11
+                                    }
+                                }
+                            },
+                            x: {
+                                grid: {
+                                    color: 'rgba(255, 255, 255, 0.05)'
+                                },
+                                ticks: {
+                                    color: 'rgba(255, 255, 255, 0.6)',
+                                    maxRotation: 45,
+                                    minRotation: 45,
+                                    font: {
+                                        size: 10
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    title: function(tooltipItems) {
+                                        const index = tooltipItems[0].dataIndex;
+                                        const entry = moodHistory[index];
+                                        if (entry) {
+                                            const date = new Date(entry.timestamp);
+                                            return date.toLocaleString('en-US', { 
+                                                month: 'short', 
+                                                day: 'numeric',
+                                                hour: '2-digit',
+                                                minute: '2-digit'
+                                            });
+                                        }
+                                        return '';
+                                    },
+                                    label: function(context) {
+                                        const index = context.dataIndex;
+                                        const entry = moodHistory[index];
+                                        if (entry) {
+                                            return `Mood: ${moodEmojis[entry.mood]} ${entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1)}`;
+                                        }
+                                        return '';
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            // Add mood entry and update chart
+            function addMoodEntry(mood) {
+                const entry = {
+                    mood: mood,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Limit history to last 14 entries
+                moodHistory.push(entry);
+                if (moodHistory.length > 14) {
+                    moodHistory = moodHistory.slice(moodHistory.length - 14);
+                }
+                
+                // Save to localStorage
+                localStorage.setItem('moodHistory', JSON.stringify(moodHistory));
+                
+                // Update chart
+                initMoodChart();
+            }
+            
+            // Initialize chart on page load
+            initMoodChart();
+            
+            // Add click handlers to mood buttons
+            moodButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const mood = this.getAttribute('data-mood');
+                    
+                    // Add visual feedback
+                    moodButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Add entry and update chart
+                    addMoodEntry(mood);
+                    
+                    // Trigger animation
+                    this.classList.add('pulse');
+                    setTimeout(() => {
+                        this.classList.remove('pulse');
+                    }, 500);
+                });
+            });
+            
+            // Chat history sidebar elements
+            const chatHistorySidebar = document.getElementById('chat-history-sidebar');
+            const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
+            const closeSidebarBtn = document.getElementById('close-sidebar-btn');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const mainContent = document.getElementById('main-content');
+            const newChatBtn = document.getElementById('new-chat-btn');
+            const chatList = document.getElementById('chat-list');
+            
+            // Initialize messages array to prevent reference errors
+            let messages = [];
+            const initialMessages = [{
+                role: 'assistant',
+                content: "Hello! I'm MindMuseAI Bot, your mental health companion. How are you feeling today?"
+            }];
+            
+            // Set initial message count
+            const initialMessageCount = initialMessages.length;
+            
+            // Copy initial messages
+            messages = [...initialMessages];
+            
+            // Toggle sidebar
+            toggleSidebarBtn.addEventListener('click', function() {
+                chatHistorySidebar.classList.add('active');
+                sidebarOverlay.classList.add('active');
+                
+                // On desktop, shift main content
+                if (window.innerWidth >= 992) {
+                    mainContent.classList.add('sidebar-active');
+                }
+            });
+            
+            // Close sidebar
+            function closeSidebar() {
+                chatHistorySidebar.classList.remove('active');
+                sidebarOverlay.classList.remove('active');
+                mainContent.classList.remove('sidebar-active');
+            }
+            
+            closeSidebarBtn.addEventListener('click', closeSidebar);
+            sidebarOverlay.addEventListener('click', closeSidebar);
+            
+            // New chat button
+            newChatBtn.addEventListener('click', function() {
+                // Clear existing chat
+                const chatMessages = document.getElementById('chat-messages');
+                if (chatMessages) {
+                    chatMessages.innerHTML = '';
+                    
+                    // Add initial bot message
+                    const initialMessage = {
+                        sender: 'bot',
+                        text: "Hello! I'm MindMuseAI Bot, your mental health companion. How are you feeling today?",
+                        timestamp: getCurrentTime()
+                    };
+                    
+                    const messageElement = createMessageElement(initialMessage);
+                    chatMessages.appendChild(messageElement);
+                }
+                
+                // Add new chat to history
+                addChatToHistory("New Chat", getCurrentTime());
+                
+                // Close sidebar on mobile
+                if (window.innerWidth < 992) {
+                    closeSidebar();
+                }
+            });
+            
+            // Sample chat history data
+            const chatHistory = [
+                { title: "Anxiety Management", timestamp: "Today, 2:45 PM", id: "chat1" },
+                { title: "Sleep Meditation", timestamp: "Today, 11:30 AM", id: "chat2" },
+                { title: "Stress Relief", timestamp: "Yesterday, 4:15 PM", id: "chat3" },
+                { title: "Mindfulness Practice", timestamp: "Jul 10, 10:20 AM", id: "chat4" },
+                { title: "Breathing Exercises", timestamp: "Jul 8, 3:45 PM", id: "chat5" }
+            ];
+            
+            // Initialize chat history
+            function initChatHistory() {
+                chatList.innerHTML = '';
+                
+                chatHistory.forEach(chat => {
+                    addChatToHistory(chat.title, chat.timestamp, chat.id);
+                });
+            }
+            
+            // Add chat to history
+            function addChatToHistory(title, timestamp, id) {
+                const chatItem = document.createElement('div');
+                chatItem.classList.add('chat-item');
+                if (id) {
+                    chatItem.setAttribute('data-id', id);
+                } else {
+                    chatItem.setAttribute('data-id', 'chat' + Date.now());
+                    chatItem.classList.add('active');
+                }
+                
+                chatItem.innerHTML = `
+                    <div class="chat-icon">
+                        <i class="fas fa-comment"></i>
+                    </div>
+                    <div class="chat-info">
+                        <div class="chat-title">${title}</div>
+                        <div class="chat-timestamp">${timestamp}</div>
+                    </div>
+                    <div class="chat-actions">
+                        <button class="chat-action-btn edit-chat-btn" title="Rename">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="chat-action-btn delete-chat-btn" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                
+                // Click event to load chat
+                chatItem.addEventListener('click', function(e) {
+                    if (!e.target.closest('.chat-actions')) {
+                        // Remove active class from all chats
+                        document.querySelectorAll('.chat-item').forEach(item => {
+                            item.classList.remove('active');
+                        });
+                        
+                        // Add active class to clicked chat
+                        chatItem.classList.add('active');
+                        
+                        // Load chat content (in a real app, this would fetch from a database)
+                        // For now, we'll just display a different welcome message
+                        const chatMessages = document.getElementById('chat-messages');
+                        if (chatMessages) {
+                            chatMessages.innerHTML = '';
+                            
+                            const welcomeMessage = {
+                                sender: 'bot',
+                                text: `Welcome back to your "${title}" chat. How can I help you today?`,
+                                timestamp: getCurrentTime()
+                            };
+                            
+                            const messageElement = createMessageElement(welcomeMessage);
+                            chatMessages.appendChild(messageElement);
+                        }
+                        
+                        // Close sidebar on mobile
+                        if (window.innerWidth < 992) {
+                            closeSidebar();
+                        }
+                    }
+                });
+                
+                // Add delete button functionality
+                const deleteBtn = chatItem.querySelector('.delete-chat-btn');
+                deleteBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    if (confirm('Are you sure you want to delete this chat?')) {
+                        chatItem.remove();
+                    }
+                });
+                
+                // Add edit button functionality
+                const editBtn = chatItem.querySelector('.edit-chat-btn');
+                editBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const newTitle = prompt('Enter a new name for this chat:', title);
+                    if (newTitle && newTitle.trim() !== '') {
+                        chatItem.querySelector('.chat-title').textContent = newTitle;
+                    }
+                });
+                
+                // Add to the top of the list
+                chatList.insertBefore(chatItem, chatList.firstChild);
+            }
+            
+            // Helper function to create message elements
+            function createMessageElement(message) {
+                const { sender, text, timestamp } = message;
+                
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message', `${sender}-message`);
+                
+                const avatarDiv = document.createElement('div');
+                avatarDiv.classList.add('avatar');
+                avatarDiv.innerHTML = sender === 'bot' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+                
+                const contentDiv = document.createElement('div');
+                contentDiv.classList.add('message-content');
+                
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('message-text');
+                textDiv.innerHTML = `<p>${text}</p>`;
+                
+                const timestampDiv = document.createElement('div');
+                timestampDiv.classList.add('message-timestamp');
+                timestampDiv.textContent = timestamp;
+                
+                contentDiv.appendChild(textDiv);
+                contentDiv.appendChild(timestampDiv);
+                
+                if (sender === 'bot') {
+                    messageDiv.appendChild(contentDiv);
+                    messageDiv.appendChild(avatarDiv);
+                } else {
+                    messageDiv.appendChild(avatarDiv);
+                    messageDiv.appendChild(contentDiv);
+                }
+                
+                return messageDiv;
+            }
+            
+            // Helper function to get current time
+            function getCurrentTime() {
+                const now = new Date();
+                return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            }
+            
+            // Initialize chat history
+            initChatHistory();
+            
+            // Set active page in navigation
+            function setActivePage() {
+                const currentPath = window.location.pathname;
+                const navButtons = document.querySelectorAll('.nav-btn');
+                
+                navButtons.forEach(button => {
+                    const href = button.getAttribute('href');
+                    if (currentPath.includes(href) && href !== '') {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+                
+                // If we're on the app.html page (main dashboard)
+                if (currentPath.endsWith('app.html') || currentPath.endsWith('/')) {
+                    // Highlight the home button for app.html
+                    const homeBtn = document.querySelector('#back-home-btn');
+                    if (homeBtn) homeBtn.classList.add('active');
+                }
+            }
+            
+            // Call set active page
+            setActivePage();
+            
+            // Login/profile handling
+            const loginBtn = document.getElementById('login-btn');
+            const profileContainer = document.getElementById('profile-container');
+            
+            // Check if user is logged in
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const userEmail = localStorage.getItem('userEmail');
+            
+            if (isLoggedIn && userEmail) {
+                // User is logged in
+                loginBtn.style.display = 'none';
+                profileContainer.style.display = 'block';
+                userEmailEl.textContent = userEmail;
+            } else {
+                // User is not logged in
+                loginBtn.style.display = 'flex';
+                profileContainer.style.display = 'none';
+            }
+            
+            // Profile dropdown toggle
+            profileBtn.addEventListener('click', function() {
+                profileDropdown.classList.toggle('active');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+                    profileDropdown.classList.remove('active');
+                }
+            });
+            
+            // Add direct click handler for send button
+            const sendButton = document.getElementById('send-button');
+            const userInput = document.getElementById('user-input');
+            
+            if (sendButton && userInput) {
+                sendButton.addEventListener('click', function() {
+                    const userMessage = userInput.value.trim();
+                    if (userMessage) {
+                        // Try to use the main sendMessage function if available
+                        if (typeof window.sendMessage === 'function') {
+                            // Create a fake event object with preventDefault
+                            const fakeEvent = { preventDefault: function() {} };
+                            window.sendMessage(fakeEvent);
+                        } else {
+                            // Fallback implementation if main function is not available
+                            console.log("Using fallback message handler");
+                            // Add user message to UI
+                            const chatMessages = document.getElementById('chat-messages');
+                            if (chatMessages) {
+                                const messageDiv = document.createElement('div');
+                                messageDiv.classList.add('message', 'user-message');
+                                
+                                const avatarDiv = document.createElement('div');
+                                avatarDiv.classList.add('avatar');
+                                avatarDiv.innerHTML = '<i class="fas fa-user"></i>';
+                                
+                                const contentDiv = document.createElement('div');
+                                contentDiv.classList.add('message-content');
+                                
+                                const textDiv = document.createElement('div');
+                                textDiv.classList.add('message-text');
+                                textDiv.innerHTML = `<p>${userMessage}</p>`;
+                                
+                                const now = new Date();
+                                const timestamp = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                const timestampDiv = document.createElement('div');
+                                timestampDiv.classList.add('message-timestamp');
+                                timestampDiv.textContent = timestamp;
+                                
+                                contentDiv.appendChild(textDiv);
+                                contentDiv.appendChild(timestampDiv);
+                                
+                                messageDiv.appendChild(avatarDiv);
+                                messageDiv.appendChild(contentDiv);
+                                
+                                chatMessages.appendChild(messageDiv);
+                                chatMessages.scrollTop = chatMessages.scrollHeight;
+                            }
+                            
+                            // Clear input
+                            userInput.value = '';
+                            
+                            // Simple bot response
+                            setTimeout(function() {
+                                if (chatMessages) {
+                                    const botMessageDiv = document.createElement('div');
+                                    botMessageDiv.classList.add('message', 'bot-message');
+                                    
+                                    const botContentDiv = document.createElement('div');
+                                    botContentDiv.classList.add('message-content');
+                                    
+                                    const botTextDiv = document.createElement('div');
+                                    botTextDiv.classList.add('message-text');
+                                    botTextDiv.innerHTML = `<p>I'm here to help! However, it seems our connection to the AI service is experiencing an issue. Please try again later.</p>`;
+                                    
+                                    const botTimestampDiv = document.createElement('div');
+                                    botTimestampDiv.classList.add('message-timestamp');
+                                    botTimestampDiv.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                                    
+                                    botContentDiv.appendChild(botTextDiv);
+                                    botContentDiv.appendChild(botTimestampDiv);
+                                    
+                                    const botAvatarDiv = document.createElement('div');
+                                    botAvatarDiv.classList.add('avatar');
+                                    botAvatarDiv.innerHTML = '<i class="fas fa-robot"></i>';
+                                    
+                                    botMessageDiv.appendChild(botContentDiv);
+                                    botMessageDiv.appendChild(botAvatarDiv);
+                                    
+                                    chatMessages.appendChild(botMessageDiv);
+                                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                                }
+                            }, 1000);
+                        }
+                    }
+                });
+                
+                // Also handle Enter key in the input field
+                userInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        sendButton.click();
+                        return false;
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+
+</html> 
