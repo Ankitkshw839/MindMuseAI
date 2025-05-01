@@ -151,6 +151,77 @@
 ![image](https://github.com/user-attachments/assets/bb0cc09a-8da9-4e80-bbc0-9f29cc482827)
 ![image](https://github.com/user-attachments/assets/c16d3403-381b-4fa8-aaf8-61b2cd7069e2)
 
+## 📋 Installation & Setup Guide
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v14 or newer)
+- [Git](https://git-scm.com/)
+
+### Installation Steps
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/MindMuseAI.git
+   cd MindMuseAI
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Firebase Setup**
+   - Create a [Firebase](https://firebase.google.com/) account if you don't have one
+   - Create a new Firebase project
+   - Enable Authentication (Email/Password and Google Sign-in)
+   - Create a Firestore database
+   - Update the Firebase configuration in `firebase-config.js` with your own credentials:
+     ```javascript
+     // Replace with your Firebase config
+     const firebaseConfig = {
+       apiKey: "YOUR_API_KEY",
+       authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+       projectId: "YOUR_PROJECT_ID",
+       storageBucket: "YOUR_PROJECT_ID.appspot.com",
+       messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+       appId: "YOUR_APP_ID"
+     };
+     ```
+
+4. **DeepSeek API Setup** (or other AI model)
+   - Get your API key from [DeepSeek](https://deepseek.ai/)
+   - Update the API configuration in `config.js`
+
+### Running the Application
+
+1. **Local Development**
+   - Open `index.html` in your browser:
+     ```bash
+     # If you have a simple HTTP server installed
+     npx serve
+     ```
+   - Or simply open the `index.html` file directly in your browser
+
+2. **Firebase Hosting** (Optional)
+   ```bash
+   # Install Firebase tools if not already installed
+   npm install -g firebase-tools
+   
+   # Login to Firebase
+   firebase login
+   
+   # Initialize Firebase project
+   firebase init
+   
+   # Deploy to Firebase
+   firebase deploy
+   ```
+
+### Troubleshooting
+
+- If authentication doesn't work, make sure your Firebase configuration is correct and the authentication methods are enabled in the Firebase console.
+- Check browser console for any JavaScript errors.
+- Ensure all API keys are correctly set in their respective configuration files.
 
 
 
