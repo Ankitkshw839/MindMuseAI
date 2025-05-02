@@ -106,7 +106,7 @@
 - Edit name, view mood logs, and manage account settings.
 - Future-ready design includes model selection and voice settings.
 
-### 🎙️ Voice Interaction
+### 🎙️ Voice Interaction (Coming Soon)
 - Integrated microphone feature using Web Speech API.
 - Users can speak with the chatbot via voice input.
 
