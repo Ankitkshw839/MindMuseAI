@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MindMuseAI - Get support and help for your mental wellness journey">
+    <meta name="keywords" content="mental health, chatbot, therapy, mindfulness, support, help, contact">
+    <meta name="theme-color" content="#0f0c1d">
+    <title>Support - MindMuseAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        .dashboard-layout {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        .sidebar-menu {
+            width: 260px;
+            background-color: var(--bg-color-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: var(--spacing-md) 0;
+        }
+
+        .menu-item {
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(142, 106, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .menu-item.active {
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            background-color: rgba(142, 106, 255, 0.1);
+        }
+
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .menu-item .menu-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: var(--spacing-lg);
+            max-width: calc(100% - 260px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-xl);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .support-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .support-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .support-card-header {
+            background: linear-gradient(135deg, var(--primary-color), #7367f0);
+            color: white;
+            padding: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+        }
+
+        .support-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .support-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .support-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            margin-top: 0.25rem;
+        }
+
+        .support-card-body {
+            padding: var(--spacing-lg);
+        }
+
+        .support-description {
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.6;
+        }
+
+        .support-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            padding: 0.8rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .support-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(46, 15, 110, 0.3);
+        }
+
+        .support-btn.secondary {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .support-btn.secondary:hover {
+            background-color: rgba(142, 106, 255, 0.1);
+        }
+
+        .faq-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .faq-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-lg);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .faq-title i {
+            color: var(--primary-color);
+        }
+
+        .accordion {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            overflow: hidden;
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .accordion-header {
+            padding: var(--spacing-md) var(--spacing-lg);
+            background-color: var(--card-bg);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .accordion-header:hover {
+            background-color: rgba(142, 106, 255, 0.05);
+        }
+
+        .accordion-header.active {
+            background-color: rgba(142, 106, 255, 0.1);
+        }
+
+        .accordion-title {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .accordion-icon {
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+            color: var(--text-muted);
+        }
+
+        .accordion-header.active .accordion-icon {
+            transform: rotate(180deg);
+            color: var(--primary-color);
+        }
+
+        .accordion-content {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            background-color: var(--bg-color);
+        }
+
+        .accordion-header.active + .accordion-content {
+            padding: var(--spacing-md) var(--spacing-lg);
+            max-height: 1000px;
+        }
+
+        .accordion-body {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .contact-form {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            padding: var(--spacing-xl);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .form-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-color);
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            color: var(--text-color);
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(142, 106, 255, 0.25);
+        }
+
+        .form-control.text-area {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-md);
+        }
+
+        .emergency-banner {
+            background: linear-gradient(135deg, #ff6b6b, #ff8e8e);
+            color: white;
+            padding: var(--spacing-md) var(--spacing-lg);
+            border-radius: var(--border-radius-md);
+            margin-bottom: var(--spacing-xl);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-md);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+        }
+
+        .emergency-icon {
+            font-size: 2rem;
+        }
+
+        .emergency-content {
+            flex: 1;
+        }
+
+        .emergency-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .emergency-text {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .emergency-number {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-top: 0.25rem;
+        }
+
+        .emergency-btn {
+            background-color: white;
+            color: #ff6b6b;
+            border: none;
+            border-radius: var(--border-radius-md);
+            padding: 0.7rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .emergency-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(255, 255, 255, 0.3);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-bottom: var(--spacing-lg);
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar-menu {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .content-area {
+                max-width: 100%;
+            }
+            
+            .support-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .emergency-banner {
+                flex-direction: column;
+                text-align: center;
+                padding: var(--spacing-lg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <h2>MindMuseAI</h2>
+            <p>Your mental wellness companion</p>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="dashboard-layout">
+            <aside class="sidebar-menu">
+                <a href="app.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span class="menu-text">Home</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="menu-text">Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span class="menu-text">Settings</span>
+                </a>
+                <a href="progress.html" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="menu-text">My Progress</span>
+                </a>
+                <a href="appointments.html" class="menu-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="menu-text">Appointments</span>
+                </a>
+                <a href="resources.html" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    <span class="menu-text">Resources</span>
+                </a>
+                <a href="support.html" class="menu-item active">
+                    <i class="fas fa-headset"></i>
+                    <span class="menu-text">Support</span>
+                </a>
+            </aside>
+
+            <main class="content-area">
+                <a href="app.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Home</span>
+                </a>
+                
+                <div class="page-header">
+                    <h1>Support Center</h1>
+                </div>
+
+                <div class="emergency-banner">
+                    <div class="emergency-icon">
+                        <i class="fas fa-exclamation-triangle"></i>
+                    </div>
+                    <div class="emergency-content">
+                        <div class="emergency-title">In case of emergency, please call:</div>
+                        <div class="emergency-text">If you or someone you know is in immediate danger, please contact emergency services.</div>
+                        <div class="emergency-number">Emergency: 911 | Crisis Line: 988</div>
+                    </div>
+                    <button class="emergency-btn">Call Now</button>
+                </div>
+
+                <div class="support-grid">
+                    <div class="support-card">
+                        <div class="support-card-header">
+                            <div class="support-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <div>
+                                <h2 class="support-title">Live Chat</h2>
+                                <div class="support-subtitle">Speak with our support team in real-time</div>
+                            </div>
+                        </div>
+                        <div class="support-card-body">
+                            <p class="support-description">Get immediate assistance with your questions or concerns through our live chat support. Our team is available Monday to Friday, 9 AM to 6 PM EST.</p>
+                            <button class="support-btn">
+                                <i class="fas fa-comment-dots"></i>
+                                <span>Start Chat</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="support-card">
+                        <div class="support-card-header">
+                            <div class="support-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div>
+                                <h2 class="support-title">Email Support</h2>
+                                <div class="support-subtitle">Send us a message anytime</div>
+                            </div>
+                        </div>
+                        <div class="support-card-body">
+                            <p class="support-description">Send us an email with your questions or feedback, and our support team will get back to you within 24 hours on business days.</p>
+                            <button class="support-btn">
+                                <i class="fas fa-envelope"></i>
+                                <span>Email Us</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="support-card">
+                        <div class="support-card-header">
+                            <div class="support-icon">
+                                <i class="fas fa-video"></i>
+                            </div>
+                            <div>
+                                <h2 class="support-title">Video Consultation</h2>
+                                <div class="support-subtitle">Schedule a video call with a specialist</div>
+                            </div>
+                        </div>
+                        <div class="support-card-body">
+                            <p class="support-description">Book a one-on-one video consultation with our mental health specialists to get personalized support and guidance.</p>
+                            <button class="support-btn">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Book Consultation</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="support-card">
+                        <div class="support-card-header">
+                            <div class="support-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div>
+                                <h2 class="support-title">Knowledge Base</h2>
+                                <div class="support-subtitle">Find answers to common questions</div>
+                            </div>
+                        </div>
+                        <div class="support-card-body">
+                            <p class="support-description">Browse our comprehensive knowledge base for tutorials, guides, and answers to frequently asked questions about using MindMuseAI.</p>
+                            <button class="support-btn">
+                                <i class="fas fa-search"></i>
+                                <span>Browse Articles</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="faq-section">
+                    <h2 class="faq-title"><i class="fas fa-question-circle"></i> Frequently Asked Questions</h2>
+                    <div class="accordion">
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <div class="accordion-title">What is MindMuseAI and how does it work?</div>
+                                <div class="accordion-icon"><i class="fas fa-chevron-down"></i></div>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    MindMuseAI is an AI-powered mental wellness platform that uses conversational AI to provide support, track your emotional health, and offer personalized resources. Our AI chatbot engages in supportive conversations using natural language processing, tracks your mood patterns, and recommends evidence-based strategies for improving mental wellbeing. It also connects you with licensed therapists when more professional support is needed.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <div class="accordion-title">Is my data secure and private?</div>
+                                <div class="accordion-icon"><i class="fas fa-chevron-down"></i></div>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    Yes, we take your privacy very seriously. All conversations with MindMuseAI are encrypted and secure. Your personal information is never sold to third parties. We comply with HIPAA regulations and industry best practices for data security. You can review our detailed privacy policy to learn more about how we protect your data.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <div class="accordion-title">How do I schedule a session with a therapist?</div>
+                                <div class="accordion-icon"><i class="fas fa-chevron-down"></i></div>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    To schedule a therapy session, go to the "Appointments" page and click on "New Appointment." You can select from available therapists, choose a convenient date and time, and book your session. We offer both video and text-based therapy sessions. You'll receive a confirmation email with details and reminders before your scheduled session.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <div class="accordion-title">Can MindMuseAI replace traditional therapy?</div>
+                                <div class="accordion-icon"><i class="fas fa-chevron-down"></i></div>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    MindMuseAI is designed to be a supplement to, not a replacement for, traditional therapy. While our AI can provide support, track your progress, and offer evidence-based strategies, it doesn't replace the personalized care of a licensed mental health professional. We encourage users to utilize our platform alongside professional therapy when needed and offer seamless connections to licensed therapists through our platform.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item">
+                            <div class="accordion-header">
+                                <div class="accordion-title">What payment methods do you accept?</div>
+                                <div class="accordion-icon"><i class="fas fa-chevron-down"></i></div>
+                            </div>
+                            <div class="accordion-content">
+                                <div class="accordion-body">
+                                    We accept major credit cards (Visa, MasterCard, American Express, Discover), PayPal, and some insurance plans. For therapy sessions, we can provide superbills that you can submit to your insurance for potential reimbursement. Check your plan details or contact your insurance provider to verify coverage for mental health services.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-form">
+                    <h2 class="form-title">Send Us a Message</h2>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label" for="name">Your Name</label>
+                            <input type="text" class="form-control" id="name" placeholder="Enter your name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="email">Email Address</label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="subject">Subject</label>
+                        <input type="text" class="form-control" id="subject" placeholder="What is your message about?">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="message">Message</label>
+                        <textarea class="form-control text-area" id="message" placeholder="Type your message here..."></textarea>
+                    </div>
+                    <button class="support-btn">
+                        <i class="fas fa-paper-plane"></i>
+                        <span>Send Message</span>
+                    </button>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingScreen = document.getElementById('loading-screen');
+            
+            // Ensure sidebar navigation links work properly
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu .menu-item');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();  // Prevent the default navigation
+                    const href = this.getAttribute('href');
+                    if (href) {
+                        console.log("Navigating to:", href);
+                        window.location.href = href;
+                    }
+                });
+            });
+            
+            // Accordion functionality
+            const accordionHeaders = document.querySelectorAll('.accordion-header');
+            accordionHeaders.forEach(header => {
+                header.addEventListener('click', function() {
+                    this.classList.toggle('active');
+                });
+            });
+            
+            // Emergency call button
+            const emergencyBtn = document.querySelector('.emergency-btn');
+            if (emergencyBtn) {
+                emergencyBtn.addEventListener('click', function() {
+                    // In a real app, this would trigger a phone call or show emergency numbers
+                    console.log("Emergency call button clicked");
+                    alert("In a real app, this would initiate a call to emergency services.");
+                });
+            }
+            
+            // Support buttons
+            const supportBtns = document.querySelectorAll('.support-btn');
+            supportBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const text = this.textContent.trim();
+                    console.log("Support action clicked:", text);
+                    // In a real app, these would trigger different support actions
+                });
+            });
+            
+            // Contact form submission
+            const contactForm = document.querySelector('.contact-form');
+            if (contactForm) {
+                const sendBtn = contactForm.querySelector('.support-btn');
+                sendBtn.addEventListener('click', function() {
+                    const name = document.getElementById('name').value.trim();
+                    const email = document.getElementById('email').value.trim();
+                    const subject = document.getElementById('subject').value.trim();
+                    const message = document.getElementById('message').value.trim();
+                    
+                    if (name && email && subject && message) {
+                        // In a real app, this would send the form data to a server
+                        console.log("Form submitted:", { name, email, subject, message });
+                        alert("Your message has been sent! We'll get back to you soon.");
+                        
+                        // Clear form
+                        document.getElementById('name').value = '';
+                        document.getElementById('email').value = '';
+                        document.getElementById('subject').value = '';
+                        document.getElementById('message').value = '';
+                    } else {
+                        alert("Please fill in all fields before sending your message.");
+                    }
+                });
+            }
+            
+            // Set theme based on saved theme
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(savedTheme);
+            
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    document.documentElement.classList.remove('dark-theme');
+                    document.documentElement.classList.add('light-theme');
+                    document.documentElement.style.setProperty('--bg-color', '#f5f7fa');
+                    document.documentElement.style.setProperty('--bg-color-secondary', '#e9ecef');
+                    document.documentElement.style.setProperty('--text-color', '#343a40');
+                    document.documentElement.style.setProperty('--text-muted', '#6c757d');
+                    document.documentElement.style.setProperty('--border-color', '#ced4da');
+                    document.documentElement.style.setProperty('--input-bg', '#ffffff');
+                    document.documentElement.style.setProperty('--card-bg', '#ffffff');
+                } else {
+                    document.documentElement.classList.remove('light-theme');
+                    document.documentElement.classList.add('dark-theme');
+                    document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
+                    document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
+                    document.documentElement.style.setProperty('--text-color', '#ffffff');
+                    document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
+                    document.documentElement.style.setProperty('--border-color', '#2b2b45');
+                    document.documentElement.style.setProperty('--input-bg', '#202035');
+                    document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                }
+            }
+            
+            // Handle loading screen
+            setTimeout(() => {
+                if (loadingScreen) {
+                    loadingScreen.classList.add('fade-out');
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 1000);
+            
+            console.log('Support page loaded successfully');
+        });
+    </script>
+</body>
+
+</html> 

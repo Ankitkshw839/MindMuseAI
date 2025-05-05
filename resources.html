@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MindMuseAI - Mental health resources and educational materials">
+    <meta name="keywords" content="mental health, resources, therapy, mindfulness, education, self-help">
+    <meta name="theme-color" content="#0f0c1d">
+    <title>Resources - MindMuseAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        .dashboard-layout {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        .sidebar-menu {
+            width: 260px;
+            background-color: var(--bg-color-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: var(--spacing-md) 0;
+        }
+
+        .menu-item {
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(142, 106, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .menu-item.active {
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            background-color: rgba(142, 106, 255, 0.1);
+        }
+
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .menu-item .menu-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: var(--spacing-lg);
+            max-width: calc(100% - 260px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .search-bar {
+            display: flex;
+            margin-bottom: var(--spacing-lg);
+            gap: 0.5rem;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 0.8rem 1rem;
+            border-radius: var(--border-radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            font-size: 0.95rem;
+        }
+
+        .search-btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            padding: 0 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .search-btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .resources-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: var(--spacing-lg);
+        }
+
+        .resource-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .resource-image {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .resource-content {
+            padding: var(--spacing-md);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .resource-category {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .resource-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .resource-description {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: var(--spacing-md);
+            flex: 1;
+        }
+
+        .resource-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+
+        .resource-meta {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .resource-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .resource-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+            border-radius: var(--border-radius-md);
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .resource-btn:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .filter-tabs {
+            display: flex;
+            overflow-x: auto;
+            margin-bottom: var(--spacing-lg);
+            padding-bottom: 0.5rem;
+            gap: 0.5rem;
+        }
+
+        .filter-tab {
+            background-color: var(--bg-color-secondary);
+            color: var(--text-muted);
+            border: none;
+            border-radius: var(--border-radius-full);
+            padding: 0.5rem 1.2rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .filter-tab:hover {
+            background-color: rgba(142, 106, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .filter-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .resource-section {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        .section-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: var(--spacing-md);
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-title i {
+            color: var(--primary-color);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-bottom: var(--spacing-lg);
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar-menu {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .content-area {
+                max-width: 100%;
+            }
+            
+            .resources-container {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 576px) {
+            .resources-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <h2>MindMuseAI</h2>
+            <p>Your mental wellness companion</p>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="dashboard-layout">
+            <aside class="sidebar-menu">
+                <a href="app.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span class="menu-text">Home</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="menu-text">Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span class="menu-text">Settings</span>
+                </a>
+                <a href="progress.html" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="menu-text">My Progress</span>
+                </a>
+                <a href="appointments.html" class="menu-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="menu-text">Appointments</span>
+                </a>
+                <a href="resources.html" class="menu-item active">
+                    <i class="fas fa-book"></i>
+                    <span class="menu-text">Resources</span>
+                </a>
+                <a href="support.html" class="menu-item">
+                    <i class="fas fa-headset"></i>
+                    <span class="menu-text">Support</span>
+                </a>
+            </aside>
+
+            <main class="content-area">
+                <a href="app.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Home</span>
+                </a>
+                
+                <div class="page-header">
+                    <h1>Mental Health Resources</h1>
+                </div>
+
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search for resources...">
+                    <button class="search-btn"><i class="fas fa-search"></i></button>
+                </div>
+
+                <div class="filter-tabs">
+                    <button class="filter-tab active">All Resources</button>
+                    <button class="filter-tab">Anxiety</button>
+                    <button class="filter-tab">Depression</button>
+                    <button class="filter-tab">Stress Management</button>
+                    <button class="filter-tab">Sleep</button>
+                    <button class="filter-tab">Mindfulness</button>
+                    <button class="filter-tab">Self-Care</button>
+                    <button class="filter-tab">Relationships</button>
+                </div>
+
+                <div class="resource-section">
+                    <h2 class="section-title"><i class="fas fa-star"></i> Featured Resources</h2>
+                    <div class="resources-container">
+                        <div class="resource-card">
+                            <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=500&auto=format&fit=crop" alt="Meditation guide" class="resource-image">
+                            <div class="resource-content">
+                                <div class="resource-category">Mindfulness</div>
+                                <h3 class="resource-title">Beginner's Guide to Meditation</h3>
+                                <p class="resource-description">Learn the foundations of meditation practice with simple techniques you can implement in your daily routine.</p>
+                                <div class="resource-footer">
+                                    <div class="resource-meta">
+                                        <div class="resource-meta-item"><i class="fas fa-clock"></i> 15 min</div>
+                                        <div class="resource-meta-item"><i class="fas fa-eye"></i> 2.4k</div>
+                                    </div>
+                                    <button class="resource-btn">Read More</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="resource-card">
+                            <img src="https://images.unsplash.com/photo-1600618528240-fb9fc964b853?q=80&w=500&auto=format&fit=crop" alt="Anxiety management" class="resource-image">
+                            <div class="resource-content">
+                                <div class="resource-category">Anxiety</div>
+                                <h3 class="resource-title">Managing Anxiety in Uncertain Times</h3>
+                                <p class="resource-description">Practical strategies to help you cope with anxiety during periods of uncertainty and stress.</p>
+                                <div class="resource-footer">
+                                    <div class="resource-meta">
+                                        <div class="resource-meta-item"><i class="fas fa-clock"></i> 20 min</div>
+                                        <div class="resource-meta-item"><i class="fas fa-eye"></i> 3.1k</div>
+                                    </div>
+                                    <button class="resource-btn">Read More</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="resource-card">
+                            <img src="https://images.unsplash.com/photo-1511988617509-a57c8a288659?q=80&w=500&auto=format&fit=crop" alt="Sleep improvement" class="resource-image">
+                            <div class="resource-content">
+                                <div class="resource-category">Sleep</div>
+                                <h3 class="resource-title">Improving Your Sleep Quality</h3>
+                                <p class="resource-description">Evidence-based techniques to help you fall asleep faster, stay asleep longer, and wake up feeling refreshed.</p>
+                                <div class="resource-footer">
+                                    <div class="resource-meta">
+                                        <div class="resource-meta-item"><i class="fas fa-clock"></i> 18 min</div>
+                                        <div class="resource-meta-item"><i class="fas fa-eye"></i> 1.9k</div>
+                                    </div>
+                                    <button class="resource-btn">Read More</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resource-section">
+                    <h2 class="section-title"><i class="fas fa-book-open"></i> Latest Articles</h2>
+                    <div class="resources-container">
+                        <div class="resource-card">
+                            <img src="https://images.unsplash.com/photo-1474418397713-2f4a210618be?q=80&w=500&auto=format&fit=crop" alt="Self-care practices" class="resource-image">
+                            <div class="resource-content">
+                                <div class="resource-category">Self-Care</div>
+                                <h3 class="resource-title">10 Self-Care Practices for Mental Health</h3>
+                                <p class="resource-description">Simple but effective self-care practices to incorporate into your daily routine for better mental wellbeing.</p>
+                                <div class="resource-footer">
+                                    <div class="resource-meta">
+                                        <div class="resource-meta-item"><i class="fas fa-clock"></i> 12 min</div>
+                                        <div class="resource-meta-item"><i class="fas fa-calendar-alt"></i> 2 days ago</div>
+                                    </div>
+                                    <button class="resource-btn">Read More</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="resource-card">
+                            <img src="https://images.unsplash.com/photo-1516302365426-b6e5d4d12c13?q=80&w=500&auto=format&fit=crop" alt="Breathing techniques" class="resource-image">
+                            <div class="resource-content">
+                                <div class="resource-category">Stress Management</div>
+                                <h3 class="resource-title">5 Simple Breathing Techniques for Stress Relief</h3>
+                                <p class="resource-description">Learn how to use your breath as a powerful tool to manage stress and calm your nervous system.</p>
+                                <div class="resource-footer">
+                                    <div class="resource-meta">
+                                        <div class="resource-meta-item"><i class="fas fa-clock"></i> 8 min</div>
+                                        <div class="resource-meta-item"><i class="fas fa-calendar-alt"></i> 1 week ago</div>
+                                    </div>
+                                    <button class="resource-btn">Read More</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="resource-card">
+                            <img src="https://images.unsplash.com/photo-1553696590-4b3f68898333?q=80&w=500&auto=format&fit=crop" alt="Depression support" class="resource-image">
+                            <div class="resource-content">
+                                <div class="resource-category">Depression</div>
+                                <h3 class="resource-title">Understanding and Managing Depression</h3>
+                                <p class="resource-description">A comprehensive guide to recognizing depression symptoms and finding appropriate support and treatment options.</p>
+                                <div class="resource-footer">
+                                    <div class="resource-meta">
+                                        <div class="resource-meta-item"><i class="fas fa-clock"></i> 25 min</div>
+                                        <div class="resource-meta-item"><i class="fas fa-calendar-alt"></i> 2 weeks ago</div>
+                                    </div>
+                                    <button class="resource-btn">Read More</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="resource-section">
+                    <h2 class="section-title"><i class="fas fa-video"></i> Video Resources</h2>
+                    <div class="resources-container">
+                        <div class="resource-card">
+                            <img src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=500&auto=format&fit=crop" alt="Guided meditation video" class="resource-image">
+                            <div class="resource-content">
+                                <div class="resource-category">Mindfulness</div>
+                                <h3 class="resource-title">10-Minute Guided Meditation for Anxiety</h3>
+                                <p class="resource-description">A calming guided meditation practice to help reduce anxiety and bring peace to your mind.</p>
+                                <div class="resource-footer">
+                                    <div class="resource-meta">
+                                        <div class="resource-meta-item"><i class="fas fa-clock"></i> 10 min</div>
+                                        <div class="resource-meta-item"><i class="fas fa-eye"></i> 4.5k</div>
+                                    </div>
+                                    <button class="resource-btn"><i class="fas fa-play"></i> Watch Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="resource-card">
+                            <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?q=80&w=500&auto=format&fit=crop" alt="Yoga for stress video" class="resource-image">
+                            <div class="resource-content">
+                                <div class="resource-category">Stress Management</div>
+                                <h3 class="resource-title">Gentle Yoga for Stress Relief</h3>
+                                <p class="resource-description">A beginner-friendly yoga sequence designed to release tension and promote relaxation.</p>
+                                <div class="resource-footer">
+                                    <div class="resource-meta">
+                                        <div class="resource-meta-item"><i class="fas fa-clock"></i> 20 min</div>
+                                        <div class="resource-meta-item"><i class="fas fa-eye"></i> 3.2k</div>
+                                    </div>
+                                    <button class="resource-btn"><i class="fas fa-play"></i> Watch Now</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="resource-card">
+                            <img src="https://images.unsplash.com/photo-1472162072942-cd5147eb3902?q=80&w=500&auto=format&fit=crop" alt="Sleep sounds video" class="resource-image">
+                            <div class="resource-content">
+                                <div class="resource-category">Sleep</div>
+                                <h3 class="resource-title">Calming Nature Sounds for Sleep</h3>
+                                <p class="resource-description">Peaceful natural soundscapes to help you relax and drift into a restful sleep.</p>
+                                <div class="resource-footer">
+                                    <div class="resource-meta">
+                                        <div class="resource-meta-item"><i class="fas fa-clock"></i> 60 min</div>
+                                        <div class="resource-meta-item"><i class="fas fa-eye"></i> 5.7k</div>
+                                    </div>
+                                    <button class="resource-btn"><i class="fas fa-play"></i> Watch Now</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingScreen = document.getElementById('loading-screen');
+            
+            // Ensure sidebar navigation links work properly
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu .menu-item');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();  // Prevent the default navigation
+                    const href = this.getAttribute('href');
+                    if (href) {
+                        console.log("Navigating to:", href);
+                        window.location.href = href;
+                    }
+                });
+            });
+            
+            // Filter tabs functionality
+            const filterTabs = document.querySelectorAll('.filter-tab');
+            filterTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    filterTabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // In a real app, this would filter the resources
+                    console.log("Filter selected:", this.textContent);
+                });
+            });
+            
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            const searchBtn = document.querySelector('.search-btn');
+            
+            searchBtn.addEventListener('click', function() {
+                const searchTerm = searchInput.value.trim();
+                if (searchTerm) {
+                    // In a real app, this would perform a search
+                    console.log("Searching for:", searchTerm);
+                }
+            });
+            
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    searchBtn.click();
+                }
+            });
+            
+            // Resource buttons
+            const resourceBtns = document.querySelectorAll('.resource-btn');
+            resourceBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const card = this.closest('.resource-card');
+                    const title = card.querySelector('.resource-title').textContent;
+                    console.log("Viewing resource:", title);
+                    // In a real app, this would open the resource
+                });
+            });
+            
+            // Set theme based on saved theme
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(savedTheme);
+            
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    document.documentElement.classList.remove('dark-theme');
+                    document.documentElement.classList.add('light-theme');
+                    document.documentElement.style.setProperty('--bg-color', '#f5f7fa');
+                    document.documentElement.style.setProperty('--bg-color-secondary', '#e9ecef');
+                    document.documentElement.style.setProperty('--text-color', '#343a40');
+                    document.documentElement.style.setProperty('--text-muted', '#6c757d');
+                    document.documentElement.style.setProperty('--border-color', '#ced4da');
+                    document.documentElement.style.setProperty('--input-bg', '#ffffff');
+                    document.documentElement.style.setProperty('--card-bg', '#ffffff');
+                } else {
+                    document.documentElement.classList.remove('light-theme');
+                    document.documentElement.classList.add('dark-theme');
+                    document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
+                    document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
+                    document.documentElement.style.setProperty('--text-color', '#ffffff');
+                    document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
+                    document.documentElement.style.setProperty('--border-color', '#2b2b45');
+                    document.documentElement.style.setProperty('--input-bg', '#202035');
+                    document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                }
+            }
+            
+            // Handle loading screen
+            setTimeout(() => {
+                if (loadingScreen) {
+                    loadingScreen.classList.add('fade-out');
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 1000);
+            
+            console.log('Resources page loaded successfully');
+        });
+    </script>
+</body>
+
+</html> 

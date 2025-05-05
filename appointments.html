@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MindMuseAI - Schedule and manage your appointments">
+    <meta name="keywords" content="mental health, chatbot, therapy, mindfulness, appointments, scheduling">
+    <meta name="theme-color" content="#0f0c1d">
+    <title>Appointments - MindMuseAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <style>
+        .dashboard-layout {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        .sidebar-menu {
+            width: 260px;
+            background-color: var(--bg-color-secondary);
+            border-right: 1px solid var(--border-color);
+            padding: var(--spacing-md) 0;
+        }
+
+        .menu-item {
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(142, 106, 255, 0.1);
+            color: var(--text-color);
+        }
+
+        .menu-item.active {
+            color: var(--primary-color);
+            border-left-color: var(--primary-color);
+            background-color: rgba(142, 106, 255, 0.1);
+        }
+
+        .menu-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 1.1rem;
+        }
+
+        .menu-item .menu-text {
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .content-area {
+            flex: 1;
+            padding: var(--spacing-lg);
+            max-width: calc(100% - 260px);
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-xl);
+            padding-bottom: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-header h1 {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .appointment-card {
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: var(--spacing-xl);
+            overflow: hidden;
+        }
+
+        .appointment-section {
+            padding: var(--spacing-lg);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .appointment-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-header {
+            margin-bottom: var(--spacing-md);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(142, 106, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 0;
+        }
+
+        .section-description {
+            color: var(--text-muted);
+            margin-bottom: var(--spacing-md);
+            font-size: 0.9rem;
+            margin-left: 44px;
+        }
+
+        .calendar-container {
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-md);
+        }
+
+        .calendar-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .calendar-nav-btn {
+            background-color: var(--bg-color-secondary);
+            border: none;
+            border-radius: var(--border-radius-md);
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        .calendar-nav-btn:hover {
+            background-color: rgba(142, 106, 255, 0.1);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-weekday {
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            padding: 0.5rem;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 0.75rem;
+            border-radius: var(--border-radius-md);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            background-color: rgba(142, 106, 255, 0.1);
+        }
+
+        .calendar-day.selected {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .calendar-day.has-appointment {
+            border: 2px solid var(--primary-color);
+            font-weight: 600;
+        }
+
+        .calendar-day.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        .appointment-list {
+            margin-top: var(--spacing-md);
+        }
+
+        .appointment-item {
+            display: flex;
+            padding: var(--spacing-md);
+            border-bottom: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .appointment-item:last-child {
+            border-bottom: none;
+        }
+
+        .appointment-item:hover {
+            background-color: rgba(142, 106, 255, 0.05);
+        }
+
+        .appointment-time {
+            width: 100px;
+            font-weight: 600;
+        }
+
+        .appointment-details {
+            flex: 1;
+        }
+
+        .appointment-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .appointment-therapist {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .appointment-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .appointment-action-btn {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 0.4rem 0.7rem;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .appointment-action-btn:hover {
+            background-color: rgba(142, 106, 255, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .schedule-btn {
+            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-md);
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: var(--spacing-md);
+        }
+
+        .schedule-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(46, 15, 110, 0.3);
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            margin-bottom: var(--spacing-lg);
+            transition: all 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 992px) {
+            .dashboard-layout {
+                flex-direction: column;
+            }
+            
+            .sidebar-menu {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            
+            .content-area {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading screen -->
+    <div class="loading-screen" id="loading-screen">
+        <div class="loading-content">
+            <h2>MindMuseAI</h2>
+            <p>Your mental wellness companion</p>
+        </div>
+    </div>
+
+    <div class="app-container">
+        <div class="dashboard-layout">
+            <aside class="sidebar-menu">
+                <a href="app.html" class="menu-item">
+                    <i class="fas fa-home"></i>
+                    <span class="menu-text">Home</span>
+                </a>
+                <a href="profile.html" class="menu-item">
+                    <i class="fas fa-user-circle"></i>
+                    <span class="menu-text">Profile</span>
+                </a>
+                <a href="settings.html" class="menu-item">
+                    <i class="fas fa-cog"></i>
+                    <span class="menu-text">Settings</span>
+                </a>
+                <a href="progress.html" class="menu-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span class="menu-text">My Progress</span>
+                </a>
+                <a href="appointments.html" class="menu-item active">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span class="menu-text">Appointments</span>
+                </a>
+                <a href="resources.html" class="menu-item">
+                    <i class="fas fa-book"></i>
+                    <span class="menu-text">Resources</span>
+                </a>
+                <a href="support.html" class="menu-item">
+                    <i class="fas fa-headset"></i>
+                    <span class="menu-text">Support</span>
+                </a>
+            </aside>
+
+            <main class="content-area">
+                <a href="app.html" class="back-link">
+                    <i class="fas fa-arrow-left"></i>
+                    <span>Back to Home</span>
+                </a>
+                
+                <div class="page-header">
+                    <h1>Appointments</h1>
+                    <button class="schedule-btn">
+                        <i class="fas fa-plus"></i>
+                        <span>New Appointment</span>
+                    </button>
+                </div>
+
+                <div class="appointment-card">
+                    <div class="appointment-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-calendar-alt"></i>
+                            </div>
+                            <h2 class="section-title">Upcoming Appointments</h2>
+                        </div>
+                        <p class="section-description">View and manage your scheduled therapy sessions.</p>
+                        
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <div class="calendar-title">June 2024</div>
+                                <div class="calendar-nav">
+                                    <button class="calendar-nav-btn"><i class="fas fa-chevron-left"></i></button>
+                                    <button class="calendar-nav-btn"><i class="fas fa-chevron-right"></i></button>
+                                </div>
+                            </div>
+                            <div class="calendar-grid">
+                                <div class="calendar-weekday">Sun</div>
+                                <div class="calendar-weekday">Mon</div>
+                                <div class="calendar-weekday">Tue</div>
+                                <div class="calendar-weekday">Wed</div>
+                                <div class="calendar-weekday">Thu</div>
+                                <div class="calendar-weekday">Fri</div>
+                                <div class="calendar-weekday">Sat</div>
+                                
+                                <!-- Calendar days - Previous month -->
+                                <div class="calendar-day disabled">26</div>
+                                <div class="calendar-day disabled">27</div>
+                                <div class="calendar-day disabled">28</div>
+                                <div class="calendar-day disabled">29</div>
+                                <div class="calendar-day disabled">30</div>
+                                <div class="calendar-day disabled">31</div>
+                                
+                                <!-- Calendar days - Current month -->
+                                <div class="calendar-day">1</div>
+                                <div class="calendar-day">2</div>
+                                <div class="calendar-day">3</div>
+                                <div class="calendar-day">4</div>
+                                <div class="calendar-day">5</div>
+                                <div class="calendar-day">6</div>
+                                <div class="calendar-day">7</div>
+                                <div class="calendar-day">8</div>
+                                <div class="calendar-day has-appointment">9</div>
+                                <div class="calendar-day">10</div>
+                                <div class="calendar-day">11</div>
+                                <div class="calendar-day has-appointment selected">12</div>
+                                <div class="calendar-day">13</div>
+                                <div class="calendar-day">14</div>
+                                <div class="calendar-day">15</div>
+                                <div class="calendar-day">16</div>
+                                <div class="calendar-day">17</div>
+                                <div class="calendar-day has-appointment">18</div>
+                                <div class="calendar-day">19</div>
+                                <div class="calendar-day">20</div>
+                                <div class="calendar-day">21</div>
+                                <div class="calendar-day">22</div>
+                                <div class="calendar-day">23</div>
+                                <div class="calendar-day">24</div>
+                                <div class="calendar-day">25</div>
+                                <div class="calendar-day">26</div>
+                                <div class="calendar-day">27</div>
+                                <div class="calendar-day">28</div>
+                                <div class="calendar-day">29</div>
+                                <div class="calendar-day">30</div>
+                                
+                                <!-- Calendar days - Next month -->
+                                <div class="calendar-day disabled">1</div>
+                                <div class="calendar-day disabled">2</div>
+                                <div class="calendar-day disabled">3</div>
+                                <div class="calendar-day disabled">4</div>
+                                <div class="calendar-day disabled">5</div>
+                                <div class="calendar-day disabled">6</div>
+                            </div>
+                        </div>
+                        
+                        <div class="appointment-list">
+                            <h3>June 12, 2024</h3>
+                            <div class="appointment-item">
+                                <div class="appointment-time">10:00 AM</div>
+                                <div class="appointment-details">
+                                    <div class="appointment-title">Weekly Therapy Session</div>
+                                    <div class="appointment-therapist">Dr. Sarah Johnson</div>
+                                </div>
+                                <div class="appointment-actions">
+                                    <button class="appointment-action-btn"><i class="fas fa-video"></i> Join</button>
+                                    <button class="appointment-action-btn"><i class="fas fa-pencil-alt"></i> Edit</button>
+                                    <button class="appointment-action-btn"><i class="fas fa-times"></i> Cancel</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="appointment-section">
+                        <div class="section-header">
+                            <div class="section-icon">
+                                <i class="fas fa-history"></i>
+                            </div>
+                            <h2 class="section-title">Past Appointments</h2>
+                        </div>
+                        <p class="section-description">Review your completed sessions and therapy progress.</p>
+                        
+                        <div class="appointment-list">
+                            <div class="appointment-item">
+                                <div class="appointment-time">June 9</div>
+                                <div class="appointment-details">
+                                    <div class="appointment-title">Weekly Therapy Session</div>
+                                    <div class="appointment-therapist">Dr. Sarah Johnson</div>
+                                </div>
+                                <div class="appointment-actions">
+                                    <button class="appointment-action-btn"><i class="fas fa-file-alt"></i> Notes</button>
+                                    <button class="appointment-action-btn"><i class="fas fa-star"></i> Review</button>
+                                </div>
+                            </div>
+                            <div class="appointment-item">
+                                <div class="appointment-time">May 29</div>
+                                <div class="appointment-details">
+                                    <div class="appointment-title">Mindfulness Workshop</div>
+                                    <div class="appointment-therapist">Dr. Michael Chen</div>
+                                </div>
+                                <div class="appointment-actions">
+                                    <button class="appointment-action-btn"><i class="fas fa-file-alt"></i> Notes</button>
+                                    <button class="appointment-action-btn"><i class="fas fa-star"></i> Review</button>
+                                </div>
+                            </div>
+                            <div class="appointment-item">
+                                <div class="appointment-time">May 22</div>
+                                <div class="appointment-details">
+                                    <div class="appointment-title">Weekly Therapy Session</div>
+                                    <div class="appointment-therapist">Dr. Sarah Johnson</div>
+                                </div>
+                                <div class="appointment-actions">
+                                    <button class="appointment-action-btn"><i class="fas fa-file-alt"></i> Notes</button>
+                                    <button class="appointment-action-btn"><i class="fas fa-star"></i> Review</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingScreen = document.getElementById('loading-screen');
+            
+            // Ensure sidebar navigation links work properly
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu .menu-item');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();  // Prevent the default navigation
+                    const href = this.getAttribute('href');
+                    if (href) {
+                        console.log("Navigating to:", href);
+                        window.location.href = href;
+                    }
+                });
+            });
+            
+            // Set theme based on saved theme
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            applyTheme(savedTheme);
+            
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    document.documentElement.classList.remove('dark-theme');
+                    document.documentElement.classList.add('light-theme');
+                    document.documentElement.style.setProperty('--bg-color', '#f5f7fa');
+                    document.documentElement.style.setProperty('--bg-color-secondary', '#e9ecef');
+                    document.documentElement.style.setProperty('--text-color', '#343a40');
+                    document.documentElement.style.setProperty('--text-muted', '#6c757d');
+                    document.documentElement.style.setProperty('--border-color', '#ced4da');
+                    document.documentElement.style.setProperty('--input-bg', '#ffffff');
+                    document.documentElement.style.setProperty('--card-bg', '#ffffff');
+                } else {
+                    document.documentElement.classList.remove('light-theme');
+                    document.documentElement.classList.add('dark-theme');
+                    document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
+                    document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
+                    document.documentElement.style.setProperty('--text-color', '#ffffff');
+                    document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
+                    document.documentElement.style.setProperty('--border-color', '#2b2b45');
+                    document.documentElement.style.setProperty('--input-bg', '#202035');
+                    document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                }
+            }
+            
+            // Calendar day click event
+            const calendarDays = document.querySelectorAll('.calendar-day:not(.disabled)');
+            calendarDays.forEach(day => {
+                day.addEventListener('click', function() {
+                    // Remove selected class from all days
+                    calendarDays.forEach(d => d.classList.remove('selected'));
+                    // Add selected class to clicked day
+                    this.classList.add('selected');
+                });
+            });
+            
+            // Handle loading screen
+            setTimeout(() => {
+                if (loadingScreen) {
+                    loadingScreen.classList.add('fade-out');
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
+            }, 1000);
+            
+            console.log('Appointments page loaded successfully');
+        });
+    </script>
+</body>
+
+</html> 

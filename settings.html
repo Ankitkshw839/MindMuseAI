@@ -366,60 +366,9 @@
     </div>
 
     <div class="app-container">
-        <!-- Header inspired by DeepAI -->
-        <header class="header">
-            <div class="logo">
-                <i class="fas fa-brain"></i>
-                <h1>MindMuseAI</h1>
-            </div>
-            <div class="header-actions">
-                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-                    <i class="fas fa-sun"></i>
-                </button>
-                <!-- Navigation buttons with clear styling -->
-                <a href="app.html" class="nav-btn" id="back-home-btn">
-                    <i class="fas fa-home"></i>
-                    <span>Back to App</span>
-                </a>
-                <a href="profile.html" class="nav-btn" id="profile-page-btn">
-                    <i class="fas fa-user"></i>
-                    <span>Profile</span>
-                </a>
-                <a href="progress.html" class="nav-btn" id="progress-page-btn">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Progress</span>
-                </a>
-                <a href="settings.html" class="nav-btn active" id="settings-page-btn">
-                    <i class="fas fa-cog"></i>
-                    <span>Settings</span>
-                </a>
-                <!-- Profile dropdown for account actions -->
-                <div class="profile-container" id="profile-container">
-                    <button class="profile-btn" id="profile-btn">
-                        <i class="fas fa-user-circle"></i>
-                    </button>
-                    <div class="profile-dropdown" id="profile-dropdown">
-                        <div class="user-info">
-                            <h4>Your Account</h4>
-                            <div class="user-email" id="user-email">user@example.com</div>
-                        </div>
-                        <div class="dropdown-divider"></div>
-                        <a href="profile.html" class="dropdown-item">
-                            <i class="fas fa-user-circle"></i>
-                            <span>My Profile</span>
-                        </a>
-                        <a href="app.html" class="dropdown-item">
-                            <i class="fas fa-home"></i>
-                            <span>Return to App</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </header>
-
         <div class="dashboard-layout">
             <aside class="sidebar-menu">
-                <a href="index.html" class="menu-item">
+                <a href="app.html" class="menu-item">
                     <i class="fas fa-home"></i>
                     <span class="menu-text">Home</span>
                 </a>
@@ -450,7 +399,7 @@
             </aside>
 
             <main class="content-area">
-                <a href="index.html" class="back-link">
+                <a href="app.html" class="back-link">
                     <i class="fas fa-arrow-left"></i>
                     <span>Back to Chat</span>
                 </a>
@@ -526,27 +475,52 @@
                         
                         <div class="settings-option">
                             <div class="option-info">
-                                <div class="option-title">AI Model</div>
-                                <div class="option-description">Select which AI model powers your conversations</div>
+                                <div class="option-title">OpenRouter API Key</div>
+                                <div class="option-description">Enter your OpenRouter API key for Claude 3 Sonnet</div>
                             </div>
-                            <select class="settings-select" id="ai-model-select">
-                                <option value="deepseek/deepseek-r1:free">DeepSeek R1 (Default)</option>
-                                <option value="anthropic/claude-3-sonnet:beta">Claude 3 Sonnet</option>
-                                <option value="meta-llama/llama-3-70b-instruct">Llama 3 70B</option>
-                                <option value="google/gemini-pro">Google Gemini Pro</option>
+                            <div class="input-with-button">
+                                <input type="password" id="openrouter-api-key" placeholder="Enter your OpenRouter API key">
+                                <button id="toggle-api-key" class="toggle-password-btn">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="settings-option">
+                            <div class="option-info">
+                                <div class="option-title">AI Model</div>
+                                <div class="option-description">Select which AI model to use for chat responses</div>
+                            </div>
+                            <select class="settings-select" id="ai-model">
+                                <option value="anthropic/claude-3.7-sonnet">Claude 3.7 Sonnet</option>
+                                <option value="anthropic/claude-3-sonnet">Claude 3 Sonnet</option>
+                                <option value="anthropic/claude-3-opus">Claude 3 Opus</option>
+                                <option value="anthropic/claude-3-haiku">Claude 3 Haiku</option>
+                                <option value="openai/gpt-4o">GPT-4o</option>
+                                <option value="google/gemini-pro">Gemini Pro</option>
+                                <option value="deepseek/deepseek-r1:free">DeepSeek (Free)</option>
                             </select>
                         </div>
                         
                         <div class="settings-option">
                             <div class="option-info">
                                 <div class="option-title">Response Style</div>
-                                <div class="option-description">Adjust how detailed the AI responses are</div>
+                                <div class="option-description">Choose how detailed you want the responses to be</div>
                             </div>
-                            <select class="settings-select" id="response-style-select">
-                                <option value="concise">Concise</option>
-                                <option value="balanced" selected>Balanced</option>
-                                <option value="detailed">Detailed</option>
-                            </select>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <input type="radio" id="style-concise" name="response-style" value="concise">
+                                    <label for="style-concise">Concise</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="style-balanced" name="response-style" value="balanced" checked>
+                                    <label for="style-balanced">Balanced</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="style-detailed" name="response-style" value="detailed">
+                                    <label for="style-detailed">Detailed</label>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -559,31 +533,26 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const loadingScreen = document.getElementById('loading-screen');
-            const themeToggle = document.getElementById('theme-toggle');
-            const themeToggleIcon = themeToggle.querySelector('i');
-            const profileBtn = document.getElementById('profile-btn');
-            const profileDropdown = document.getElementById('profile-dropdown');
-            const userEmailEl = document.getElementById('user-email');
             const themeSelect = document.getElementById('theme-select');
             const saveBtn = document.getElementById('save-settings');
             
-            // Check login status
-           
+            // Ensure sidebar navigation links work properly
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu .menu-item');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();  // Prevent the default navigation
+                    const href = this.getAttribute('href');
+                    if (href) {
+                        console.log("Navigating to:", href);
+                        window.location.href = href;
+                    }
+                });
+            });
+            
             // Set theme select based on saved theme
             const savedTheme = localStorage.getItem('theme') || 'dark';
             themeSelect.value = savedTheme;
             applyTheme(savedTheme);
-            
-            // Theme toggle functionality
-            themeToggle.addEventListener('click', function() {
-                const isDarkTheme = document.documentElement.classList.contains('dark-theme') || 
-                                 (!document.documentElement.classList.contains('light-theme'));
-                
-                const newTheme = isDarkTheme ? 'light' : 'dark';
-                themeSelect.value = newTheme;
-                applyTheme(newTheme);
-                localStorage.setItem('theme', newTheme);
-            });
             
             function applyTheme(theme) {
                 if (theme === 'light') {
@@ -596,10 +565,6 @@
                     document.documentElement.style.setProperty('--border-color', '#ced4da');
                     document.documentElement.style.setProperty('--input-bg', '#ffffff');
                     document.documentElement.style.setProperty('--card-bg', '#ffffff');
-                    
-                    // Update icon
-                    themeToggleIcon.classList.remove('fa-sun');
-                    themeToggleIcon.classList.add('fa-moon');
                 } else {
                     document.documentElement.classList.remove('light-theme');
                     document.documentElement.classList.add('dark-theme');
@@ -610,24 +575,8 @@
                     document.documentElement.style.setProperty('--border-color', '#2b2b45');
                     document.documentElement.style.setProperty('--input-bg', '#202035');
                     document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
-                    
-                    // Update icon
-                    themeToggleIcon.classList.remove('fa-moon');
-                    themeToggleIcon.classList.add('fa-sun');
                 }
             }
-            
-            // Profile dropdown toggle
-            profileBtn.addEventListener('click', function() {
-                profileDropdown.classList.toggle('active');
-            });
-            
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-                    profileDropdown.classList.remove('active');
-                }
-            });
             
             // Theme select change
             themeSelect.addEventListener('change', function() {
@@ -642,25 +591,31 @@
                 }
             });
             
+            // Toggle password visibility
+            document.getElementById('toggle-api-key').addEventListener('click', function() {
+                const input = document.getElementById('openrouter-api-key');
+                const icon = this.querySelector('i');
+                
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+            
             // Save settings
             saveBtn.addEventListener('click', function() {
-                // Save all settings to localStorage
-                const settings = {
-                    pushNotifications: document.getElementById('push-notifications').checked,
-                    moodReminders: document.getElementById('mood-reminders').checked,
-                    theme: document.getElementById('theme-select').value,
-                    aiModel: document.getElementById('ai-model-select').value,
-                    responseStyle: document.getElementById('response-style-select').value
-                };
-                
-                localStorage.setItem('settings', JSON.stringify(settings));
-                alert('Settings saved successfully!');
+                saveSettings();
             });
             
             // Load saved settings
-            const savedSettings = JSON.parse(localStorage.getItem('settings')) || {};
-            if (Object.keys(savedSettings).length > 0) {
-                // Apply saved settings
+            function loadSavedSettings() {
+                const savedSettings = JSON.parse(localStorage.getItem('settings')) || {};
+                
                 if (savedSettings.pushNotifications !== undefined) 
                     document.getElementById('push-notifications').checked = savedSettings.pushNotifications;
                 if (savedSettings.moodReminders !== undefined) 
@@ -668,17 +623,72 @@
                 if (savedSettings.theme !== undefined) 
                     document.getElementById('theme-select').value = savedSettings.theme;
                 if (savedSettings.aiModel !== undefined) 
-                    document.getElementById('ai-model-select').value = savedSettings.aiModel;
+                    document.getElementById('ai-model').value = savedSettings.aiModel;
                 if (savedSettings.responseStyle !== undefined) 
-                    document.getElementById('response-style-select').value = savedSettings.responseStyle;
+                    document.querySelector('input[name="response-style"][value="' + savedSettings.responseStyle + '"]').checked = true;
+                
+                // Load API key if saved
+                const apiKey = localStorage.getItem('openrouter_api_key') || '';
+                document.getElementById('openrouter-api-key').value = apiKey;
+            }
+            
+            // Save settings
+            function saveSettings() {
+                const settings = {
+                    pushNotifications: document.getElementById('push-notifications').checked,
+                    moodReminders: document.getElementById('mood-reminders').checked,
+                    theme: document.getElementById('theme-select').value,
+                    aiModel: document.getElementById('ai-model').value,
+                    responseStyle: document.querySelector('input[name="response-style"]:checked').value
+                };
+                
+                localStorage.setItem('settings', JSON.stringify(settings));
+                
+                // Save API key separately for security
+                const apiKey = document.getElementById('openrouter-api-key').value.trim();
+                if (apiKey) {
+                    localStorage.setItem('openrouter_api_key', apiKey);
+                }
+                
+                // Show success message
+                showNotification('Settings saved successfully!', 'success');
+                
+                // Apply theme if changed
+                applyTheme(settings.theme);
+            }
+            
+            // Show notification
+            function showNotification(message, type = 'info') {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.innerHTML = `
+                    <div class="notification-content">
+                        <i class="fas fa-${type === 'success' ? 'check-circle' : 'info-circle'}"></i>
+                        <span>${message}</span>
+                    </div>
+                `;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 10);
+                
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 3000);
             }
             
             // Handle loading screen
             setTimeout(() => {
-                loadingScreen.classList.add('fade-out');
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                }, 500);
+                if (loadingScreen) {
+                    loadingScreen.classList.add('fade-out');
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                    }, 500);
+                }
             }, 1000);
         });
     </script>

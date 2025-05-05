@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Claude 3.7 Sonnet API Test</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1, h2, h3, h4 {
+            color: var(--text-color);
+        }
+        
+        .test-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .test-actions {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .test-btn {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .test-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(46, 15, 110, 0.3);
+        }
+        
+        #api-result {
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: var(--bg-color-secondary);
+            border-radius: var(--border-radius-md);
+            min-height: 200px;
+        }
+        
+        pre {
+            background-color: var(--bg-color);
+            padding: 1rem;
+            border-radius: var(--border-radius-md);
+            overflow-x: auto;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+        
+        .bot-response {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: var(--bg-color);
+            border-radius: var(--border-radius-md);
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 2rem;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body class="gradient-bg">
+    <div class="app-container">
+        <div class="test-container">
+            <div class="test-header">
+                <h1>Claude 3.7 Sonnet API Test</h1>
+                <p>This page tests the connection to the OpenRouter API using Claude 3.7 Sonnet.</p>
+            </div>
+            
+            <div class="test-actions">
+                <button id="test-api" class="test-btn">Test API Connection</button>
+            </div>
+            
+            <div id="api-result">
+                <p>API test results will appear here...</p>
+            </div>
+            
+            <a href="app.html" class="back-link">&larr; Back to App</a>
+        </div>
+    </div>
+    
+    <script src="test-claude.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme handling based on existing settings
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    document.documentElement.classList.remove('dark-theme');
+                    document.documentElement.classList.add('light-theme');
+                    document.documentElement.style.setProperty('--bg-color', '#f5f7fa');
+                    document.documentElement.style.setProperty('--bg-color-secondary', '#e9ecef');
+                    document.documentElement.style.setProperty('--text-color', '#343a40');
+                    document.documentElement.style.setProperty('--text-muted', '#6c757d');
+                    document.documentElement.style.setProperty('--border-color', '#ced4da');
+                    document.documentElement.style.setProperty('--input-bg', '#ffffff');
+                    document.documentElement.style.setProperty('--card-bg', '#ffffff');
+                } else {
+                    document.documentElement.classList.remove('light-theme');
+                    document.documentElement.classList.add('dark-theme');
+                    document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
+                    document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
+                    document.documentElement.style.setProperty('--text-color', '#ffffff');
+                    document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
+                    document.documentElement.style.setProperty('--border-color', '#2b2b45');
+                    document.documentElement.style.setProperty('--input-bg', '#202035');
+                    document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                }
+            }
+            
+            applyTheme(savedTheme);
+        });
+    </script>
+</body>
+</html> 

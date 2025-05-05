@@ -313,56 +313,6 @@
     </div>
 
     <div class="app-container">
-        <!-- Header inspired by DeepAI -->
-        <header class="header">
-            <div class="logo">
-                <i class="fas fa-brain"></i>
-                <h1>MindMuseAI</h1>
-            </div>
-            <div class="header-actions">
-                <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
-                    <i class="fas fa-sun"></i>
-                </button>
-                
-                <!-- Login/Signup buttons (shown for new users) -->
-                <div id="auth-buttons" class="auth-buttons">
-                    <a href="login.html" class="auth-btn login-btn">Log In</a>
-                    <a href="signup.html" class="auth-btn signup-btn">Sign Up</a>
-                </div>
-                
-                <!-- Profile dropdown (shown for logged-in users) -->
-                <div class="profile-container" id="profile-container" style="display: none;">
-                    <button class="profile-btn" id="profile-btn">
-                        <i class="fas fa-user"></i>
-                    </button>
-                    <div class="profile-dropdown" id="profile-dropdown">
-                        <div class="user-info">
-                            <h4>Your Account</h4>
-                            <div class="user-name" id="user-name">User Name</div>
-                            <div class="user-email" id="user-email">user@example.com</div>
-                        </div>
-                        <a href="profile.html" class="dropdown-item">
-                            <i class="fas fa-user-circle"></i>
-                            <span>Profile</span>
-                        </a>
-                        <a href="settings.html" class="dropdown-item">
-                            <i class="fas fa-cog"></i>
-                            <span>Settings</span>
-                        </a>
-                        <a href="progress.html" class="dropdown-item active">
-                            <i class="fas fa-chart-line"></i>
-                            <span>My Progress</span>
-                        </a>
-                        <div class="dropdown-divider"></div>
-                        <a href="app.html" class="dropdown-item">
-                            <i class="fas fa-home"></i>
-                            <span>Return to App</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </header>
-
         <div class="dashboard-layout">
             <aside class="sidebar-menu">
                 <a href="app.html" class="menu-item">
@@ -501,14 +451,20 @@
             
             function initializeApp() {
                 const loadingScreen = document.getElementById('loading-screen');
-                const themeToggle = document.getElementById('theme-toggle');
-                const themeToggleIcon = themeToggle.querySelector('i');
-                const profileBtn = document.getElementById('profile-btn');
-                const profileDropdown = document.getElementById('profile-dropdown');
-                const userEmailEl = document.getElementById('user-email');
                 const filterBtns = document.querySelectorAll('.filter-btn');
-                const authButtons = document.getElementById('auth-buttons');
-                const profileContainer = document.getElementById('profile-container');
+                
+                // Ensure sidebar navigation links work properly
+                const sidebarLinks = document.querySelectorAll('.sidebar-menu .menu-item');
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();  // Prevent the default navigation
+                        const href = this.getAttribute('href');
+                        if (href) {
+                            console.log("Navigating to:", href);
+                            window.location.href = href;
+                        }
+                    });
+                });
                 
                 // Setup mood updates subscription
                 let moodUpdateUnsubscribe = null;
@@ -518,102 +474,20 @@
                     console.log("Auth state changed:", user ? "User logged in" : "User logged out");
                     
                     if (user) {
-                        // User is logged in - show profile dropdown and hide auth buttons
-                        authButtons.style.display = 'none';
-                        profileContainer.style.display = 'block';
-                        
-                        // Update user name and email
-                        const userNameEl = document.getElementById('user-name');
-                        if (userNameEl) {
-                            userNameEl.textContent = user.displayName || 'User';
-                        }
-                        
-                        if (userEmailEl) {
-                            userEmailEl.textContent = user.email || 'No email provided';
-                        }
-                        
-                        // First destroy any existing charts
-                        if (window.moodChart) {
-                            window.moodChart.destroy();
-                            console.log("Destroyed existing mood chart on auth change");
-                        }
-                        if (window.activityChart) {
-                            window.activityChart.destroy();
-                            console.log("Destroyed existing activity chart on auth change");
-                        }
-                        
-                        // Subscribe to mood updates for real-time chart updates
-                        const result = subscribeToMoodUpdates(function(result) {
-                            if (result.success) {
-                                console.log("Mood data updated, refreshing charts");
-                                updateMoodStats();
-                                // Get the active period from the mood filter
-                                const activePeriodBtn = document.querySelector('.chart-card:first-of-type .filter-btn.active');
-                                const period = activePeriodBtn ? activePeriodBtn.getAttribute('data-period') : 'month';
-                                updateMoodChart(period);
-                            }
-                        });
-                        
-                        if (result.success) {
-                            moodUpdateUnsubscribe = result.unsubscribe;
-                        }
-                        
                         // Load user data
                         console.log("Loading authenticated user data");
                         updateMoodStats();
                         initCharts();
                     } else {
-                        // User is not logged in - show auth buttons and hide profile dropdown
-                        authButtons.style.display = 'flex';
-                        profileContainer.style.display = 'none';
-                        
-                        // Unsubscribe from mood updates
-                        if (moodUpdateUnsubscribe) {
-                            moodUpdateUnsubscribe();
-                            moodUpdateUnsubscribe = null;
-                        }
-                        
-                        // First destroy any existing charts
-                        if (window.moodChart) {
-                            window.moodChart.destroy();
-                            console.log("Destroyed existing mood chart on auth change");
-                        }
-                        if (window.activityChart) {
-                            window.activityChart.destroy();
-                            console.log("Destroyed existing activity chart on auth change");
-                        }
-                        
                         // Show empty charts with placeholder data
                         console.log("Loading placeholder data for unauthenticated user");
                         initChartsWithPlaceholderData();
                     }
                 });
                 
-                // Updated profile button click handler to redirect to app.html
-                profileBtn.addEventListener('click', function(e) {
-                    // If clicked directly on the button (not the dropdown), redirect to app.html
-                    if (e.target === profileBtn || e.target.closest('.fa-user')) {
-                        window.location.href = 'app.html';
-                        return;
-                    }
-                    
-                    // Otherwise toggle dropdown as normal
-                    profileDropdown.classList.toggle('active');
-                });
-                
                 // Apply theme from localStorage
                 const savedTheme = localStorage.getItem('theme') || 'dark';
                 applyTheme(savedTheme);
-                
-                // Theme toggle functionality
-                themeToggle.addEventListener('click', function() {
-                    const isDarkTheme = document.documentElement.classList.contains('dark-theme') || 
-                                     (!document.documentElement.classList.contains('light-theme'));
-                    
-                    const newTheme = isDarkTheme ? 'light' : 'dark';
-                    applyTheme(newTheme);
-                    localStorage.setItem('theme', newTheme);
-                });
                 
                 function applyTheme(theme) {
                     if (theme === 'light') {
@@ -626,10 +500,6 @@
                         document.documentElement.style.setProperty('--border-color', '#ced4da');
                         document.documentElement.style.setProperty('--input-bg', '#ffffff');
                         document.documentElement.style.setProperty('--card-bg', '#ffffff');
-                        
-                        // Update icon
-                        themeToggleIcon.classList.remove('fa-sun');
-                        themeToggleIcon.classList.add('fa-moon');
                     } else {
                         document.documentElement.classList.remove('light-theme');
                         document.documentElement.classList.add('dark-theme');
@@ -640,19 +510,8 @@
                         document.documentElement.style.setProperty('--border-color', '#2b2b45');
                         document.documentElement.style.setProperty('--input-bg', '#202035');
                         document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
-                        
-                        // Update icon
-                        themeToggleIcon.classList.remove('fa-moon');
-                        themeToggleIcon.classList.add('fa-sun');
                     }
                 }
-                
-                // Close dropdown when clicking outside
-                document.addEventListener('click', function(e) {
-                    if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
-                        profileDropdown.classList.remove('active');
-                    }
-                });
                 
                 // Filter button functionality
                 filterBtns.forEach(btn => {
@@ -1092,4 +951,5 @@
     </script>
 </body>
 
+</html>
 </html>

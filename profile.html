@@ -903,51 +903,6 @@
 </head>
 
 <body>
-    <header class="app-header">
-        <div class="logo">
-            <img src="./assets/images/logo-white.png" alt="MindMuseAI Logo">
-        </div>
-        <div class="header-actions">
-            <a href="app.html" class="nav-btn" id="back-home-btn">
-                <i class="fas fa-home"></i>
-                <span>Home</span>
-            </a>
-            <a href="profile.html" class="nav-btn active" id="profile-page-btn">
-                <i class="fas fa-user"></i>
-                <span>Profile</span>
-            </a>
-            <a href="progress.html" class="nav-btn" id="progress-page-btn">
-                <i class="fas fa-chart-line"></i>
-                <span>Progress</span>
-            </a>
-            <a href="settings.html" class="nav-btn" id="settings-page-btn">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
-            </a>
-            <div class="dropdown profile-dropdown">
-                <button class="profile-btn dropdown-toggle">
-                    <i class="fas fa-user-circle"></i>
-                </button>
-                <div class="dropdown-menu dropdown-menu-right">
-                    <div class="dropdown-user-info">
-                        <div class="user-avatar">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div>
-                            <div class="dropdown-user-name">John Doe</div>
-                            <div class="dropdown-user-email">john.doe@example.com</div>
-                        </div>
-                    </div>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item logout-btn">
-                        <i class="fas fa-sign-out-alt"></i>
-                        Logout
-                    </a>
-                </div>
-            </div>
-        </div>
-    </header>
-
     <!-- Loading screen -->
     <div class="loading-screen" id="loading-screen">
         <div class="loading-content">
@@ -1129,6 +1084,19 @@
             const firstNameInput = document.getElementById('first-name');
             const lastNameInput = document.getElementById('last-name');
             const emailInput = document.getElementById('email');
+            
+            // Ensure sidebar navigation links work properly
+            const sidebarLinks = document.querySelectorAll('.sidebar-menu .menu-item');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();  // Prevent the default navigation
+                    const href = this.getAttribute('href');
+                    if (href) {
+                        console.log("Navigating to:", href);
+                        window.location.href = href;
+                    }
+                });
+            });
 
             // Set active page in navigation
             function setActivePage() {
