@@ -1,84 +1,227 @@
-# AI-Powered Mental Health Chatbot
+# 🧠 MindMuseAI – Mental Health Companion
 
-A responsive and accessible front-end interface for an AI-powered mental health chatbot web application. The interface is designed to be clean, calming, and user-friendly.
+**MindMuse AI** is an AI-powered mental health chatbot designed to help users track their emotional well-being, receive guidance, and gain insights into their mental health progress. The app empowers users to better understand their mental state, develop coping strategies, and access helpful resources — all through a beautifully crafted, accessible web experience.
 
-## Features
+---
 
-### Chat Interface
-- Central chat window for interacting with the AI chatbot
-- Clear distinction between user and bot messages
-- Timestamps for each message
-- Loading indicator when the chatbot is processing a response
+## 📋 Installation & Setup Guide
 
-### User Input Area
-- Text input field for typing messages
-- Send button adjacent to the input field
-- Support for pressing 'Enter' to send messages
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v14 or newer)
+- [Git](https://git-scm.com/)
 
-### Mood Tracker
-- Sidebar that allows users to select their current mood
-- Visual representations (emojis) for each mood
-- View mood history over time through a simple chart
+### Installation Steps
 
-### Resource Section
-- Links to mental health resources
-- Categorized resources for anxiety, depression, stress management, etc.
-- Emergency helplines
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/MindMuseAI.git
+   cd MindMuseAI
+   ```
 
-### Design Aesthetics
-- Soothing color palette with soft tones
-- Clean and modern typography for readability
-- Sufficient white space to avoid clutter
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-### Accessibility Features
-- High contrast between text and background
-- ARIA labels for screen readers
-- Keyboard navigation support
-- Skip links for better keyboard navigation
-- Respects user preference for reduced motion
+3. **Firebase Setup**
+   - Create a [Firebase](https://firebase.google.com/) account if you don't have one
+   - Create a new Firebase project
+   - Enable Authentication (Email/Password and Google Sign-in)
+   - Create a Firestore database
+   - Update the Firebase configuration in `firebase-config.js` with your own credentials:
+     ```javascript
+     // Replace with your Firebase config
+     const firebaseConfig = {
+       apiKey: "YOUR_API_KEY",
+       authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+       projectId: "YOUR_PROJECT_ID",
+       storageBucket: "YOUR_PROJECT_ID.appspot.com",
+       messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+       appId: "YOUR_APP_ID"
+     };
+     ```
 
-### Responsive Design
-- Fully responsive layout that works on desktops, tablets, and smartphones
-- Adaptive layout changes based on screen size
+4. **DeepSeek API Setup** (or other AI model)
+   - Get your API key from [DeepSeek](https://deepseek.ai/)
+   - Update the API configuration in `config.js`
 
-### Additional Features
-- Dark/Light mode toggle that respects system preferences
-- Feedback mechanism for users to rate the helpfulness of the chatbot's responses
+### Running the Application
 
-## Technologies Used
+1. **Local Development**
+   - Open `index.html` in your browser:
+     ```bash
+     # If you have a simple HTTP server installed
+     npx serve
+     ```
+   - Or simply open the `index.html` file directly in your browser
 
-- HTML5
-- CSS3 (with CSS Variables for theming)
-- JavaScript (ES6+)
-- Chart.js for data visualization
+2. **Firebase Hosting** (Optional)
+   ```bash
+   # Install Firebase tools if not already installed
+   npm install -g firebase-tools
+   
+   # Login to Firebase
+   firebase login
+   
+   # Initialize Firebase project
+   firebase init
+   
+   # Deploy to Firebase
+   firebase deploy
+   ```
 
-## How to Use
+### Troubleshooting
 
-1. Open `index.html` in your web browser
-2. Interact with the chatbot by typing messages in the input field
-3. Track your mood using the mood selector in the sidebar
-4. Access mental health resources in the resources sidebar
-5. Toggle between light and dark mode using the button in the header
+- If authentication doesn't work, make sure your Firebase configuration is correct and the authentication methods are enabled in the Firebase console.
+- Check browser console for any JavaScript errors.
+- Ensure all API keys are correctly set in their respective configuration files.
 
-## Future Improvements
+---
 
-- Integration with a backend API for real chatbot functionality
-- User authentication for personalized experience
-- More detailed mood tracking and analysis
-- Expanded resources section with more categories and resources
-- Guided meditation and breathing exercises
-- Journal feature for users to record their thoughts and feelings
+## 🌟 Key Features
 
-## Screenshots
+### 🧠 Emotion Recognition
+- Detects emotional tone from user input using AI (currently DeepSeek API).
+- Plans to use fine-tuned ML/NLP models in future for deeper understanding.
 
-(Coming soon)
+### 💡 Mental Health Advice
+- Offers actionable tips and resources on:
+  - Managing anxiety
+  - Controlling stress
+  - Overcoming depression
+- Chatbot suggests personalized advice based on user mood.
 
-## License
+### 🗓️ Mood Tracker & Progress Insights
+- Tracks emotions over time.
+- Visualizes mental health progress through dynamic graphs.
+- Stores all sessions and advice history for reflection.
 
-This project is open-source and available under the MIT License.
+### 🔐 Authentication System
+- Firebase-based user authentication.
+- Supports both:
+  - Google Sign-In
+  - Traditional Email/Password Sign-Up
 
-## Acknowledgements
+### 🧾 Profile Management
+- Edit name, view mood logs, and manage account settings.
+- Future-ready design includes model selection and voice settings.
 
-- Font Awesome for icons
-- Chart.js for the mood history visualization
-- Google Fonts for the Poppins font family 
+### 🎙️ Voice Interaction (Coming Soon)
+- Integrated microphone feature using Web Speech API.
+- Users can speak with the chatbot via voice input.
+
+### 🛠️ Model Selection (Coming Soon)
+- Users will be able to choose between multiple AI models.
+- Easily switch between APIs or custom-trained models.
+
+---
+
+## 💻 Tech Stack
+
+| Area               | Technology                  |
+|--------------------|-----------------------------|
+| Frontend           | HTML, CSS, JavaScript       |
+| UI Assistance      | Cursor AI                   |
+| Backend            | Node.js, Express.js         |
+| Chatbot API        | DeepSeek API (for now)      |
+| Authentication     | Firebase Authentication     |
+| Database           | Firebase Firestore          |
+| Graphs & Logs      | Chart.js / Custom JS        |
+| Voice Support      | Web Speech API              |
+| Hosting (Optional) | Firebase Hosting / Vercel   |
+
+---
+
+## 🧪 Future Enhancements
+
+- Fine-tuned ML/NLP model for emotion detection.
+- Offline support with PWA setup.
+- More model integration options (OpenAI, Claude, etc.).
+- Journal writing and AI feedback analysis.
+- Emergency support links and mental health resources.
+
+---
+
+## screenshots
+![image](https://github.com/user-attachments/assets/626184c2-724d-41f2-bb3f-c926318b6688)
+![image](https://github.com/user-attachments/assets/ccc2319a-760a-4516-a04e-c3f47865bf3a)
+![image](https://github.com/user-attachments/assets/6e73d450-a581-463b-8042-16f9b492b68f)
+![image](https://github.com/user-attachments/assets/a41022df-2df1-472b-a144-f3677e552e62)
+![image](https://github.com/user-attachments/assets/a99f4917-71a1-4616-af9e-8a14ba3cfba7)
+![image](https://github.com/user-attachments/assets/bb0cc09a-8da9-4e80-bbc0-9f29cc482827)
+![image](https://github.com/user-attachments/assets/c16d3403-381b-4fa8-aaf8-61b2cd7069e2)
+
+## 📋 Installation & Setup Guide
+
+### Prerequisites
+- [Node.js](https://nodejs.org/) (v14 or newer)
+- [Git](https://git-scm.com/)
+
+### Installation Steps
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/MindMuseAI.git
+   cd MindMuseAI
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Firebase Setup**
+   - Create a [Firebase](https://firebase.google.com/) account if you don't have one
+   - Create a new Firebase project
+   - Enable Authentication (Email/Password and Google Sign-in)
+   - Create a Firestore database
+   - Update the Firebase configuration in `firebase-config.js` with your own credentials:
+     ```javascript
+     // Replace with your Firebase config
+     const firebaseConfig = {
+       apiKey: "YOUR_API_KEY",
+       authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+       projectId: "YOUR_PROJECT_ID",
+       storageBucket: "YOUR_PROJECT_ID.appspot.com",
+       messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+       appId: "YOUR_APP_ID"
+     };
+     ```
+
+4. **DeepSeek API Setup** (or other AI model)
+   - Get your API key from [DeepSeek](https://deepseek.ai/)
+   - Update the API configuration in `config.js`
+
+### Running the Application
+
+1. **Local Development**
+   - Open `index.html` in your browser:
+     ```bash
+     # If you have a simple HTTP server installed
+     npx serve
+     ```
+   - Or simply open the `index.html` file directly in your browser
+
+2. **Firebase Hosting** (Optional)
+   ```bash
+   # Install Firebase tools if not already installed
+   npm install -g firebase-tools
+   
+   # Login to Firebase
+   firebase login
+   
+   # Initialize Firebase project
+   firebase init
+   
+   # Deploy to Firebase
+   firebase deploy
+   ```
+
+### Troubleshooting
+
+- If authentication doesn't work, make sure your Firebase configuration is correct and the authentication methods are enabled in the Firebase console.
+- Check browser console for any JavaScript errors.
+- Ensure all API keys are correctly set in their respective configuration files.
+
+
+
