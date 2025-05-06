@@ -41,7 +41,7 @@
      };
      ```
 
-4. **DeepSeek API Setup** (or other AI model)
+4. **Llama3.1 API Setup** (or other AI model)
    - Get your API key from [DeepSeek](https://deepseek.ai/)
    - Update the API configuration in `config.js`
 
