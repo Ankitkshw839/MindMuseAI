@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="MindMuseAI  - A mental health companion chatbot providing emotional support and resources">
     <meta name="keywords" content="mental health, chatbot, therapy, mindfulness, mood tracker, anxiety, depression, stress">
-    <meta name="theme-color" content="#2e0f6e">
+    <meta name="theme-color" content="#004080">
     <title>MindMuseAI  - Mental Health Companion</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,13 +16,13 @@
     <script type="module" src="./auth.js"></script>
     <style>
         :root {
-            --primary-color: #2e0f6e;
-            --accent-color: #aa324a;
-            --gradient-start: #2e0f6e;
-            --gradient-end: #aa324a;
+            --primary-color: #004080;  /* Dark blue */
+            --accent-color: #008040;   /* Green */
+            --gradient-start: #000000; /* Black */
+            --gradient-end: #004080;   /* Dark blue */
             --text-color: #ffffff;
-            --bg-color: #f6f5fa;
-            --card-bg: #ffffff;
+            --bg-color: #0a0a0a;       /* Dark background */
+            --card-bg: #121212;        /* Slightly lighter black for cards */
             --border-radius-sm: 8px;
             --border-radius-md: 12px;
             --border-radius-lg: 20px;
@@ -43,7 +43,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #2e0f6e 0%, #aa324a 100%);
+            background: linear-gradient(135deg, #000000 0%, #004080 100%);
             color: white;
             overflow-x: hidden;
         }
@@ -119,13 +119,13 @@
         }
         
         .signup-btn {
-            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            background: linear-gradient(90deg, #004080, #008040);
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
             margin-left: 0.5rem;
         }
         
         .signup-btn:hover {
-            background: linear-gradient(90deg, var(--gradient-end), var(--gradient-start));
+            background: linear-gradient(90deg, #008040, #004080);
             box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
         }
 
@@ -186,7 +186,7 @@
             left: 0;
             width: 100%;
             height: 6px;
-            background: rgba(255, 255, 255, 0.3);
+            background: rgba(0, 128, 64, 0.5);  /* Green with transparency */
             border-radius: 3px;
         }
 
@@ -198,10 +198,13 @@
 
         .email-signup {
             display: flex;
-            background: white;
+            background: rgba(17, 17, 17, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: var(--border-radius-full);
             padding: 0.5rem;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
             margin-bottom: var(--spacing-lg);
             max-width: 450px;
         }
@@ -211,7 +214,7 @@
             align-items: center;
             justify-content: center;
             padding: 0 0.75rem;
-            color: #8a8a9d;
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .email-input {
@@ -220,25 +223,29 @@
             outline: none;
             padding: 0.5rem;
             font-size: 0.9rem;
+            background: transparent;
+            color: #ffffff;
         }
 
         .email-input::placeholder {
-            color: #8a8a9d;
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .start-btn {
-            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            background: linear-gradient(90deg, #004080, #008040);
             color: white;
             border: none;
             padding: 0.75rem 1.5rem;
             border-radius: var(--border-radius-full);
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         .start-btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
         }
 
         .hero-image-container {
@@ -274,7 +281,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background: linear-gradient(135deg, #000000, #004080);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -294,7 +301,7 @@
 
         .features-section {
             padding: var(--spacing-xl) 0;
-            background-color: #f8f5ff; /* Light purple background */
+            background-color: #0a0a0a; /* Dark background */
             border-radius: var(--border-radius-lg);
             margin: 0 var(--spacing-md);
         }
@@ -304,7 +311,7 @@
             font-size: 2.2rem;
             font-weight: 700;
             margin-bottom: var(--spacing-lg);
-            color: var(--primary-color);
+            color: #008040; /* Green */
             position: relative;
             padding-bottom: var(--spacing-sm);
         }
@@ -317,7 +324,7 @@
             transform: translateX(-50%);
             width: 80px;
             height: 4px;
-            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            background: linear-gradient(90deg, #000000, #004080);
             border-radius: 2px;
         }
 
@@ -331,49 +338,49 @@
         }
 
         .feature-card {
-            background: white;
+            background: #121212;
             border-radius: var(--border-radius-lg);
             padding: var(--spacing-md);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            color: #333;
+            color: #ffffff;
             font-weight: 400;
         }
 
         .feature-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
         .feature-icon {
             width: 60px;
             height: 60px;
             border-radius: var(--border-radius-md);
-            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            background: linear-gradient(135deg, #000000, #004080);
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-size: 1.5rem;
             margin-bottom: var(--spacing-sm);
-            box-shadow: 0 4px 12px rgba(46, 15, 110, 0.3);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .feature-card:hover .feature-icon {
             transform: scale(1.1);
-            box-shadow: 0 6px 16px rgba(46, 15, 110, 0.4);
+            box-shadow: 0 6px 16px rgba(0, 64, 128, 0.4);
         }
 
         .feature-title {
             font-size: 1.2rem;
             font-weight: 600;
             margin-bottom: var(--spacing-xs);
-            color: #2e0f6e;
+            color: #008040; /* Green */
         }
 
         .feature-description {
-            color: #444;
+            color: #cccccc;
             font-size: 0.95rem;
             line-height: 1.5;
         }
@@ -393,11 +400,11 @@
         .cta-description {
             max-width: 600px;
             margin: 0 auto var(--spacing-lg);
-            color: #666;
+            color: #cccccc;
         }
 
         .enter-app-btn {
-            background: linear-gradient(90deg, var(--gradient-start), var(--gradient-end));
+            background: linear-gradient(90deg, #004080, #008040);
             color: white;
             border: none;
             padding: 0.75rem 2rem;
@@ -406,14 +413,14 @@
             font-size: 1.1rem;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(46, 15, 110, 0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             display: inline-block;
             text-decoration: none;
         }
 
         .enter-app-btn:hover {
             transform: translateY(-3px);
-            box-shadow: 0 7px 25px rgba(46, 15, 110, 0.4);
+            box-shadow: 0 7px 25px rgba(0, 64, 128, 0.4);
         }
 
         @media (max-width: 992px) {
@@ -492,10 +499,13 @@
 
             .email-input-container {
                 display: flex;
-                background: white;
+                background: rgba(17, 17, 17, 0.2);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
                 border-radius: var(--border-radius-full);
                 overflow: hidden;
-                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+                box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
             }
 
             .start-btn {
@@ -547,8 +557,8 @@
         <section class="hero-section">
             <div class="curve-decoration">
                 <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%" viewBox="0 0 1200 600" fill="none">
-                    <path d="M400,300 Q600,100 800,400" stroke="rgba(255, 255, 255, 0.3)" stroke-width="2" stroke-dasharray="5,5" fill="none" />
-                    <path d="M300,500 Q600,700 900,300" stroke="rgba(255, 255, 255, 0.3)" stroke-width="2" stroke-dasharray="5,5" fill="none" />
+                    <path d="M400,300 Q600,100 800,400" stroke="rgba(0, 128, 64, 0.3)" stroke-width="2" stroke-dasharray="5,5" fill="none" />
+                    <path d="M300,500 Q600,700 900,300" stroke="rgba(0, 64, 128, 0.3)" stroke-width="2" stroke-dasharray="5,5" fill="none" />
                 </svg>
             </div>
             <div class="hero-content">

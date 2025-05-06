@@ -7,7 +7,7 @@
     <meta name="description" content="MindMuseAI - Track your mental wellness progress">
     <meta name="keywords" content="mental health, chatbot, therapy, mindfulness, progress, tracking">
     <meta name="author" content="AI Mental Health Companion">
-    <meta name="theme-color" content="#0f0c1d">
+    <meta name="theme-color" content="#004080">
     <title>Progress - MindMuseAI</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -36,7 +36,7 @@
             border-right: 1px solid var(--border-color);
             padding: var(--spacing-md) 0;
             color: var(--text-color);
-            background-color: #171429;
+            background-color: #0a0a0a;
         }
 
         .menu-item {
@@ -51,14 +51,14 @@
         }
 
         .menu-item:hover {
-            background-color: rgba(142, 106, 255, 0.1);
+            background-color: rgba(0, 128, 64, 0.1);
             color: var(--text-color);
         }
 
         .menu-item.active {
-            color: var(--primary-color);
-            border-left-color: var(--primary-color);
-            background-color: rgba(142, 106, 255, 0.1);
+            color: #004080;
+            border-left-color: #004080;
+            background-color: rgba(0, 64, 128, 0.1);
         }
 
         .menu-item i {
@@ -114,11 +114,11 @@
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background-color: rgba(142, 106, 255, 0.1);
+            background-color: rgba(0, 64, 128, 0.1);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary-color);
+            color: #004080;
             font-size: 1.3rem;
             margin: 0 auto var(--spacing-md);
         }
@@ -196,14 +196,14 @@
         }
 
         .filter-btn:hover {
-            background-color: rgba(142, 106, 255, 0.1);
-            border-color: var(--primary-color);
+            background-color: rgba(0, 128, 64, 0.1);
+            border-color: #004080;
             color: var(--text-color);
         }
 
         .filter-btn.active {
-            background-color: var(--primary-color);
-            border-color: var(--primary-color);
+            background-color: #004080;
+            border-color: #004080;
             color: white;
         }
 
@@ -539,15 +539,15 @@
                 
                 function applyTheme(theme) {
                     // Always apply dark theme regardless of the theme parameter
-                    document.documentElement.classList.remove('light-theme');
-                    document.documentElement.classList.add('dark-theme');
-                    document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
-                    document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
-                    document.documentElement.style.setProperty('--text-color', '#ffffff');
-                    document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
-                    document.documentElement.style.setProperty('--border-color', '#2b2b45');
-                    document.documentElement.style.setProperty('--input-bg', '#202035');
-                    document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                        document.documentElement.classList.remove('light-theme');
+                        document.documentElement.classList.add('dark-theme');
+                        document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
+                        document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
+                        document.documentElement.style.setProperty('--text-color', '#ffffff');
+                        document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
+                        document.documentElement.style.setProperty('--border-color', '#2b2b45');
+                        document.documentElement.style.setProperty('--input-bg', '#202035');
+                        document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
                     
                     // Apply dark theme to sidebar specifically
                     const sidebar = document.querySelector('.sidebar-menu');

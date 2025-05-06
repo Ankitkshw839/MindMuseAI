@@ -6,9 +6,9 @@
     --accent-color: #3498db;
     
     /* Theme Colors */
-    --bg-gradient: linear-gradient(135deg, #2e0f6e 0%, #aa324a 50%, #2a7d27 100%);
-    --header-gradient: linear-gradient(90deg, #2e0f6e 0%, #aa324a 50%, #2a7d27 100%);
-    --card-gradient: linear-gradient(135deg, rgba(46, 15, 110, 0.8) 0%, rgba(170, 50, 74, 0.8) 50%, rgba(42, 125, 39, 0.8) 100%);
+    --bg-gradient: linear-gradient(135deg, #000000 0%, #004080 50%, #008040 100%);
+    --header-gradient: linear-gradient(90deg, #000000 0%, #004080 50%, #008040 100%);
+    --card-gradient: linear-gradient(135deg, rgba(0, 0, 0, 0.8) 0%, rgba(0, 64, 128, 0.8) 50%, rgba(0, 128, 64, 0.8) 100%);
     
     /* Dark Theme */
     --bg-color: #0f0c1d;
@@ -110,7 +110,7 @@ button {
     font-size: 1.4rem;
     font-weight: 600;
     margin: 0;
-    background: linear-gradient(90deg, #2e0f6e 0%, #aa324a 50%, #2a7d27 100%);
+    background: linear-gradient(90deg, #000000 0%, #004080 50%, #008040 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -930,7 +930,7 @@ button {
     font-size: 0.95rem;
     font-weight: 600;
     margin: 0;
-    background: linear-gradient(90deg, #2e0f6e 0%, #aa324a 50%, #2a7d27 100%);
+    background: linear-gradient(90deg, #000000 0%, #004080 50%, #008040 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -985,7 +985,7 @@ button {
     color: var(--primary-color);
     font-size: 1.8rem;
     margin-bottom: 0.5rem;
-    background: linear-gradient(90deg, #2e0f6e 0%, #aa324a 50%, #2a7d27 100%);
+    background: linear-gradient(90deg, #000000 0%, #004080 50%, #008040 100%);
     background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;

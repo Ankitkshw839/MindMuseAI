@@ -136,6 +136,11 @@ export const uploadFile = async (file, path) => {
     }
 };
 
+// Function to get the Firebase app instance
+export function getFirebaseApp() {
+    return app;
+}
+
 export { auth, db, storage }; 
 
 console.log("🔥 Firebase config loaded successfully");

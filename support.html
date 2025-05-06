@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MindMuseAI - Get support and help for your mental wellness journey">
+    <meta name="description" content="MindMuseAI - Support and help center">
     <meta name="keywords" content="mental health, chatbot, therapy, mindfulness, support, help, contact">
-    <meta name="theme-color" content="#0f0c1d">
+    <meta name="theme-color" content="#004080">
     <title>Support - MindMuseAI</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -24,6 +24,7 @@
             background-color: var(--bg-color-secondary);
             border-right: 1px solid var(--border-color);
             padding: var(--spacing-md) 0;
+            background-color: #0a0a0a;
         }
 
         .menu-item {
@@ -38,14 +39,14 @@
         }
 
         .menu-item:hover {
-            background-color: rgba(142, 106, 255, 0.1);
+            background-color: rgba(0, 128, 64, 0.1);
             color: var(--text-color);
         }
 
         .menu-item.active {
-            color: var(--primary-color);
-            border-left-color: var(--primary-color);
-            background-color: rgba(142, 106, 255, 0.1);
+            color: #004080;
+            border-left-color: #004080;
+            background-color: rgba(0, 64, 128, 0.1);
         }
 
         .menu-item i {
@@ -410,6 +411,54 @@
                 padding: var(--spacing-lg);
             }
         }
+
+        .section-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(0, 64, 128, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #004080;
+            font-size: 1rem;
+        }
+
+        .faq-item.active .faq-question {
+            color: #004080;
+        }
+
+        .faq-item.active .faq-toggle {
+            background-color: #004080;
+            transform: rotate(180deg);
+        }
+
+        .contact-form button {
+            background-color: #004080;
+            color: white;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: var(--border-radius-md);
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: var(--spacing-md);
+        }
+
+        .contact-form button:hover {
+            background-color: #005db3;
+            transform: translateY(-2px);
+        }
+
+        .header {
+            background: linear-gradient(90deg, #000000 0%, #004080 50%, #008040 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 
@@ -722,15 +771,15 @@
             
             function applyTheme(theme) {
                 // Always apply dark theme regardless of the theme parameter
-                document.documentElement.classList.remove('light-theme');
-                document.documentElement.classList.add('dark-theme');
-                document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
-                document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
-                document.documentElement.style.setProperty('--text-color', '#ffffff');
-                document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
-                document.documentElement.style.setProperty('--border-color', '#2b2b45');
-                document.documentElement.style.setProperty('--input-bg', '#202035');
-                document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                    document.documentElement.classList.remove('light-theme');
+                    document.documentElement.classList.add('dark-theme');
+                    document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
+                    document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
+                    document.documentElement.style.setProperty('--text-color', '#ffffff');
+                    document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
+                    document.documentElement.style.setProperty('--border-color', '#2b2b45');
+                    document.documentElement.style.setProperty('--input-bg', '#202035');
+                    document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
                 
                 // Apply dark theme to sidebar specifically
                 const sidebar = document.querySelector('.sidebar-menu');

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="MindMuseAI - About our mission and team dedicated to mental health innovation">
+    <meta name="keywords" content="mental health, company, team, mission, vision, about us">
+    <meta name="theme-color" content="#004080">
+    <title>About - MindMuseAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="force-dark-theme.js"></script>
+    <style>
+        :root {
+            --primary-color: #004080;  /* Dark blue */
+            --accent-color: #008040;   /* Green */
+            --gradient-start: #000000; /* Black */
+            --gradient-end: #004080;   /* Dark blue */
+            --text-color: #ffffff;
+            --bg-color: #0a0a0a;       /* Dark background */
+            --card-bg: #121212;        /* Slightly lighter black for cards */
+        }
+        
+        body {
+            background: linear-gradient(135deg, #000000 0%, #004080 100%);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .logo h1 {
+            font-size: 1.5rem;
+            margin: 0;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 1.5rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .hero-section {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .hero-section h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, #004080, #008040);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .hero-section p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        .section {
+            margin-bottom: 4rem;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        
+        .section-content {
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+        
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .value-card {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .value-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .value-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: #008040;
+        }
+        
+        .value-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+        
+        .team-member {
+            text-align: center;
+        }
+        
+        .member-photo {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            background-color: rgba(0, 64, 128, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            margin: 0 auto;
+            color: white;
+        }
+        
+        .member-name {
+            font-size: 1.2rem;
+            margin-bottom: 0.3rem;
+            margin-top: 1rem;
+        }
+        
+        .member-role {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 0.8rem;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 0.8rem;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.2rem;
+            transition: color 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            color: #008040;
+        }
+        
+        .cta-section {
+            text-align: center;
+            background: linear-gradient(135deg, rgba(0, 64, 128, 0.2), rgba(0, 128, 64, 0.2));
+            border-radius: 12px;
+            padding: 3rem 2rem;
+        }
+        
+        .cta-title {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cta-text {
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        .cta-button {
+            background-color: #004080;
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .cta-button:hover {
+            background-color: #008040;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 2rem 0;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            nav ul {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+        
+        .header {
+            background: linear-gradient(90deg, #000000 0%, #004080 50%, #008040 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .gradient-text {
+            background: linear-gradient(90deg, #000000 0%, #004080 50%, #008040 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientAnimation 5s ease infinite;
+        }
+    </style>
+</head>
+
+<body class="dark-theme">
+    <div class="container">
+        <header>
+            <a href="index.html" class="logo">
+                <i class="fas fa-brain"></i>
+                <h1>MindMuseAI</h1>
+            </a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="resources.html">Resources</a></li>
+                    <li><a href="support.html">Support</a></li>
+                    <li><a href="app.html">App</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <div class="hero-section">
+            <h1>Our Mission</h1>
+            <p>At MindMuseAI, we're dedicated to making mental health support accessible to everyone through innovative AI technology that understands, responds, and helps in moments when it matters most.</p>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">About Us</h2>
+            <div class="section-content">
+                <p>MindMuseAI was founded in 2023 with a simple but powerful goal: to bridge the gap in mental health care by creating an AI companion that provides immediate, personalized support.</p>
+                <p>Our team combines expertise in artificial intelligence, psychology, and user experience design to create a platform that's both effective and easy to use. We believe that everyone deserves access to mental health resources, regardless of their circumstances.</p>
+                <p>Through continuous learning and adaptation, our AI companion aims to understand your unique needs and provide guidance that's relevant to your situation. While we're not a replacement for professional therapy, we're here to supplement your mental wellness journey with 24/7 support.</p>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Our Values</h2>
+            <div class="values-grid">
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="value-title">Privacy First</h3>
+                    <p>We prioritize your data privacy and security above all else, ensuring your conversations remain confidential.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h3 class="value-title">Accessibility</h3>
+                    <p>We're committed to making mental health support available to everyone, breaking down barriers of cost and availability.</p>
+                </div>
+                <div class="value-card">
+                    <div class="value-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h3 class="value-title">Science-Based</h3>
+                    <p>Our approach is grounded in psychological research and evidence-based practices for mental wellness.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2 class="section-title">Meet Our Team</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="member-photo">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">Dr. Sarah Johnson</h3>
+                    <p class="member-role">Chief Psychology Officer</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-photo">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">Michael Chen</h3>
+                    <p class="member-role">AI Research Lead</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-photo">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">Aisha Patel</h3>
+                    <p class="member-role">UX Design Director</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-dribbble"></i></a>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="member-photo">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <h3 class="member-name">James Wilson</h3>
+                    <p class="member-role">Chief Technology Officer</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cta-section">
+            <h2 class="cta-title">Join Us on this Journey</h2>
+            <p class="cta-text">Experience the future of mental wellness support with MindMuseAI. Our AI companion is here to listen, understand, and guide you whenever you need it.</p>
+            <a href="app.html" class="cta-button">Try MindMuseAI Now</a>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2023 MindMuseAI. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html> 
