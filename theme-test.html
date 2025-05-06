@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Test - MindMuseAI</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="force-dark-theme.js"></script>
+    <style>
+        body {
+            padding: 20px;
+        }
+        .nav-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .page-link {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 15px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .page-link:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+        .theme-status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body class="dark-theme">
+    <h1>Theme Test Page</h1>
+    <p>This page helps verify that dark theme is applied properly across all pages.</p>
+    
+    <div class="nav-links">
+        <a href="app.html" class="page-link">App</a>
+        <a href="profile.html" class="page-link">Profile</a>
+        <a href="settings.html" class="page-link">Settings</a>
+        <a href="progress.html" class="page-link">Progress</a>
+        <a href="appointments.html" class="page-link">Appointments</a>
+        <a href="resources.html" class="page-link">Resources</a>
+        <a href="support.html" class="page-link">Support</a>
+    </div>
+    
+    <div class="theme-status">
+        <h2>Current Theme Status</h2>
+        <div id="themeInfo"></div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const themeInfo = document.getElementById('themeInfo');
+            
+            // Check for theme classes
+            const hasDarkClass = document.documentElement.classList.contains('dark-theme');
+            const hasLightClass = document.documentElement.classList.contains('light-theme');
+            const bodyHasDarkClass = document.body.classList.contains('dark-theme');
+            
+            // Check for CSS variables
+            const bgColor = getComputedStyle(document.documentElement).getPropertyValue('--bg-color');
+            const textColor = getComputedStyle(document.documentElement).getPropertyValue('--text-color');
+            
+            // Display theme info
+            themeInfo.innerHTML = `
+                <p>HTML element has dark-theme class: <strong>${hasDarkClass}</strong></p>
+                <p>HTML element has light-theme class: <strong>${hasLightClass}</strong></p>
+                <p>Body element has dark-theme class: <strong>${bodyHasDarkClass}</strong></p>
+                <p>Background color: <strong>${bgColor}</strong></p>
+                <p>Text color: <strong>${textColor}</strong></p>
+                <p>localStorage theme setting: <strong>${localStorage.getItem('theme') || 'not set'}</strong></p>
+            `;
+        });
+    </script>
+</body>
+</html> 

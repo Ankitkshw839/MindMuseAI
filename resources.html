@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="force-dark-theme.js"></script>
     <style>
         .dashboard-layout {
             display: flex;
@@ -305,7 +306,7 @@
     </style>
 </head>
 
-<body>
+<body class="dark-theme">
     <!-- Loading screen -->
     <div class="loading-screen" id="loading-screen">
         <div class="loading-content">
@@ -316,7 +317,7 @@
 
     <div class="app-container">
         <div class="dashboard-layout">
-            <aside class="sidebar-menu">
+            <aside class="sidebar-menu" style="background-color: #171429; color: #ffffff;">
                 <a href="app.html" class="menu-item">
                     <i class="fas fa-home"></i>
                     <span class="menu-text">Home</span>
@@ -597,29 +598,25 @@
             
             // Set theme based on saved theme
             const savedTheme = localStorage.getItem('theme') || 'dark';
-            applyTheme(savedTheme);
+            applyTheme('dark'); // Force dark theme regardless of localStorage
             
             function applyTheme(theme) {
-                if (theme === 'light') {
-                    document.documentElement.classList.remove('dark-theme');
-                    document.documentElement.classList.add('light-theme');
-                    document.documentElement.style.setProperty('--bg-color', '#f5f7fa');
-                    document.documentElement.style.setProperty('--bg-color-secondary', '#e9ecef');
-                    document.documentElement.style.setProperty('--text-color', '#343a40');
-                    document.documentElement.style.setProperty('--text-muted', '#6c757d');
-                    document.documentElement.style.setProperty('--border-color', '#ced4da');
-                    document.documentElement.style.setProperty('--input-bg', '#ffffff');
-                    document.documentElement.style.setProperty('--card-bg', '#ffffff');
-                } else {
-                    document.documentElement.classList.remove('light-theme');
-                    document.documentElement.classList.add('dark-theme');
-                    document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
-                    document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
-                    document.documentElement.style.setProperty('--text-color', '#ffffff');
-                    document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
-                    document.documentElement.style.setProperty('--border-color', '#2b2b45');
-                    document.documentElement.style.setProperty('--input-bg', '#202035');
-                    document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                // Always apply dark theme regardless of the theme parameter
+                document.documentElement.classList.remove('light-theme');
+                document.documentElement.classList.add('dark-theme');
+                document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
+                document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
+                document.documentElement.style.setProperty('--text-color', '#ffffff');
+                document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
+                document.documentElement.style.setProperty('--border-color', '#2b2b45');
+                document.documentElement.style.setProperty('--input-bg', '#202035');
+                document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                
+                // Apply dark theme to sidebar specifically
+                const sidebar = document.querySelector('.sidebar-menu');
+                if (sidebar) {
+                    sidebar.style.backgroundColor = '#171429';
+                    sidebar.style.color = '#ffffff';
                 }
             }
             

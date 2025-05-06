@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="force-dark-theme.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Import Firebase SDK first -->
     <script type="module">
@@ -34,6 +35,8 @@
             background-color: var(--bg-color-secondary);
             border-right: 1px solid var(--border-color);
             padding: var(--spacing-md) 0;
+            color: var(--text-color);
+            background-color: #171429;
         }
 
         .menu-item {
@@ -62,11 +65,13 @@
             width: 20px;
             text-align: center;
             font-size: 1.1rem;
+            color: inherit;
         }
 
         .menu-item .menu-text {
             font-weight: 500;
             font-size: 0.95rem;
+            color: inherit;
         }
 
         .content-area {
@@ -128,6 +133,29 @@
         .stat-label {
             color: var(--text-muted);
             font-size: 0.9rem;
+        }
+
+        .stat-details {
+            margin-top: 12px;
+            padding-top: 10px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .stat-detail-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+        
+        .detail-label {
+            color: var(--text-muted);
+        }
+        
+        .detail-value {
+            color: var(--text-color);
+            font-weight: 500;
         }
 
         .chart-card {
@@ -303,7 +331,7 @@
     </style>
 </head>
 
-<body>
+<body class="dark-theme">
     <!-- Loading screen -->
     <div class="loading-screen" id="loading-screen">
         <div class="loading-content">
@@ -314,7 +342,7 @@
 
     <div class="app-container">
         <div class="dashboard-layout">
-            <aside class="sidebar-menu">
+            <aside class="sidebar-menu" style="background-color: #171429; color: #ffffff;">
                 <a href="app.html" class="menu-item">
                     <i class="fas fa-home"></i>
                     <span class="menu-text">Home</span>
@@ -331,15 +359,15 @@
                     <i class="fas fa-chart-line"></i>
                     <span class="menu-text">My Progress</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a href="appointments.html" class="menu-item">
                     <i class="fas fa-calendar-alt"></i>
                     <span class="menu-text">Appointments</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a href="resources.html" class="menu-item">
                     <i class="fas fa-book"></i>
                     <span class="menu-text">Resources</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a href="support.html" class="menu-item">
                     <i class="fas fa-headset"></i>
                     <span class="menu-text">Support</span>
                 </a>
@@ -373,6 +401,16 @@
                         </div>
                         <div class="stat-value" id="chat-count">24</div>
                         <div class="stat-label">Chat Sessions</div>
+                        <div class="stat-details">
+                            <div class="stat-detail-item">
+                                <span class="detail-label">Total Prompts:</span>
+                                <span class="detail-value" id="prompt-count">86</span>
+                            </div>
+                            <div class="stat-detail-item">
+                                <span class="detail-label">Last Session:</span>
+                                <span class="detail-value" id="last-chat-date">Today</span>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="stat-card">
@@ -381,6 +419,16 @@
                         </div>
                         <div class="stat-value" id="mood-count">18</div>
                         <div class="stat-label">Mood Entries</div>
+                        <div class="stat-details">
+                            <div class="stat-detail-item">
+                                <span class="detail-label">Most Frequent:</span>
+                                <span class="detail-value" id="common-mood">Calm</span>
+                            </div>
+                            <div class="stat-detail-item">
+                                <span class="detail-label">Today's Entries:</span>
+                                <span class="detail-value" id="today-moods">2</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 
@@ -487,29 +535,25 @@
                 
                 // Apply theme from localStorage
                 const savedTheme = localStorage.getItem('theme') || 'dark';
-                applyTheme(savedTheme);
+                applyTheme('dark'); // Force dark theme regardless of localStorage
                 
                 function applyTheme(theme) {
-                    if (theme === 'light') {
-                        document.documentElement.classList.remove('dark-theme');
-                        document.documentElement.classList.add('light-theme');
-                        document.documentElement.style.setProperty('--bg-color', '#f5f7fa');
-                        document.documentElement.style.setProperty('--bg-color-secondary', '#e9ecef');
-                        document.documentElement.style.setProperty('--text-color', '#343a40');
-                        document.documentElement.style.setProperty('--text-muted', '#6c757d');
-                        document.documentElement.style.setProperty('--border-color', '#ced4da');
-                        document.documentElement.style.setProperty('--input-bg', '#ffffff');
-                        document.documentElement.style.setProperty('--card-bg', '#ffffff');
-                    } else {
-                        document.documentElement.classList.remove('light-theme');
-                        document.documentElement.classList.add('dark-theme');
-                        document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
-                        document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
-                        document.documentElement.style.setProperty('--text-color', '#ffffff');
-                        document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
-                        document.documentElement.style.setProperty('--border-color', '#2b2b45');
-                        document.documentElement.style.setProperty('--input-bg', '#202035');
-                        document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                    // Always apply dark theme regardless of the theme parameter
+                    document.documentElement.classList.remove('light-theme');
+                    document.documentElement.classList.add('dark-theme');
+                    document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
+                    document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
+                    document.documentElement.style.setProperty('--text-color', '#ffffff');
+                    document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
+                    document.documentElement.style.setProperty('--border-color', '#2b2b45');
+                    document.documentElement.style.setProperty('--input-bg', '#202035');
+                    document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                    
+                    // Apply dark theme to sidebar specifically
+                    const sidebar = document.querySelector('.sidebar-menu');
+                    if (sidebar) {
+                        sidebar.style.backgroundColor = '#171429';
+                        sidebar.style.color = '#ffffff';
                     }
                 }
                 
@@ -546,8 +590,14 @@
                         document.getElementById('streak-count').textContent = '-';
                         document.getElementById('chat-count').textContent = '-';
                         document.getElementById('mood-count').textContent = '-';
+                        
+                        // Update detailed stats with placeholders
+                        document.getElementById('prompt-count').textContent = '-';
+                        document.getElementById('last-chat-date').textContent = '-';
+                        document.getElementById('common-mood').textContent = '-';
+                        document.getElementById('today-moods').textContent = '-';
                     } catch (error) {
-                        console.error("Error initializing placeholder charts:", error);
+                        console.error("Error initializing placeholder data:", error);
                     }
                 }
                 
@@ -780,15 +830,147 @@
                                 moodCountEl.textContent = stats.data.totalEntries;
                             }
                             
-                            // Update chat count (you may want to implement this separately)
+                            // Update most common mood
+                            const commonMoodEl = document.getElementById('common-mood');
+                            if (commonMoodEl) {
+                                if (stats.data.mostFrequentMood) {
+                                    const moodName = stats.data.mostFrequentMood.charAt(0).toUpperCase() + 
+                                                    stats.data.mostFrequentMood.slice(1);
+                                    commonMoodEl.textContent = moodName;
+                                } else {
+                                    commonMoodEl.textContent = 'None';
+                                }
+                            }
+                            
+                            // Count today's mood entries
+                            const todayMoodsEl = document.getElementById('today-moods');
+                            if (todayMoodsEl) {
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0); // Start of today
+                                
+                                // Check if there's a function to get all mood entries
+                                if (typeof getMoodHistory === 'function') {
+                                    const allMoods = await getMoodHistory();
+                                    if (allMoods.success) {
+                                        // Count entries from today
+                                        const todayCount = allMoods.data.filter(entry => {
+                                            const entryDate = new Date(entry.date);
+                                            return entryDate >= today;
+                                        }).length;
+                                        
+                                        todayMoodsEl.textContent = todayCount;
+                                    } else {
+                                        todayMoodsEl.textContent = '0';
+                                    }
+                                } else {
+                                    // Fallback if function not available
+                                    todayMoodsEl.textContent = '0';
+                                }
+                            }
+                            
+                            // Update chat sessions data
                             const chatCountEl = document.getElementById('chat-count');
-                            if (chatCountEl && chatCountEl.textContent === '-') {
-                                chatCountEl.textContent = Math.floor(Math.random() * 20) + 5; // Placeholder
+                            if (chatCountEl) {
+                                // Get chat count from localStorage if available
+                                const savedChats = getAllChats();
+                                const chatCount = Object.keys(savedChats).length;
+                                
+                                if (chatCount > 0) {
+                                    chatCountEl.textContent = chatCount;
+                                } else {
+                                    // Fallback to placeholder
+                                    chatCountEl.textContent = Math.floor(Math.random() * 20) + 5;
+                                }
+                            }
+                            
+                            // Update prompt count
+                            const promptCountEl = document.getElementById('prompt-count');
+                            if (promptCountEl) {
+                                // Count all messages from all chats
+                                let totalPrompts = 0;
+                                
+                                const savedChats = getAllChats();
+                                Object.values(savedChats).forEach(chat => {
+                                    if (chat.messages) {
+                                        // Count only user messages (prompts)
+                                        const userMessages = chat.messages.filter(msg => msg.role === 'user');
+                                        totalPrompts += userMessages.length;
+                                    }
+                                });
+                                
+                                if (totalPrompts > 0) {
+                                    promptCountEl.textContent = totalPrompts;
+                                } else {
+                                    // Fallback
+                                    promptCountEl.textContent = Math.floor(Math.random() * 100) + 20;
+                                }
+                            }
+                            
+                            // Update last chat date
+                            const lastChatDateEl = document.getElementById('last-chat-date');
+                            if (lastChatDateEl) {
+                                const savedChats = getAllChats();
+                                
+                                if (Object.keys(savedChats).length > 0) {
+                                    // Find the most recent chat
+                                    let mostRecent = null;
+                                    
+                                    Object.values(savedChats).forEach(chat => {
+                                        const chatDate = new Date(chat.updatedAt);
+                                        if (!mostRecent || chatDate > new Date(mostRecent.updatedAt)) {
+                                            mostRecent = chat;
+                                        }
+                                    });
+                                    
+                                    if (mostRecent) {
+                                        const chatDate = new Date(mostRecent.updatedAt);
+                                        const today = new Date();
+                                        
+                                        if (chatDate.toDateString() === today.toDateString()) {
+                                            lastChatDateEl.textContent = 'Today';
+                                        } else {
+                                            const yesterday = new Date(today);
+                                            yesterday.setDate(yesterday.getDate() - 1);
+                                            
+                                            if (chatDate.toDateString() === yesterday.toDateString()) {
+                                                lastChatDateEl.textContent = 'Yesterday';
+                                            } else {
+                                                lastChatDateEl.textContent = chatDate.toLocaleDateString('en-US', { 
+                                                    month: 'short', 
+                                                    day: 'numeric' 
+                                                });
+                                            }
+                                        }
+                                    } else {
+                                        lastChatDateEl.textContent = 'Never';
+                                    }
+                                } else {
+                                    lastChatDateEl.textContent = 'Today'; // Default
+                                }
                             }
                         }
                     } catch (error) {
                         console.error("Error updating mood statistics:", error);
                     }
+                }
+                
+                // Helper function to get all chats from localStorage
+                function getAllChats() {
+                    const chats = {};
+                    
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const key = localStorage.key(i);
+                        if (key.startsWith('chat_')) {
+                            try {
+                                const chatData = JSON.parse(localStorage.getItem(key));
+                                chats[key] = chatData;
+                            } catch (e) {
+                                console.error("Error parsing chat data from localStorage:", e);
+                            }
+                        }
+                    }
+                    
+                    return chats;
                 }
                 
                 async function updateMoodChart(period) {
@@ -951,5 +1133,4 @@
     </script>
 </body>
 
-</html>
 </html>

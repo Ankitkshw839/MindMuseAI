@@ -184,6 +184,18 @@
             background-color: #7c52e0;
         }
 
+        #appointments-page-btn {
+            background-color: #8d60f4;
+        }
+
+        #resources-page-btn {
+            background-color: #9e6ef8;
+        }
+
+        #support-page-btn {
+            background-color: #af7cfc;
+        }
+
         /* Chat history sidebar styles */
         .chat-history-sidebar {
             position: fixed;
@@ -457,6 +469,96 @@
         .app-logo {
             animation: pulse 3s ease-in-out infinite;
         }
+
+        /* Style for the Make model active button */
+        .model-activation {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        .model-activate-btn {
+            background: linear-gradient(90deg, #2e0f6e 0%, #aa324a 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            padding: 10px 16px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(46, 15, 110, 0.25);
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+        
+        .model-activate-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(46, 15, 110, 0.4);
+        }
+        
+        .model-activate-btn:active {
+            transform: translateY(0);
+        }
+        
+        /* Date navigation styles */
+        .date-navigation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 5;
+        }
+        
+        .date-nav-btn {
+            background-color: rgba(142, 106, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .date-nav-btn:hover {
+            background-color: rgba(142, 106, 255, 0.5);
+            transform: scale(1.1);
+        }
+        
+        .date-nav-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .current-date {
+            background: linear-gradient(90deg, #2e0f6e, #aa324a);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            margin: 0 10px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            letter-spacing: 1px;
+            min-width: 120px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 5px rgba(142, 106, 255, 0.6);
+            }
+            to {
+                box-shadow: 0 0 15px rgba(142, 106, 255, 0.8), 0 0 20px rgba(170, 50, 74, 0.6);
+            }
+        }
     </style>
 </head>
 
@@ -538,6 +640,18 @@
                     <i class="fas fa-cog"></i>
                     <span>Settings</span>
                 </a>
+                <a href="appointments.html" class="nav-btn" id="appointments-page-btn">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Appointments</span>
+                </a>
+                <a href="resources.html" class="nav-btn" id="resources-page-btn">
+                    <i class="fas fa-book"></i>
+                    <span>Resources</span>
+                </a>
+                <a href="support.html" class="nav-btn" id="support-page-btn">
+                    <i class="fas fa-headset"></i>
+                    <span>Support</span>
+                </a>
                 <!-- New Logout Button -->
                 <a href="javascript:void(0);" class="nav-btn" id="visible-logout-btn" style="background-color: #aa324a;" onclick="(async function() { try { if(window.firebaseAuth) { await window.firebaseAuth.signOut(); } } catch(e) { console.error('Firebase logout error:', e); } localStorage.removeItem('isLoggedIn'); localStorage.removeItem('userEmail'); localStorage.removeItem('token'); sessionStorage.clear(); window.location.href = 'index.html'; })();">
                     <i class="fas fa-sign-out-alt"></i>
@@ -606,8 +720,27 @@
                 <div class="sidebar-divider"></div>
                 <div class="mood-history">
                     <h3 class="gradient-text">Mood History</h3>
+                    <!-- Add date navigation controls -->
+                    <div class="date-navigation">
+                        <button id="prev-date" class="date-nav-btn">
+                            <i class="fas fa-arrow-left"></i>
+                        </button>
+                        <div id="current-date-display" class="current-date">
+                            Today
+                        </div>
+                        <button id="next-date" class="date-nav-btn">
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
                     <div class="mood-chart">
                         <canvas id="moodChart"></canvas>
+                    </div>
+                    <!-- Add the "Make model active" button below the chart -->
+                    <div class="model-activation">
+                        <a href="update-key.html" class="model-activate-btn">
+                            <i class="fas fa-bolt"></i>
+                            <span>Make model active</span>
+                        </a>
                     </div>
                 </div>
             </aside>
@@ -773,18 +906,96 @@
             // Initialize mood chart
             let moodChartInstance = null;
             
+            // Track current date for mood chart navigation
+            let currentChartDate = new Date();
+            let viewRangeInDays = 7; // Default to show a week of data
+            
+            // Update the date display in the UI
+            function updateDateDisplay() {
+                const dateDisplay = document.getElementById('current-date-display');
+                if (dateDisplay) {
+                    // Check if the date is today
+                    const today = new Date();
+                    const isToday = currentChartDate.toDateString() === today.toDateString();
+                    
+                    if (isToday) {
+                        dateDisplay.textContent = 'Today';
+                    } else {
+                        // Format the date as "May 15 - May 22" (showing the range)
+                        const startDate = new Date(currentChartDate);
+                        const endDate = new Date(startDate);
+                        endDate.setDate(startDate.getDate() + (viewRangeInDays - 1));
+                        
+                        const formatOptions = { month: 'short', day: 'numeric' };
+                        const startFormatted = startDate.toLocaleDateString('en-US', formatOptions);
+                        const endFormatted = endDate.toLocaleDateString('en-US', formatOptions);
+                        
+                        dateDisplay.textContent = `${startFormatted} - ${endFormatted}`;
+                    }
+                }
+            }
+            
             function initMoodChart() {
                 if (moodChartInstance) {
                     moodChartInstance.destroy();
                 }
                 
-                // Prepare data for chart
-                const dates = moodHistory.map(entry => {
-                    const date = new Date(entry.timestamp);
-                    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                // Filter mood history based on the current date range
+                const startDate = new Date(currentChartDate);
+                startDate.setHours(0, 0, 0, 0);
+                
+                const endDate = new Date(startDate);
+                endDate.setDate(startDate.getDate() + viewRangeInDays);
+                endDate.setHours(23, 59, 59, 999);
+                
+                // Filter entries within the date range
+                const filteredHistory = moodHistory.filter(entry => {
+                    const entryDate = new Date(entry.timestamp);
+                    return entryDate >= startDate && entryDate <= endDate;
                 });
                 
-                const moodData = moodHistory.map(entry => moodValues[entry.mood]);
+                // Sort entries by date (oldest first)
+                filteredHistory.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+                
+                // Prepare data for chart with time labels instead of date
+                const timeLabels = filteredHistory.map(entry => {
+                    const date = new Date(entry.timestamp);
+                    return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                });
+                
+                const moodData = filteredHistory.map(entry => moodValues[entry.mood]);
+                
+                // If no data in the current range, show empty chart with time slots
+                if (filteredHistory.length === 0) {
+                    // Create time slots every 4 hours
+                    const timeSlots = [];
+                    const emptyData = [];
+                    
+                    for (let i = 0; i < viewRangeInDays; i++) {
+                        const dayDate = new Date(startDate);
+                        dayDate.setDate(dayDate.getDate() + i);
+                        
+                        // Add morning, afternoon, evening time points
+                        const morning = new Date(dayDate);
+                        morning.setHours(8, 0, 0, 0);
+                        timeSlots.push(morning.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+                        emptyData.push(null);
+                        
+                        const afternoon = new Date(dayDate);
+                        afternoon.setHours(14, 0, 0, 0);
+                        timeSlots.push(afternoon.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+                        emptyData.push(null);
+                        
+                        const evening = new Date(dayDate);
+                        evening.setHours(20, 0, 0, 0);
+                        timeSlots.push(evening.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+                        emptyData.push(null);
+                    }
+                    
+                    // Use the empty time slots
+                    timeLabels.push(...timeSlots);
+                    moodData.push(...emptyData);
+                }
                 
                 // Create gradient for the line
                 const ctx = moodChart.getContext('2d');
@@ -796,7 +1007,7 @@
                 moodChartInstance = new Chart(moodChart, {
                     type: 'line',
                     data: {
-                        labels: dates,
+                        labels: timeLabels,
                         datasets: [{
                             label: 'Mood',
                             data: moodData,
@@ -807,8 +1018,11 @@
                             fill: true,
                             pointBackgroundColor: function(context) {
                                 const index = context.dataIndex;
-                                const mood = moodHistory[index]?.mood;
-                                return mood ? moodColors[mood] : '#fff';
+                                if (index < filteredHistory.length) {
+                                    const mood = filteredHistory[index]?.mood;
+                                    return mood ? moodColors[mood] : '#fff';
+                                }
+                                return '#fff';
                             },
                             pointRadius: 6,
                             pointHoverRadius: 8
@@ -845,7 +1059,9 @@
                                     minRotation: 45,
                                     font: {
                                         size: 10
-                                    }
+                                    },
+                                    autoSkip: true,
+                                    maxTicksLimit: 8
                                 }
                             }
                         },
@@ -857,23 +1073,28 @@
                                 callbacks: {
                                     title: function(tooltipItems) {
                                         const index = tooltipItems[0].dataIndex;
-                                        const entry = moodHistory[index];
-                                        if (entry) {
-                                            const date = new Date(entry.timestamp);
-                                            return date.toLocaleString('en-US', { 
-                                                month: 'short', 
-                                                day: 'numeric',
-                                                hour: '2-digit',
-                                                minute: '2-digit'
-                                            });
+                                        if (index < filteredHistory.length) {
+                                            const entry = filteredHistory[index];
+                                            if (entry) {
+                                                const date = new Date(entry.timestamp);
+                                                return date.toLocaleString('en-US', { 
+                                                    weekday: 'short',
+                                                    month: 'short', 
+                                                    day: 'numeric',
+                                                    hour: '2-digit',
+                                                    minute: '2-digit'
+                                                });
+                                            }
                                         }
                                         return '';
                                     },
                                     label: function(context) {
                                         const index = context.dataIndex;
-                                        const entry = moodHistory[index];
-                                        if (entry) {
-                                            return `Mood: ${moodEmojis[entry.mood]} ${entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1)}`;
+                                        if (index < filteredHistory.length) {
+                                            const entry = filteredHistory[index];
+                                            if (entry) {
+                                                return `Mood: ${moodEmojis[entry.mood]} ${entry.mood.charAt(0).toUpperCase() + entry.mood.slice(1)}`;
+                                            }
                                         }
                                         return '';
                                     }
@@ -881,6 +1102,42 @@
                             }
                         }
                     }
+                });
+                
+                // Update the date display
+                updateDateDisplay();
+            }
+            
+            // Initialize date navigation
+            const prevDateBtn = document.getElementById('prev-date');
+            const nextDateBtn = document.getElementById('next-date');
+            
+            if (prevDateBtn) {
+                prevDateBtn.addEventListener('click', function() {
+                    // Move back by the view range
+                    currentChartDate.setDate(currentChartDate.getDate() - viewRangeInDays);
+                    initMoodChart();
+                });
+            }
+            
+            if (nextDateBtn) {
+                nextDateBtn.addEventListener('click', function() {
+                    // Move forward by the view range
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    
+                    // Don't go past today
+                    const nextDate = new Date(currentChartDate);
+                    nextDate.setDate(nextDate.getDate() + viewRangeInDays);
+                    
+                    if (nextDate <= today) {
+                        currentChartDate.setDate(currentChartDate.getDate() + viewRangeInDays);
+                    } else {
+                        // Set to today
+                        currentChartDate = new Date(today);
+                    }
+                    
+                    initMoodChart();
                 });
             }
             
@@ -903,9 +1160,6 @@
                 // Update chart
                 initMoodChart();
             }
-            
-            // Initialize chart on page load
-            initMoodChart();
             
             // Add click handlers to mood buttons
             moodButtons.forEach(button => {

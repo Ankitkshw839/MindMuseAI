@@ -48,14 +48,16 @@ const apiConfig = {
 const config = {
     api: {
         baseURL: "https://openrouter.ai/api/v1",
-        apiKey: localStorage.getItem('openrouter_api_key') || "YOUR_OPENROUTER_API_KEY", // Get API key from localStorage
+        // Get API key from localStorage or use a placeholder if not available
+        // The actual key is never exposed directly in the code
+        apiKey: localStorage.getItem('openrouter_api_key') || "API_KEY_REQUIRED", 
         defaultHeaders: {
             "HTTP-Referer": "https://mindfulchat.ai", // Replace with your actual site URL
             "X-Title": "MindfulChat", // Your app name for OpenRouter rankings
         }
     },
     models: {
-        default: "deepseek/deepseek-r1:free", // Free tier model
+        default: "meta-llama/llama-3.1-405b:free", // Updated to use Llama 3.1 model
         alternatives: [
             "anthropic/claude-3-opus:beta",
             "anthropic/claude-3-sonnet:beta",
@@ -64,7 +66,20 @@ const config = {
         ]
     },
     // System prompt defining the AI assistant's persona
-    systemPrompt: "You are a compassionate, calming mental health companion who helps users with anxiety and stress using CBT and mindfulness. Provide supportive responses that incorporate cognitive-behavioral techniques and mindfulness practices. Focus on helping users identify negative thought patterns, practice grounding exercises, and develop healthy coping mechanisms. Your tone should be gentle, reassuring, and empathetic at all times."
+    systemPrompt: `You are a compassionate, medically-informed mental health companion who creates a safe space for users dealing with anxiety, stress, depression, and other mental health challenges. Always begin your responses with complete sentences and coherent thoughts - never start mid-sentence. Similarly, always end your responses with complete sentences - never leave thoughts unfinished or cut off mid-instruction. Structure your responses like a professional conversation:
+
+1. Start with a brief acknowledgment or greeting when appropriate
+2. Use warm, empathetic language that validates feelings
+3. Normalize mental health struggles with reassuring phrasing
+4. Provide accessible medical information without jargon
+5. Suggest practical coping strategies tailored to the user's situation
+6. Maintain a gentle, patient tone even with difficult emotions
+7. Respect cultural differences in mental health expression
+8. Be transparent about limitations while offering support
+9. Remind users of their resilience and growth capacity 
+10. Use strengths-based language that empowers rather than defines users by their struggles
+
+Always prioritize safety with compassion during sensitive discussions. Avoid partial or incomplete statements at both the beginning and end of your responses. Format your responses in clear, complete paragraphs that help users feel heard, understood and supported. IMPORTANT: Always complete your final sentence and never end mid-thought. If you begin explaining a technique or practice, ensure you finish explaining it fully.`
 };
 
 // Global variables to ensure availability across event listeners
@@ -113,9 +128,33 @@ function initializeApp() {
 
     // Check if API key is available, redirect to setup page if not
     if (!localStorage.getItem('openrouter_api_key') && 
-        !window.location.pathname.includes('api-setup.html')) {
+        !window.location.pathname.includes('api-setup.html') &&
+        !window.location.pathname.includes('update-key.html')) {
         window.location.href = 'api-setup.html';
         return; // Stop execution to prevent errors while redirecting
+    }
+
+    // Load the model activation status
+    const modelActivationBtn = document.querySelector('.model-activate-btn');
+    if (modelActivationBtn) {
+        // Update button text based on whether the API key is set
+        if (localStorage.getItem('openrouter_api_key')) {
+            modelActivationBtn.innerHTML = '<i class="fas fa-check-circle"></i><span>Model Active</span>';
+            modelActivationBtn.style.background = 'linear-gradient(90deg, #28a745, #20c997)';
+            modelActivationBtn.style.animation = 'none';
+        } else {
+            modelActivationBtn.innerHTML = '<i class="fas fa-bolt"></i><span>Make model active</span>';
+        }
+
+        // Add click event listener to update API key
+        modelActivationBtn.addEventListener('click', function(e) {
+            if (localStorage.getItem('openrouter_api_key')) {
+                // If already active, prevent navigation and show a message
+                e.preventDefault();
+                alert('The AI model is already active and ready to use!');
+            }
+            // Otherwise, let the link navigate to update-key.html
+        });
     }
 
     // Sample initial chat messages (in a real app, these would come from a backend)

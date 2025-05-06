@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <script src="force-dark-theme.js"></script>
     <style>
         .dashboard-layout {
             display: flex;
@@ -356,7 +357,7 @@
     </style>
 </head>
 
-<body>
+<body class="dark-theme">
     <!-- Loading screen -->
     <div class="loading-screen" id="loading-screen">
         <div class="loading-content">
@@ -367,7 +368,7 @@
 
     <div class="app-container">
         <div class="dashboard-layout">
-            <aside class="sidebar-menu">
+            <aside class="sidebar-menu" style="background-color: #171429; color: #ffffff;">
                 <a href="app.html" class="menu-item">
                     <i class="fas fa-home"></i>
                     <span class="menu-text">Home</span>
@@ -384,15 +385,15 @@
                     <i class="fas fa-chart-line"></i>
                     <span class="menu-text">My Progress</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a href="appointments.html" class="menu-item">
                     <i class="fas fa-calendar-alt"></i>
                     <span class="menu-text">Appointments</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a href="resources.html" class="menu-item">
                     <i class="fas fa-book"></i>
                     <span class="menu-text">Resources</span>
                 </a>
-                <a href="#" class="menu-item">
+                <a href="support.html" class="menu-item">
                     <i class="fas fa-headset"></i>
                     <span class="menu-text">Support</span>
                 </a>
@@ -492,6 +493,7 @@
                                 <div class="option-description">Select which AI model to use for chat responses</div>
                             </div>
                             <select class="settings-select" id="ai-model">
+                                <option value="meta-llama/llama-3.1-405b:free">Llama 3.1 (405B)</option>
                                 <option value="anthropic/claude-3.7-sonnet">Claude 3.7 Sonnet</option>
                                 <option value="anthropic/claude-3-sonnet">Claude 3 Sonnet</option>
                                 <option value="anthropic/claude-3-opus">Claude 3 Opus</option>
@@ -552,43 +554,33 @@
             // Set theme select based on saved theme
             const savedTheme = localStorage.getItem('theme') || 'dark';
             themeSelect.value = savedTheme;
-            applyTheme(savedTheme);
+            applyTheme('dark'); // Force dark theme regardless of localStorage
             
             function applyTheme(theme) {
-                if (theme === 'light') {
-                    document.documentElement.classList.remove('dark-theme');
-                    document.documentElement.classList.add('light-theme');
-                    document.documentElement.style.setProperty('--bg-color', '#f5f7fa');
-                    document.documentElement.style.setProperty('--bg-color-secondary', '#e9ecef');
-                    document.documentElement.style.setProperty('--text-color', '#343a40');
-                    document.documentElement.style.setProperty('--text-muted', '#6c757d');
-                    document.documentElement.style.setProperty('--border-color', '#ced4da');
-                    document.documentElement.style.setProperty('--input-bg', '#ffffff');
-                    document.documentElement.style.setProperty('--card-bg', '#ffffff');
-                } else {
-                    document.documentElement.classList.remove('light-theme');
-                    document.documentElement.classList.add('dark-theme');
-                    document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
-                    document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
-                    document.documentElement.style.setProperty('--text-color', '#ffffff');
-                    document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
-                    document.documentElement.style.setProperty('--border-color', '#2b2b45');
-                    document.documentElement.style.setProperty('--input-bg', '#202035');
-                    document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                // Always apply dark theme regardless of the theme parameter
+                document.documentElement.classList.remove('light-theme');
+                document.documentElement.classList.add('dark-theme');
+                document.documentElement.style.setProperty('--bg-color', '#0f0c1d');
+                document.documentElement.style.setProperty('--bg-color-secondary', '#171429');
+                document.documentElement.style.setProperty('--text-color', '#ffffff');
+                document.documentElement.style.setProperty('--text-muted', '#a3a3b9');
+                document.documentElement.style.setProperty('--border-color', '#2b2b45');
+                document.documentElement.style.setProperty('--input-bg', '#202035');
+                document.documentElement.style.setProperty('--card-bg', '#1c1a2e');
+                
+                // Apply dark theme to sidebar specifically
+                const sidebar = document.querySelector('.sidebar-menu');
+                if (sidebar) {
+                    sidebar.style.backgroundColor = '#171429';
+                    sidebar.style.color = '#ffffff';
                 }
             }
             
             // Theme select change
             themeSelect.addEventListener('change', function() {
                 const selectedTheme = this.value;
-                if (selectedTheme === 'system') {
-                    // Check system preference
-                    const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    applyTheme(prefersDarkScheme ? 'dark' : 'light');
-                } else {
-                    applyTheme(selectedTheme);
-                    localStorage.setItem('theme', selectedTheme);
-                }
+                localStorage.setItem('theme', selectedTheme);
+                applyTheme('dark'); // Always apply dark theme regardless of selection
             });
             
             // Toggle password visibility
