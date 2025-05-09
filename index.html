@@ -532,6 +532,26 @@
         .signup-link:hover {
             border-bottom-color: white;
         }
+
+        /* Scroll Animation Styles */
+        .reveal-element {
+            opacity: 0;
+            transform: translateY(30px); /* Reduced distance for subtler animation */
+            transition: opacity 1s cubic-bezier(0.5, 0, 0, 1), transform 1s cubic-bezier(0.5, 0, 0, 1);
+            will-change: opacity, transform; /* Performance optimization */
+        }
+
+        .reveal-element.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Staggered delay for animations */
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+        .reveal-delay-4 { transition-delay: 0.4s; }
+        .reveal-delay-5 { transition-delay: 0.5s; }
     </style>
 </head>
 
@@ -562,48 +582,48 @@
                 </svg>
             </div>
             <div class="hero-content">
-                <p class="subtitle">YOUR MENTAL WELLNESS COMPANION</p>
-                <h1 class="main-heading">Find <span class="highlight">peace</span> in your mental journey</h1>
-                <p class="hero-description">MindMuseAI  provides emotional support, resources, and tools to help you manage stress, anxiety, and improve your overall mental wellbeing.</p>
-                <div class="email-signup">
+                <p class="subtitle reveal-element reveal-delay-1">YOUR MENTAL WELLNESS COMPANION</p>
+                <h1 class="main-heading reveal-element reveal-delay-2">Find <span class="highlight">peace</span> in your mental journey</h1>
+                <p class="hero-description reveal-element reveal-delay-3">MindMuseAI  provides emotional support, resources, and tools to help you manage stress, anxiety, and improve your overall mental wellbeing.</p>
+                <div class="email-signup reveal-element reveal-delay-4">
                     <div class="email-icon">
                         <i class="fas fa-envelope"></i>
                     </div>
                     <input type="email" class="email-input" placeholder="Enter your email address">
                     <button class="start-btn">Get Started</button>
                 </div>
-                <p class="signup-option">Or <a href="signup.html" class="signup-link">create an account</a> to get started.</p>
+                <p class="signup-option reveal-element reveal-delay-5">Or <a href="signup.html" class="signup-link">create an account</a> to get started.</p>
             </div>
-            <div class="hero-image-container">
+            <div class="hero-image-container reveal-element reveal-delay-3">
                 <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1000&auto=format&fit=crop" alt="Meditation visualization" class="hero-image">
             </div>
             </section>
 
         <section class="features-section" id="features">
-            <h2 class="section-title">How MindMuseAI  Helps You</h2>
+            <h2 class="section-title reveal-element">How MindMuseAI  Helps You</h2>
             <div class="features-grid">
-                <div class="feature-card">
+                <div class="feature-card reveal-element reveal-delay-1">
                     <div class="feature-icon">
                         <i class="fas fa-comment-dots"></i>
                     </div>
                     <h3 class="feature-title">AI-Powered Chat Support</h3>
                     <p class="feature-description">Connect with MindfulBot for immediate emotional support and guidance whenever you need it.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card reveal-element reveal-delay-2">
                     <div class="feature-icon">
                         <i class="fas fa-chart-line"></i>
                     </div>
                     <h3 class="feature-title">Mood Tracking</h3>
                     <p class="feature-description">Monitor your emotional wellbeing over time with our intuitive mood tracking tools and visualizations.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card reveal-element reveal-delay-3">
                     <div class="feature-icon">
                         <i class="fas fa-headphones"></i>
                     </div>
                     <h3 class="feature-title">Guided Meditations</h3>
                     <p class="feature-description">Access a library of calming meditations and mindfulness exercises to reduce stress and anxiety.</p>
                 </div>
-                <div class="feature-card">
+                <div class="feature-card reveal-element reveal-delay-4">
                     <div class="feature-icon">
                         <i class="fas fa-book-open"></i>
                     </div>
@@ -614,9 +634,9 @@
         </section>
 
         <section class="cta-section">
-            <h2 class="cta-title">Ready to begin your mindfulness journey?</h2>
-            <p class="cta-description">Join thousands of users who have improved their mental wellbeing with MMindMuseAI 's supportive community and resources.</p>
-            <a href="login.html" class="enter-app-btn">Enter MindMuseAI </a>
+            <h2 class="cta-title reveal-element reveal-delay-1">Ready to begin your mindfulness journey?</h2>
+            <p class="cta-description reveal-element reveal-delay-2">Join thousands of users who have improved their mental wellbeing with MMindMuseAI 's supportive community and resources.</p>
+            <a href="login.html" class="enter-app-btn reveal-element reveal-delay-3">Enter MindMuseAI </a>
         </section>
     </div>
 
@@ -645,6 +665,46 @@
                     startBtn.click();
                 }
             });
+
+            // Scroll reveal animation
+            const revealElements = document.querySelectorAll('.reveal-element');
+            
+            // Function to check if an element is in viewport
+            function isInViewport(element) {
+                const rect = element.getBoundingClientRect();
+                const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+                // Smaller offset value makes elements appear earlier when scrolling
+                const offset = 100; 
+                // The higher percentage of element needs to be visible before animation triggers
+                const visibilityThreshold = 0.1; 
+                
+                // Element is considered in viewport when its top portion enters the view
+                return (
+                    rect.top <= windowHeight - offset &&
+                    rect.bottom >= windowHeight * visibilityThreshold
+                );
+            }
+            
+            // Function to handle scroll event with throttling for performance
+            let scrollTimeout;
+            function handleScroll() {
+                if (scrollTimeout) return;
+                
+                scrollTimeout = setTimeout(() => {
+                    revealElements.forEach(element => {
+                        if (isInViewport(element)) {
+                            element.classList.add('visible');
+                        }
+                    });
+                    scrollTimeout = null;
+                }, 10); // Small timeout for performance
+            }
+            
+            // Initial check on page load with slight delay
+            setTimeout(handleScroll, 100);
+            
+            // Add scroll event listener
+            window.addEventListener('scroll', handleScroll, { passive: true });
         });
     </script>
 </body>
