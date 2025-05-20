@@ -64,18 +64,18 @@ const ProfileStorage = {
             
             // Save to localStorage as fallback
             localStorage.setItem(STORAGE_KEYS.PROFILE, JSON.stringify({
-                ...profileData,
-                lastUpdated: new Date().toISOString()
+        ...profileData,
+        lastUpdated: new Date().toISOString() 
             }));
-            
-            return true;
-        } catch (error) {
+      
+      return true;
+    } catch (error) {
             console.error('Error saving profile:', error);
-            return false;
-        }
-    },
+      return false;
+    }
+  },
 
-    /**
+  /**
      * Get user profile
      * @returns {Promise<Object|null>} - User profile data or null if not found
      */
@@ -95,27 +95,27 @@ const ProfileStorage = {
             }
             
             // Fallback to localStorage
-            const profileData = localStorage.getItem(STORAGE_KEYS.PROFILE);
-            return profileData ? JSON.parse(profileData) : null;
-        } catch (error) {
+      const profileData = localStorage.getItem(STORAGE_KEYS.PROFILE);
+      return profileData ? JSON.parse(profileData) : null;
+    } catch (error) {
             console.error('Error retrieving profile:', error);
-            return null;
-        }
-    },
+      return null;
+    }
+  },
 
-    /**
+  /**
      * Clear profile data
      * @returns {Promise<Boolean>} - Success indicator
      */
     async clearProfile() {
-        try {
-            localStorage.removeItem(STORAGE_KEYS.PROFILE);
-            return true;
-        } catch (error) {
+    try {
+      localStorage.removeItem(STORAGE_KEYS.PROFILE);
+      return true;
+    } catch (error) {
             console.error('Error clearing profile:', error);
-            return false;
-        }
+      return false;
     }
+  }
 };
 
 /**
@@ -123,8 +123,8 @@ const ProfileStorage = {
  * Handles user progress data including mood tracking and gamification
  */
 const ProgressStorage = {
-    /**
-     * Save user progress data
+  /**
+   * Save user progress data
      * @param {Object} progressData - The progress data to save
      * @returns {Promise<Boolean>} - Success indicator
      */
@@ -143,18 +143,18 @@ const ProgressStorage = {
             
             // Save to localStorage as fallback
             localStorage.setItem(STORAGE_KEYS.PROGRESS, JSON.stringify({
-                ...progressData,
-                lastUpdated: new Date().toISOString()
+        ...progressData,
+        lastUpdated: new Date().toISOString() 
             }));
-            
-            return true;
-        } catch (error) {
+      
+      return true;
+    } catch (error) {
             console.error('Error saving progress:', error);
-            return false;
-        }
-    },
+      return false;
+    }
+  },
 
-    /**
+  /**
      * Add a mood entry
      * @param {String} mood - The mood to record
      * @returns {Promise<Boolean>} - Success indicator
@@ -195,11 +195,11 @@ const ProgressStorage = {
                 ...progress,
                 moodEntries
             });
-        } catch (error) {
-            console.error('Error adding mood entry:', error);
-            return false;
-        }
-    },
+    } catch (error) {
+      console.error('Error adding mood entry:', error);
+      return false;
+    }
+  },
 
     /**
      * Retrieve user progress data
@@ -229,8 +229,8 @@ const ProgressStorage = {
         }
     },
 
-    /**
-     * Get mood entries for a specific date range
+  /**
+   * Get mood entries for a specific date range
      * @param {Date} startDate - Start of the range
      * @param {Date} endDate - End of the range
      * @returns {Promise<Array>} - Array of mood entries
@@ -242,30 +242,30 @@ const ProgressStorage = {
             if (!progress || !progress.moodEntries) {
                 return [];
             }
-            
-            return progress.moodEntries.filter(entry => {
-                const entryDate = new Date(entry.timestamp);
-                return entryDate >= startDate && entryDate <= endDate;
-            });
-        } catch (error) {
+      
+      return progress.moodEntries.filter(entry => {
+        const entryDate = new Date(entry.timestamp);
+        return entryDate >= startDate && entryDate <= endDate;
+      });
+    } catch (error) {
             console.error('Error getting mood entries in range:', error);
-            return [];
-        }
-    },
-
-    /**
-     * Clear all progress data
-     * @returns {Promise<Boolean>} - Success indicator
-     */
-    async clearProgress() {
-        try {
-            localStorage.removeItem(STORAGE_KEYS.PROGRESS);
-            return true;
-        } catch (error) {
-            console.error('Error clearing progress data:', error);
-            return false;
-        }
+      return [];
     }
+  },
+
+  /**
+   * Clear all progress data
+     * @returns {Promise<Boolean>} - Success indicator
+   */
+    async clearProgress() {
+    try {
+      localStorage.removeItem(STORAGE_KEYS.PROGRESS);
+      return true;
+    } catch (error) {
+      console.error('Error clearing progress data:', error);
+      return false;
+    }
+  }
 };
 
 /**
@@ -308,14 +308,14 @@ const ChatStorage = {
             const limitedHistory = chatHistory.slice(-100);
             localStorage.setItem(STORAGE_KEYS.CHAT_HISTORY, JSON.stringify(limitedHistory));
             
-            return true;
-        } catch (error) {
+      return true;
+    } catch (error) {
             console.error('Error saving chat message:', error);
-            return false;
-        }
-    },
+      return false;
+    }
+  },
 
-    /**
+  /**
      * Get chat history
      * @param {Number} limit - Maximum number of messages to retrieve
      * @returns {Promise<Array>} - Array of chat messages
@@ -350,25 +350,25 @@ const ChatStorage = {
             // Fallback to localStorage
             const chatHistory = JSON.parse(localStorage.getItem(STORAGE_KEYS.CHAT_HISTORY) || '[]');
             return chatHistory.slice(-limit);
-        } catch (error) {
+    } catch (error) {
             console.error('Error retrieving chat history:', error);
             return [];
-        }
-    },
+    }
+  },
 
-    /**
+  /**
      * Clear chat history
      * @returns {Promise<Boolean>} - Success indicator
-     */
+   */
     async clearChatHistory() {
-        try {
+    try {
             localStorage.removeItem(STORAGE_KEYS.CHAT_HISTORY);
-            return true;
-        } catch (error) {
+      return true;
+    } catch (error) {
             console.error('Error clearing chat history:', error);
-            return false;
-        }
+      return false;
     }
+  }
 };
 
 /**
@@ -376,19 +376,19 @@ const ChatStorage = {
  * Handles application settings and preferences
  */
 const SettingsStorage = {
-    /**
-     * Save user settings
-     * @param {Object} settings - Settings to save
+  /**
+   * Save user settings
+   * @param {Object} settings - Settings to save
      * @returns {Promise<Boolean>} - Success indicator
-     */
+   */
     async saveSettings(settings) {
-        try {
+    try {
             const userId = await getCurrentUserId();
             const timestamp = new Date().toISOString();
-            
+      
             // Prepare settings object
-            const updatedSettings = {
-                ...settings,
+      const updatedSettings = {
+        ...settings,
                 lastUpdated: timestamp
             };
             
@@ -402,17 +402,17 @@ const SettingsStorage = {
             }
             
             // Save to localStorage as fallback
-            localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(updatedSettings));
+      localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(updatedSettings));
             
-            return true;
-        } catch (error) {
+      return true;
+    } catch (error) {
             console.error('Error saving settings:', error);
-            return false;
-        }
-    },
+      return false;
+    }
+  },
 
-    /**
-     * Get user settings
+  /**
+   * Get user settings
      * @returns {Promise<Object>} - User settings or default settings if none found
      */
     async getSettings() {
@@ -433,24 +433,24 @@ const SettingsStorage = {
             
             // Fallback to localStorage
             if (!settings) {
-                const settingsData = localStorage.getItem(STORAGE_KEYS.SETTINGS);
+      const settingsData = localStorage.getItem(STORAGE_KEYS.SETTINGS);
                 settings = settingsData ? JSON.parse(settingsData) : null;
             }
-            
+      
             // Return default settings if none found
             if (!settings) {
-                return {
-                    darkMode: true,
-                    notifications: true,
-                    textToSpeech: false,
-                    fontSize: 'medium',
-                    language: 'en',
-                    lastUpdated: new Date().toISOString()
-                };
-            }
-            
+        return {
+          darkMode: true,
+          notifications: true,
+          textToSpeech: false,
+          fontSize: 'medium',
+          language: 'en',
+          lastUpdated: new Date().toISOString()
+        };
+      }
+      
             return settings;
-        } catch (error) {
+    } catch (error) {
             console.error('Error retrieving settings:', error);
             return {
                 darkMode: true,
@@ -460,22 +460,22 @@ const SettingsStorage = {
                 language: 'en',
                 lastUpdated: new Date().toISOString()
             };
-        }
-    },
-
-    /**
-     * Clear user settings
-     * @returns {Promise<Boolean>} - Success indicator
-     */
-    async clearSettings() {
-        try {
-            localStorage.removeItem(STORAGE_KEYS.SETTINGS);
-            return true;
-        } catch (error) {
-            console.error('Error clearing settings:', error);
-            return false;
-        }
     }
+  },
+
+  /**
+   * Clear user settings
+     * @returns {Promise<Boolean>} - Success indicator
+   */
+    async clearSettings() {
+    try {
+      localStorage.removeItem(STORAGE_KEYS.SETTINGS);
+      return true;
+    } catch (error) {
+            console.error('Error clearing settings:', error);
+      return false;
+    }
+  }
 };
 
 /**
@@ -483,58 +483,58 @@ const SettingsStorage = {
  * Main interface to the storage system
  */
 const StorageManager = {
-    profile: ProfileStorage,
-    progress: ProgressStorage,
+  profile: ProfileStorage,
+  progress: ProgressStorage,
     chats: ChatStorage,
-    settings: SettingsStorage,
-    
-    /**
-     * Check if local storage is available
-     * @returns {Boolean} - True if available, false otherwise
-     */
-    isAvailable() {
-        try {
-            const testKey = '__storage_test__';
-            localStorage.setItem(testKey, testKey);
-            localStorage.removeItem(testKey);
-            return true;
-        } catch (e) {
-            return false;
-        }
-    },
-    
-    /**
+  settings: SettingsStorage,
+  
+  /**
+   * Check if local storage is available
+   * @returns {Boolean} - True if available, false otherwise
+   */
+  isAvailable() {
+    try {
+      const testKey = '__storage_test__';
+      localStorage.setItem(testKey, testKey);
+      localStorage.removeItem(testKey);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+  
+  /**
      * Get the current user ID
      * @returns {Promise<String|null>} - User ID or null
      */
     async getCurrentUserId() {
         return getCurrentUserId();
-    },
-    
-    /**
+  },
+  
+  /**
      * Check if user is authenticated
      * @returns {Promise<Boolean>} - True if authenticated
      */
     async isAuthenticated() {
         const userId = await getCurrentUserId();
         return !!userId;
-    },
-    
-    /**
-     * Clear all application data from local storage
+  },
+  
+  /**
+   * Clear all application data from local storage
      * @returns {Promise<Boolean>} - Success indicator
-     */
+   */
     async clearAllData() {
-        try {
-            for (const key in STORAGE_KEYS) {
-                localStorage.removeItem(STORAGE_KEYS[key]);
-            }
-            return true;
-        } catch (error) {
-            console.error('Error clearing all data:', error);
-            return false;
-        }
+    try {
+      for (const key in STORAGE_KEYS) {
+        localStorage.removeItem(STORAGE_KEYS[key]);
+      }
+      return true;
+    } catch (error) {
+      console.error('Error clearing all data:', error);
+      return false;
     }
+  }
 };
 
 export default StorageManager; 
