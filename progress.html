@@ -206,6 +206,53 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Loading Screen Styles */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a2a3a, #2c3e50);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loading-content h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .loading-content p {
+            font-size: 1.1rem;
+            opacity: 0.8;
+        }
+
+        .retry-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .retry-btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
     </style>
 </head>
 
@@ -274,31 +321,31 @@
                     <h3>Best Streak</h3>
                     <p><span id="best-streak">0</span> days</p>
                 </div>
-            </div>
+                </div>
 
             <!-- Progress Stats -->
             <div class="progress-stats">
-                <div class="stat-card">
+                    <div class="stat-card">
                     <i class="fas fa-chart-line"></i>
                     <h4>Total Check-ins</h4>
                     <p id="total-checkins">0</p>
-                </div>
+                        </div>
                 <div class="stat-card">
                     <i class="fas fa-star"></i>
                     <h4>Average Mood</h4>
                     <p id="average-mood">-</p>
-                </div>
+                        </div>
                 <div class="stat-card">
                     <i class="fas fa-trophy"></i>
                     <h4>XP Earned</h4>
                     <p id="xp-earned">0</p>
-                </div>
-                <div class="stat-card">
+                    </div>
+                    <div class="stat-card">
                     <i class="fas fa-tasks"></i>
                     <h4>Goals Completed</h4>
                     <p id="goals-completed">0</p>
-                </div>
-            </div>
+                        </div>
+                            </div>
 
             <!-- Mood Trend Section -->
             <div class="progress-section">
@@ -308,46 +355,46 @@
                         <button class="filter-btn active" data-period="week">Week</button>
                         <button class="filter-btn" data-period="month">Month</button>
                         <button class="filter-btn" data-period="year">Year</button>
-                    </div>
-                </div>
+                            </div>
+                        </div>
                 <div class="mood-trend-chart">
                     <canvas id="moodTrendChart"></canvas>
                 </div>
-            </div>
-
+                    </div>
+                    
             <!-- Activity Summary Section -->
             <div class="progress-section">
                 <div class="section-header">
                     <h2 class="section-title">Activity Summary</h2>
-                </div>
+                        </div>
                 <div class="activity-grid">
                     <div class="activity-card">
                         <div class="activity-icon">
                             <i class="fas fa-brain"></i>
-                        </div>
+                            </div>
                         <div class="activity-info">
                             <h4>Mindfulness Sessions</h4>
                             <p id="mindfulness-count">0 sessions</p>
+                            </div>
                         </div>
-                    </div>
                     <div class="activity-card">
                         <div class="activity-icon">
                             <i class="fas fa-comment-dots"></i>
-                        </div>
+                    </div>
                         <div class="activity-info">
                             <h4>Chat Interactions</h4>
                             <p id="chat-count">0 conversations</p>
+                </div>
                         </div>
-                    </div>
                     <div class="activity-card">
                         <div class="activity-icon">
                             <i class="fas fa-clipboard-check"></i>
-                        </div>
+                    </div>
                         <div class="activity-info">
                             <h4>Completed Exercises</h4>
                             <p id="exercise-count">0 exercises</p>
-                        </div>
                     </div>
+                </div>
                     <div class="activity-card">
                         <div class="activity-icon">
                             <i class="fas fa-chart-bar"></i>
@@ -355,7 +402,7 @@
                         <div class="activity-info">
                             <h4>Mood Logs</h4>
                             <p id="mood-log-count">0 logs</p>
-                        </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -366,12 +413,56 @@
         import { auth } from './firebase-config.js';
         import StorageManager from './local-storage.js';
 
+        // Debug logging
+        function debugLog(message, data = null) {
+            const timestamp = new Date().toISOString();
+            console.log(`[${timestamp}] ${message}`, data || '');
+        }
+
+        // Add loading screen management
+        function hideLoadingScreen() {
+            debugLog('Hiding loading screen');
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                loadingScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loadingScreen.style.display = 'none';
+                    debugLog('Loading screen hidden');
+                }, 500);
+            }
+        }
+
+        function showError(message) {
+            debugLog('Showing error:', message);
+            console.error(message);
+            const loadingScreen = document.getElementById('loading-screen');
+            if (loadingScreen) {
+                const content = loadingScreen.querySelector('.loading-content');
+                if (content) {
+                    content.innerHTML = `
+                        <h2>Error</h2>
+                        <p>${message}</p>
+                        <button onclick="window.location.reload()" class="retry-btn">Retry</button>
+                    `;
+                }
+            }
+        }
+
         // Check authentication state
+        debugLog('Setting up auth state listener');
         auth.onAuthStateChanged(function(user) {
-            if (user) {
-                initializeProgress();
-            } else {
-                window.location.href = 'login.html';
+            try {
+                if (user) {
+                    debugLog('User is authenticated:', user.uid);
+                    initializeProgress();
+                    hideLoadingScreen();
+                } else {
+                    debugLog('User is not authenticated, redirecting to login');
+                    window.location.href = 'login.html';
+                }
+            } catch (error) {
+                showError('Failed to initialize progress page. Please try again.');
+                console.error('Error in auth state change:', error);
             }
         });
 
@@ -382,27 +473,39 @@
             const isDark = document.body.classList.contains('dark-theme');
             themeToggle.innerHTML = isDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            debugLog('Theme toggled:', isDark ? 'dark' : 'light');
         });
 
         // Add logout functionality
         document.getElementById('logout-btn').addEventListener('click', async () => {
             try {
+                debugLog('Logging out user');
                 await auth.signOut();
                 window.location.href = 'login.html';
             } catch (error) {
                 console.error('Error signing out:', error);
+                showError('Failed to sign out. Please try again.');
             }
         });
 
-        function initializeProgress() {
-            updateStats();
-            initializeMoodChart();
-            setupEventListeners();
+        async function initializeProgress() {
+            try {
+                debugLog('Initializing progress page');
+                await updateStats();
+                await initializeMoodChart();
+                setupEventListeners();
+                debugLog('Progress page initialized successfully');
+            } catch (error) {
+                showError('Failed to load progress data. Please try again.');
+                console.error('Error initializing progress:', error);
+            }
         }
 
-        function updateStats() {
+        async function updateStats() {
+            debugLog('Updating stats');
             // Get progress data from StorageManager
             const progress = StorageManager.progress.getProgress();
+            debugLog('Retrieved progress data:', progress);
             if (!progress) return;
 
             // Update streak
@@ -424,6 +527,8 @@
                 `${progress.completedExercises || 0} exercises`;
             document.getElementById('mood-log-count').textContent = 
                 `${progress.moodEntries?.length || 0} logs`;
+            
+            debugLog('Stats updated successfully');
         }
 
         function calculateAverageMood(moodEntries) {
@@ -458,52 +563,52 @@
             const moodData = prepareMoodData(progress.moodEntries, period);
             
             new Chart(ctx, {
-                type: 'line',
-                data: {
+                            type: 'line',
+                            data: {
                     labels: moodData.labels,
-                    datasets: [{
+                                datasets: [{
                         label: 'Mood Level',
                         data: moodData.values,
                         borderColor: '#4CAF50',
                         backgroundColor: 'rgba(76, 175, 80, 0.1)',
                         tension: 0.4,
                         fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
                             beginAtZero: true,
-                            max: 5,
-                            grid: {
+                                        max: 5,
+                                        grid: {
                                 color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            ticks: {
-                                color: 'rgba(255, 255, 255, 0.7)'
-                            }
-                        },
-                        x: {
-                            grid: {
+                                        },
+                                        ticks: {
+                                            color: 'rgba(255, 255, 255, 0.7)'
+                                        }
+                                    },
+                                    x: {
+                                        grid: {
                                 color: 'rgba(255, 255, 255, 0.1)'
-                            },
-                            ticks: {
-                                color: 'rgba(255, 255, 255, 0.7)'
+                                        },
+                                        ticks: {
+                                            color: 'rgba(255, 255, 255, 0.7)'
+                                        }
+                                    }
+                                },
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                }
                             }
-                        }
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    }
-                }
-            });
+                        });
         }
 
         function prepareMoodData(moodEntries, period) {
-            const moodValues = {
+                    const moodValues = {
                 'happy': 5,
                 'calm': 4,
                 'energetic': 3,
@@ -512,7 +617,7 @@
                 'sad': 0
             };
 
-            const now = new Date();
+                    const now = new Date();
             const periodStart = new Date();
 
             switch (period) {
@@ -531,7 +636,7 @@
                 new Date(entry.timestamp) >= periodStart
             );
 
-            const labels = [];
+                    const labels = [];
             const values = [];
 
             filteredEntries.forEach(entry => {
