@@ -4024,6 +4024,76 @@
                 }
             });
         });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize GamificationSystem
+            if (window.GamificationSystem) {
+                window.GamificationSystem.init();
+                
+                // Update initial XP display
+                const savedProgress = localStorage.getItem('userProgress');
+                if (savedProgress) {
+                    try {
+                        const progress = JSON.parse(savedProgress);
+                        const xpFills = document.querySelectorAll('.xp-fill');
+                        const levelEls = document.querySelectorAll('.level');
+                        const xpCounts = document.querySelectorAll('.xp-count');
+                        
+                        xpFills.forEach(fill => {
+                            if (fill) {
+                                const xpProgress = ((progress.xp - GamificationSystem.xpThresholds[progress.level]) / 
+                                    (GamificationSystem.xpThresholds[progress.level + 1] - GamificationSystem.xpThresholds[progress.level])) * 100;
+                                fill.style.width = `${Math.min(xpProgress, 100)}%`;
+                            }
+                        });
+                        
+                        levelEls.forEach(el => {
+                            if (el) {
+                                el.textContent = `Level ${progress.level}`;
+                            }
+                        });
+                        
+                        xpCounts.forEach(count => {
+                            if (count) {
+                                count.textContent = `${progress.xp}XP`;
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Error updating initial XP display:', error);
+                    }
+                }
+            }
+            
+            // Listen for XP updates
+            window.addEventListener('xpUpdated', function(event) {
+                console.log('XP update event received:', event.detail);
+                const { xp, level } = event.detail;
+                
+                const xpFills = document.querySelectorAll('.xp-fill');
+                const levelEls = document.querySelectorAll('.level');
+                const xpCounts = document.querySelectorAll('.xp-count');
+                
+                xpFills.forEach(fill => {
+                    if (fill) {
+                        const xpProgress = ((xp - GamificationSystem.xpThresholds[level]) / 
+                            (GamificationSystem.xpThresholds[level + 1] - GamificationSystem.xpThresholds[level])) * 100;
+                        fill.style.width = `${Math.min(xpProgress, 100)}%`;
+                    }
+                });
+                
+                levelEls.forEach(el => {
+                    if (el) {
+                        el.textContent = `Level ${level}`;
+                    }
+                });
+                
+                xpCounts.forEach(count => {
+                    if (count) {
+                        count.textContent = `${xp}XP`;
+                    }
+                });
+            });
+        });
     </script>
 </body>
 
