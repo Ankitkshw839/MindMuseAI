@@ -1566,6 +1566,89 @@
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
         }
+
+        /* Congratulations Box Styles */
+        .congratulations-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            z-index: 1100;
+            color: white;
+            text-align: center;
+            animation: popIn 0.5s ease-out;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .congratulations-box.fade-out {
+            animation: fadeOut 0.5s ease-out forwards;
+        }
+
+        .congrats-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .congrats-icon {
+            font-size: 4em;
+            animation: bounce 1s infinite;
+        }
+
+        .congratulations-box h2 {
+            font-size: 2em;
+            margin: 0;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .congratulations-box p {
+            margin: 0;
+            font-size: 1.1em;
+            line-height: 1.5;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .close-congrats-btn {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 24px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .close-congrats-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
     </style>
 </head>
 
@@ -1705,10 +1788,10 @@
                     <!-- Add XP progress bar -->
                     <div class="xp-progress">
                         <div class="xp-bar">
-                            <div class="xp-fill"></div>
+                            <div class="xp-fill" style="width: 0%"></div>
                         </div>
                         <div class="xp-text">
-                            <span class="level">Level 1</span> - <span class="xp-count">0</span> XP
+                            <span class="level">Level 1</span> - <span class="xp-count">0XP</span>
                             <button class="view-rewards-btn" onclick="GamificationSystem.showRewards()">
                                 <i class="fas fa-trophy"></i> View Rewards
                             </button>
@@ -2173,6 +2256,7 @@
             
             // Add XP and check for level up
             addXP(amount) {
+                console.log('Adding XP:', amount);
                 this.userProgress.xp += amount;
                 
                 // Check for level up
@@ -2185,6 +2269,26 @@
                 
                 this.saveProgress();
                 this.updateUI();
+                
+                // Dispatch XP update event
+                const event = new CustomEvent('xpUpdated', {
+                    detail: {
+                        xp: this.userProgress.xp,
+                        level: this.userProgress.level
+                    }
+                });
+                window.dispatchEvent(event);
+                
+                console.log('Updated progress:', this.userProgress);
+            },
+            
+            saveProgress() {
+                try {
+                    localStorage.setItem('userProgress', JSON.stringify(this.userProgress));
+                    console.log('Progress saved successfully');
+                } catch (error) {
+                    console.error('Error saving progress:', error);
+                }
             },
             
             // Update streak
@@ -2287,29 +2391,43 @@
             
             // Update all UI elements
             updateUI() {
+                console.log('Updating UI with progress:', this.userProgress);
+                
                 // Update streak counter
                 const streakCount = document.querySelector('.streak-count');
                 if (streakCount) {
                     streakCount.textContent = this.userProgress.streak;
                 }
                 
-                // Update XP bar
-                const xpFill = document.querySelector('.xp-fill');
-                const levelEl = document.querySelector('.level');
-                const xpCount = document.querySelector('.xp-count');
+                // Update XP bar and text in all locations
+                const xpFills = document.querySelectorAll('.xp-fill');
+                const levelEls = document.querySelectorAll('.level');
+                const xpCounts = document.querySelectorAll('.xp-count');
                 
-                if (xpFill && levelEl && xpCount) {
-                    const currentLevel = this.userProgress.level;
-                    const nextLevel = currentLevel + 1;
-                    const currentXP = this.userProgress.xp;
-                    const nextLevelXP = this.xpThresholds[nextLevel] || this.xpThresholds[currentLevel] * 2;
-                    const xpProgress = ((currentXP - this.xpThresholds[currentLevel]) / 
-                                      (nextLevelXP - this.xpThresholds[currentLevel])) * 100;
-                    
-                    xpFill.style.width = `${xpProgress}%`;
-                    levelEl.textContent = currentLevel;
-                    xpCount.textContent = currentXP;
-                }
+                const currentLevel = this.userProgress.level;
+                const currentXP = this.userProgress.xp;
+                const nextLevel = currentLevel + 1;
+                const nextLevelXP = this.xpThresholds[nextLevel] || this.xpThresholds[currentLevel] * 2;
+                const currentLevelXP = this.xpThresholds[currentLevel];
+                const xpProgress = ((currentXP - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
+                
+                xpFills.forEach(fill => {
+                    if (fill) {
+                        fill.style.width = `${Math.min(xpProgress, 100)}%`;
+                    }
+                });
+                
+                levelEls.forEach(el => {
+                    if (el) {
+                        el.textContent = `Level ${currentLevel}`;
+                    }
+                });
+                
+                xpCounts.forEach(count => {
+                    if (count) {
+                        count.textContent = `${currentXP}XP`;
+                    }
+                });
                 
                 // Update pet sprite
                 const petSprite = document.querySelector('.pet-sprite');
@@ -3018,49 +3136,234 @@
             questions: [],
             answers: [],
             score: 0,
+            chatAnalysis: null,
+            promptCount: 0,
 
             async startSession() {
                 this.currentQuestion = 0;
                 this.answers = [];
                 this.score = 0;
                 
+                // Count user prompts
+                const chatMessages = document.getElementById('chat-messages');
+                const userMessages = Array.from(chatMessages.querySelectorAll('.user-message'));
+                this.promptCount = userMessages.length;
+                
                 // Show QnA modal
                 const modal = document.getElementById('qna-modal');
                 modal.classList.add('active');
                 
-                // Load questions
+                // Analyze chat messages first
+                await this.analyzeChatContent();
+                
+                // Load questions based on chat analysis
                 await this.loadQuestions();
                 
                 // Show first question
                 this.showQuestion();
             },
 
+            async analyzeChatContent() {
+                // Get all chat messages
+                const chatMessages = document.getElementById('chat-messages');
+                const userMessages = Array.from(chatMessages.querySelectorAll('.user-message')).map(msg => 
+                    msg.querySelector('.message-text').textContent.trim()
+                );
+                
+                // Basic sentiment and topic analysis
+                const analysis = {
+                    topics: new Set(),
+                    sentiment: 'neutral',
+                    mentionedEmotions: new Set(),
+                    stressLevel: 'moderate',
+                    sleepMentioned: false,
+                    anxietyMentioned: false,
+                    depressionMentioned: false,
+                    relationshipsMentioned: false,
+                    relationshipType: {
+                        romantic: false,
+                        family: false,
+                        friendship: false
+                    },
+                    workMentioned: false
+                };
+
+                // Analyze each message
+                userMessages.forEach(msg => {
+                    const lowerMsg = msg.toLowerCase();
+                    
+                    // Check for emotions and sentiment
+                    if (lowerMsg.includes('happy') || lowerMsg.includes('great') || lowerMsg.includes('good')) {
+                        analysis.mentionedEmotions.add('positive');
+                        analysis.sentiment = 'positive';
+                    }
+                    if (lowerMsg.includes('sad') || lowerMsg.includes('depressed') || lowerMsg.includes('down')) {
+                        analysis.mentionedEmotions.add('negative');
+                        analysis.sentiment = 'negative';
+                    }
+                    
+                    // Enhanced relationship analysis
+                    if (lowerMsg.includes('relationship') || lowerMsg.includes('partner') || 
+                        lowerMsg.includes('love life') || lowerMsg.includes('dating') || 
+                        lowerMsg.includes('boyfriend') || lowerMsg.includes('girlfriend') || 
+                        lowerMsg.includes('spouse') || lowerMsg.includes('marriage') ||
+                        lowerMsg.includes('romantic') || lowerMsg.includes('breakup') ||
+                        lowerMsg.includes('ex') || lowerMsg.includes('crush')) {
+                        analysis.relationshipsMentioned = true;
+                        analysis.relationshipType.romantic = true;
+                        analysis.topics.add('romantic relationships');
+                    }
+                    if (lowerMsg.includes('family') || lowerMsg.includes('parent') || 
+                        lowerMsg.includes('sibling') || lowerMsg.includes('mother') || 
+                        lowerMsg.includes('father') || lowerMsg.includes('sister') || 
+                        lowerMsg.includes('brother')) {
+                        analysis.relationshipsMentioned = true;
+                        analysis.relationshipType.family = true;
+                        analysis.topics.add('family relationships');
+                    }
+                    if (lowerMsg.includes('friend') || lowerMsg.includes('friendship') || 
+                        lowerMsg.includes('social life')) {
+                        analysis.relationshipsMentioned = true;
+                        analysis.relationshipType.friendship = true;
+                        analysis.topics.add('friendships');
+                    }
+                    
+                    if (lowerMsg.includes('anxious') || lowerMsg.includes('anxiety') || lowerMsg.includes('worried')) {
+                        analysis.anxietyMentioned = true;
+                        analysis.topics.add('anxiety');
+                    }
+                    if (lowerMsg.includes('stress') || lowerMsg.includes('overwhelm')) {
+                        analysis.stressLevel = 'high';
+                        analysis.topics.add('stress');
+                    }
+                    if (lowerMsg.includes('sleep') || lowerMsg.includes('tired') || lowerMsg.includes('insomnia')) {
+                        analysis.sleepMentioned = true;
+                        analysis.topics.add('sleep');
+                    }
+                    if (lowerMsg.includes('depress')) {
+                        analysis.depressionMentioned = true;
+                        analysis.topics.add('depression');
+                    }
+                    if (lowerMsg.includes('work') || lowerMsg.includes('job') || lowerMsg.includes('career')) {
+                        analysis.workMentioned = true;
+                        analysis.topics.add('work');
+                    }
+                });
+
+                this.chatAnalysis = analysis;
+                return analysis;
+            },
+
             async loadQuestions() {
                 try {
-                    // Base questions that will always be included
-                    const baseQuestions = [
-                        {
-                            text: "How would you rate your current stress level?",
-                            options: ["Very Low", "Low", "Moderate", "High", "Very High"]
-                        },
-                        {
-                            text: "How well did you sleep last night?",
-                            options: ["Very Poor", "Poor", "Average", "Good", "Excellent"]
-                        }
-                    ];
-
-                    // Generate additional questions using AI
-                    const aiQuestions = await this.generateAIQuestions(18); // Generate 18 more questions
+                    const questions = [];
                     
-                    // Combine base questions with AI questions and shuffle them
-                    this.questions = this.shuffleArray([...baseQuestions, ...aiQuestions]);
+                    // Add base questions that are always relevant
+                    questions.push({
+                        text: "How would you rate your current stress level?",
+                        options: ["Very Low", "Low", "Moderate", "High", "Very High"]
+                    });
+                    
+                    // Add questions based on chat analysis
+                    if (this.chatAnalysis) {
+                        // Add mood-related question if sentiment was detected
+                        if (this.chatAnalysis.sentiment !== 'neutral') {
+                            questions.push({
+                                text: "Compared to when we started chatting, how would you say your mood is now?",
+                                options: ["Much Better", "Slightly Better", "Same", "Slightly Worse", "Much Worse"]
+                            });
+                        }
+                        
+                        // Add anxiety-specific questions if mentioned
+                        if (this.chatAnalysis.anxietyMentioned) {
+                            questions.push({
+                                text: "How would you rate your current anxiety level?",
+                                options: ["Very Low", "Low", "Moderate", "High", "Very High"]
+                            });
+                            questions.push({
+                                text: "How well are you able to manage your anxiety right now?",
+                                options: ["Very Well", "Well", "Moderately", "Poorly", "Very Poorly"]
+                            });
+                        }
+                        
+                        // Add sleep-related questions if mentioned
+                        if (this.chatAnalysis.sleepMentioned) {
+                            questions.push({
+                                text: "How would you rate your sleep quality recently?",
+                                options: ["Very Good", "Good", "Fair", "Poor", "Very Poor"]
+                            });
+                        }
+                        
+                        // Add relationship questions if mentioned
+                        if (this.chatAnalysis.relationshipsMentioned) {
+                            if (this.chatAnalysis.relationshipType.romantic) {
+                                questions.push({
+                                    text: "How satisfied are you with your current love life?",
+                                    options: ["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied", "Very Dissatisfied"]
+                                });
+                                questions.push({
+                                    text: "How well are you able to communicate your feelings in your romantic relationship?",
+                                    options: ["Very Well", "Well", "Moderately", "Poorly", "Very Poorly"]
+                                });
+                                questions.push({
+                                    text: "How supported do you feel in your romantic relationship?",
+                                    options: ["Very Supported", "Supported", "Somewhat", "Little Support", "No Support"]
+                                });
+                            }
+                            if (this.chatAnalysis.relationshipType.family) {
+                                questions.push({
+                                    text: "How would you rate your family relationships right now?",
+                                    options: ["Very Good", "Good", "Fair", "Strained", "Very Strained"]
+                                });
+                            }
+                            if (this.chatAnalysis.relationshipType.friendship) {
+                                questions.push({
+                                    text: "How satisfied are you with your social connections?",
+                                    options: ["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied", "Very Dissatisfied"]
+                                });
+                            }
+                        }
+                        
+                        // Add work-related questions if mentioned
+                        if (this.chatAnalysis.workMentioned) {
+                            questions.push({
+                                text: "How would you rate your work-life balance currently?",
+                                options: ["Excellent", "Good", "Fair", "Poor", "Very Poor"]
+                            });
+                        }
+                        
+                        // Add coping-related questions based on topics discussed
+                        if (this.chatAnalysis.topics.size > 0) {
+                            questions.push({
+                                text: "How effective do you find your current coping strategies?",
+                                options: ["Very Effective", "Effective", "Somewhat", "Not Very", "Not at All"]
+                            });
+                        }
+                    }
+                    
+                    // Add general well-being questions
+                    questions.push({
+                        text: "How would you rate your overall well-being right now?",
+                        options: ["Excellent", "Good", "Fair", "Poor", "Very Poor"]
+                    });
+                    
+                    questions.push({
+                        text: "How hopeful do you feel about managing your challenges?",
+                        options: ["Very Hopeful", "Hopeful", "Neutral", "Less Hopeful", "Not Hopeful"]
+                    });
+                    
+                    // Shuffle questions except for the first one (stress level)
+                    const firstQuestion = questions[0];
+                    const remainingQuestions = this.shuffleArray(questions.slice(1));
+                    this.questions = [firstQuestion, ...remainingQuestions];
+                    
                 } catch (error) {
                     console.error('Error loading questions:', error);
                     // Fallback to basic questions if generation fails
                     this.questions = [
                         {
-                            text: "How are you feeling today?",
-                            options: ["Not Good", "Okay", "Good", "Very Good", "Excellent"]
+                            text: "How are you feeling right now?",
+                            options: ["Much Better", "Better", "Same", "Worse", "Much Worse"]
                         }
                     ];
                 }
@@ -3233,26 +3536,105 @@
                 const modal = document.getElementById('qna-modal');
                 modal.classList.remove('active');
 
-                // Calculate final score and XP
-                const averageScore = this.score / this.questions.length;
-                const xpEarned = Math.round(averageScore * 10); // 10-50 XP based on answers
+                // Calculate XP based on prompt count
+                let xpEarned = 0;
+                if (this.promptCount >= 10) {
+                    xpEarned = 50;
+                } else if (this.promptCount >= 5) {
+                    xpEarned = 25;
+                } else {
+                    xpEarned = this.promptCount * 5;
+                }
 
-                // Award XP
-                GamificationSystem.addXP(xpEarned);
+                console.log('QnA Session ended:', {
+                    promptCount: this.promptCount,
+                    xpEarned: xpEarned
+                });
 
-                // Show completion message
+                // Award XP and ensure UI update
+                if (window.GamificationSystem) {
+                    window.GamificationSystem.addXP(xpEarned);
+                    window.GamificationSystem.saveProgress();
+                    window.GamificationSystem.updateUI();
+                }
+
+                // Show completion message with XP earned
                 const message = document.createElement('div');
                 message.className = 'completion-message';
                 message.innerHTML = `
                     <i class="fas fa-check-circle"></i>
-                    QnA Session Complete! Earned ${xpEarned} XP
+                    QnA Session Complete! Earned ${xpEarned} XP for ${this.promptCount} prompts
                 `;
                 document.body.appendChild(message);
+
+                // Show congratulations box if earned 50 XP
+                if (xpEarned >= 50) {
+                    this.showCongratulationsBox(xpEarned);
+                }
 
                 // Remove message after 3 seconds
                 setTimeout(() => {
                     message.remove();
                 }, 3000);
+
+                // Update XP display immediately
+                const xpFill = document.querySelector('.xp-fill');
+                const levelEl = document.querySelector('.level');
+                const xpCount = document.querySelector('.xp-count');
+                
+                if (xpFill && levelEl && xpCount) {
+                    const currentXP = window.GamificationSystem.userProgress.xp;
+                    const currentLevel = window.GamificationSystem.userProgress.level;
+                    const nextLevel = currentLevel + 1;
+                    const nextLevelXP = window.GamificationSystem.xpThresholds[nextLevel] || window.GamificationSystem.xpThresholds[currentLevel] * 2;
+                    const xpProgress = ((currentXP - window.GamificationSystem.xpThresholds[currentLevel]) / 
+                                      (nextLevelXP - window.GamificationSystem.xpThresholds[currentLevel])) * 100;
+                    
+                    xpFill.style.width = `${xpProgress}%`;
+                    levelEl.textContent = `Level ${currentLevel}`;
+                    xpCount.textContent = currentXP;
+                }
+            },
+
+            showCongratulationsBox(xpEarned) {
+            },
+
+            showCongratulationsBox(xpEarned) {
+                const congratsBox = document.createElement('div');
+                congratsBox.className = 'congratulations-box';
+                congratsBox.innerHTML = `
+                    <div class="congrats-content">
+                        <div class="congrats-icon">🎉</div>
+                        <h2>Congratulations!</h2>
+                        <p>You've earned the maximum ${xpEarned} XP by having an extensive conversation!</p>
+                        <p>Keep engaging in meaningful discussions to earn more rewards.</p>
+                        <button class="close-congrats-btn">Awesome!</button>
+                    </div>
+                `;
+                document.body.appendChild(congratsBox);
+
+                // Add close button functionality
+                const closeBtn = congratsBox.querySelector('.close-congrats-btn');
+                closeBtn.addEventListener('click', () => {
+                    congratsBox.classList.add('fade-out');
+                    setTimeout(() => congratsBox.remove(), 500);
+                });
+
+                // Add confetti effect
+                this.addConfettiEffect();
+            },
+
+            addConfettiEffect() {
+                for (let i = 0; i < 100; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.className = 'confetti';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                    document.body.appendChild(confetti);
+                    
+                    setTimeout(() => confetti.remove(), 5000);
+                }
             },
 
             async analyzeAnswers() {
