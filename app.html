@@ -1812,7 +1812,24 @@
                     <span>Support</span>
                 </a>
                 <!-- New Logout Button -->
-                <a href="javascript:void(0);" class="nav-btn" id="visible-logout-btn" style="background-color: #aa324a;" onclick="(async function() { try { if(window.firebaseAuth) { await window.firebaseAuth.signOut(); } } catch(e) { console.error('Firebase logout error:', e); } localStorage.removeItem('isLoggedIn'); localStorage.removeItem('userEmail'); localStorage.removeItem('token'); sessionStorage.clear(); window.location.href = 'index.html'; })();">
+                <a href="javascript:void(0);" class="nav-btn" id="visible-logout-btn" style="background-color: #aa324a;" onclick="(async function() { 
+                    try { 
+                        if(window.firebaseAuth) { 
+                            console.log('Signing out of Firebase auth...'); 
+                            await window.firebaseAuth.signOut(); 
+                            console.log('Firebase auth sign out successful'); 
+                        } 
+                    } catch(e) { 
+                        console.error('Firebase logout error:', e); 
+                    } 
+                    // Only clear session-specific data
+                    sessionStorage.clear(); 
+                    localStorage.removeItem('isLoggedIn'); 
+                    localStorage.removeItem('token'); 
+                    // Don't clear user data since it's now stored in Firebase
+                    console.log('Redirecting to index page...'); 
+                    window.location.href = 'index.html'; 
+                })();">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Log out</span>
                 </a>
@@ -1822,9 +1839,9 @@
                         <i class="fas fa-user-circle"></i>
                     </button>
                     <div class="profile-dropdown" id="profile-dropdown">
-                                            <div class="user-info">
-                        <h4>Your Account</h4>
-                        <div class="user-email" id="user-email">user@example.com</div>
+                        <div class="user-info">
+                            <h4>Your Account</h4>
+                            <div class="user-email" id="user-email">user@example.com</div>
                         <div class="user-progress">
                             <div class="xp-mini-display">
                                 <i class="fas fa-star"></i>
@@ -1840,13 +1857,30 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                        </div>
                         <div class="dropdown-divider"></div>
                         <a href="profile.html" class="dropdown-item">
                             <i class="fas fa-user-circle"></i>
                             <span>My Profile</span>
                         </a>
-                        <a href="javascript:void(0);" class="dropdown-item" id="logout-btn" onclick="(async function() { try { if(window.firebaseAuth) { await window.firebaseAuth.signOut(); } } catch(e) { console.error('Firebase logout error:', e); } localStorage.removeItem('isLoggedIn'); localStorage.removeItem('userEmail'); localStorage.removeItem('token'); sessionStorage.clear(); window.location.href = 'index.html'; })();">
+                        <a href="javascript:void(0);" class="dropdown-item" id="logout-btn" onclick="(async function() { 
+                            try { 
+                                if(window.firebaseAuth) { 
+                                    console.log('Signing out of Firebase auth...'); 
+                                    await window.firebaseAuth.signOut(); 
+                                    console.log('Firebase auth sign out successful'); 
+                                } 
+                            } catch(e) { 
+                                console.error('Firebase logout error:', e); 
+                            } 
+                            // Only clear session-specific data
+                            sessionStorage.clear(); 
+                            localStorage.removeItem('isLoggedIn'); 
+                            localStorage.removeItem('token'); 
+                            // Don't clear user data since it's now stored in Firebase
+                            console.log('Redirecting to index page...'); 
+                            window.location.href = 'index.html'; 
+                        })();">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Log out</span>
                         </a>
@@ -2282,6 +2316,132 @@
                 }
             },
             
+            // Pet growth stages
+            petStages: ['🌱', '🌿', '🌳', '🌟', '🔮'],
+            
+            // Badges data
+            badges: {
+                streak3: {
+                    title: "3-Day Streak!",
+                    description: "Logged your mood for 3 days in a row",
+                    icon: "🔥"
+                },
+                streak7: {
+                    title: "Weekly Warrior",
+                    description: "Logged your mood for 7 days in a row",
+                    icon: "📅"
+                },
+                firstMood: {
+                    title: "First Step",
+                    description: "Logged your first mood entry",
+                    icon: "👣"
+                },
+                allMoods: {
+                    title: "Emotional Range",
+                    description: "Experienced the full spectrum of emotions",
+                    icon: "🌈"
+                }
+            },
+            
+            // Initialize the system
+            async init() {
+                logMood('Initializing GamificationSystem');
+                // Try to load from Firebase first, then fallback to localStorage
+                try {
+                    if (window.StorageManager) {
+                        // Get progress data from StorageManager
+                        const progressData = await window.StorageManager.progress.getProgress();
+                        logMood('Retrieved progress data from StorageManager:', progressData ? true : false);
+                        
+                        if (progressData && progressData.gamification) {
+                            this.userProgress = {
+                                ...this.userProgress,
+                                ...progressData.gamification
+                            };
+                            logMood('Loaded gamification data from firebase/storage:', this.userProgress);
+                        } else {
+                            // Check localStorage for legacy data
+                            const savedProgress = localStorage.getItem('userProgress');
+                            if (savedProgress) {
+                                try {
+                                    const parsed = JSON.parse(savedProgress);
+                                    this.userProgress = {
+                                        ...this.userProgress,
+                                        ...parsed
+                                    };
+                                    logMood('Loaded legacy gamification data from localStorage:', this.userProgress);
+                                    
+                                    // Save to new format for future use
+                                    this.saveToFirebase();
+                                } catch (error) {
+                                    console.error('Error loading progress from localStorage:', error);
+                                }
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error initializing GamificationSystem:', error);
+                }
+                
+                // Update UI with current progress
+                this.updateUI();
+                
+                // Check streak on initialization
+                this.updateStreak();
+            },
+            
+            // Save to Firebase
+            async saveToFirebase() {
+                logMood('Saving gamification data to Firebase');
+                try {
+                    if (window.StorageManager && window.StorageManager.progress) {
+                        // Get existing progress
+                        const existingProgress = await window.StorageManager.progress.getProgress() || {};
+                        
+                        // Update with gamification data
+                        const updatedProgress = {
+                            ...existingProgress,
+                            gamification: this.userProgress,
+                            lastUpdated: new Date().toISOString()
+                        };
+                        
+                        // Save to Firebase via StorageManager
+                        const saveResult = await window.StorageManager.progress.saveProgress(updatedProgress);
+                        logMood('Gamification data saved to Firebase:', saveResult);
+                        
+                        // Also save to localStorage as fallback
+                        this.saveToLocalStorage();
+                        
+                        return saveResult;
+                    } else {
+                        throw new Error('StorageManager not available');
+                    }
+                } catch (error) {
+                    console.error('Error saving to Firebase:', error);
+                    
+                    // Fallback to local storage
+                    this.saveToLocalStorage();
+                    return false;
+                }
+            },
+            
+            // Save to localStorage (as fallback)
+            saveToLocalStorage() {
+                try {
+                    localStorage.setItem('userProgress', JSON.stringify(this.userProgress));
+                    logMood('Gamification data saved to localStorage');
+                    return true;
+                } catch (error) {
+                    console.error('Error saving to localStorage:', error);
+                    return false;
+                }
+            },
+            
+            // Save progress (tries Firebase first, then localStorage)
+            async saveProgress() {
+                return this.saveToFirebase();
+            },
+            
             // Show rewards modal
             showRewards() {
                 const modal = document.getElementById('rewards-modal');
@@ -2339,7 +2499,7 @@
             },
             
             // Add XP and check for level up
-            addXP(amount) {
+            async addXP(amount) {
                 console.log('Adding XP:', amount);
                 this.userProgress.xp += amount;
                 
@@ -2351,7 +2511,7 @@
                     this.checkNewRewards();
                 }
                 
-                this.saveProgress();
+                await this.saveProgress();
                 this.updateUI();
                 
                 // Dispatch XP update event
@@ -2366,35 +2526,61 @@
                 console.log('Updated progress:', this.userProgress);
             },
             
-            saveProgress() {
-                try {
-                    localStorage.setItem('userProgress', JSON.stringify(this.userProgress));
-                    console.log('Progress saved successfully');
-                } catch (error) {
-                    console.error('Error saving progress:', error);
-                }
-            },
-            
             // Update streak
-            updateStreak() {
-                const lastEntry = localStorage.getItem('lastMoodEntry');
+            async updateStreak() {
                 const today = new Date().toDateString();
                 
-                if (lastEntry === today) {
-                    return; // Already logged today
+                try {
+                    // Get last entry from StorageManager
+                    if (window.StorageManager && window.StorageManager.progress) {
+                        const progress = await window.StorageManager.progress.getProgress();
+                        const lastEntry = progress && progress.lastMoodEntry ? progress.lastMoodEntry : null;
+                        
+                        if (lastEntry === today) {
+                            return; // Already logged today
+                        }
+                        
+                        const yesterday = new Date();
+                        yesterday.setDate(yesterday.getDate() - 1);
+                        const yesterdayStr = yesterday.toDateString();
+                        
+                        if (lastEntry === yesterdayStr) {
+                            this.userProgress.streak++;
+                        } else {
+                            this.userProgress.streak = 1;
+                        }
+                        
+                        // Save the last mood entry date
+                        const updatedProgress = {
+                            ...progress,
+                            lastMoodEntry: today,
+                            gamification: this.userProgress
+                        };
+                        
+                        await window.StorageManager.progress.saveProgress(updatedProgress);
+                    } else {
+                        // Fallback to localStorage
+                        const lastEntry = localStorage.getItem('lastMoodEntry');
+                        
+                        if (lastEntry === today) {
+                            return; // Already logged today
+                        }
+                        
+                        const yesterday = new Date();
+                        yesterday.setDate(yesterday.getDate() - 1);
+                        const yesterdayStr = yesterday.toDateString();
+                        
+                        if (lastEntry === yesterdayStr) {
+                            this.userProgress.streak++;
+                        } else {
+                            this.userProgress.streak = 1;
+                        }
+                        
+                        localStorage.setItem('lastMoodEntry', today);
+                    }
+                } catch (error) {
+                    console.error('Error updating streak:', error);
                 }
-                
-                const yesterday = new Date();
-                yesterday.setDate(yesterday.getDate() - 1);
-                const yesterdayStr = yesterday.toDateString();
-                
-                if (lastEntry === yesterdayStr) {
-                    this.userProgress.streak++;
-                } else {
-                    this.userProgress.streak = 1;
-                }
-                
-                localStorage.setItem('lastMoodEntry', today);
                 
                 // Check for streak badges
                 if (this.userProgress.streak === 3 && !this.userProgress.badges.includes('streak3')) {
@@ -2403,16 +2589,16 @@
                     this.awardBadge('streak7');
                 }
                 
-                this.saveProgress();
+                await this.saveProgress();
                 this.updateUI();
             },
             
             // Award a badge
-            awardBadge(badgeId) {
+            async awardBadge(badgeId) {
                 if (!this.userProgress.badges.includes(badgeId)) {
                     this.userProgress.badges.push(badgeId);
                     this.showBadge(badgeId);
-                    this.saveProgress();
+                    await this.saveProgress();
                 }
             },
             
@@ -2535,8 +2721,8 @@
             console.error('Failed to load StorageManager:', err);
         });
         
-        function initMoodTracker() {
-            document.addEventListener('DOMContentLoaded', function() {
+        async function initMoodTracker() {
+            document.addEventListener('DOMContentLoaded', async function() {
                 logMood('DOM loaded, initializing mood tracker');
                 
                 if (!window.StorageManager) {
@@ -2565,9 +2751,9 @@
                 let moodHistory = [];
                 
                 try {
-                    // Get progress data from StorageManager
-                    const progressData = window.StorageManager.progress.getProgress();
-                    logMood('Retrieved progress data:', progressData ? true : false);
+                    // Get progress data from StorageManager with Firebase support
+                    const progressData = await window.StorageManager.progress.getProgress();
+                    logMood('Retrieved progress data from Firebase/localStorage:', progressData ? true : false);
                     
                     if (progressData && progressData.moodEntries) {
                         moodHistory = progressData.moodEntries;
@@ -2590,7 +2776,7 @@
                                 }));
                                 
                                 // Save migrated data to new storage system
-                                const saved = window.StorageManager.progress.saveProgress({ moodEntries: moodHistory });
+                                const saved = await window.StorageManager.progress.saveProgress({ moodEntries: moodHistory });
                                 logMood('Migrated mood history to new storage system:', saved);
                                 
                                 // Remove old data
@@ -2673,7 +2859,7 @@
                     }
                 }
             
-                function initMoodChart() {
+                async function initMoodChart() {
                     if (!moodChart) {
                         console.error('Mood chart element not found');
                         return;
@@ -2693,13 +2879,13 @@
                     
                     logMood('Filtering mood entries for date range:', startDate, 'to', endDate);
                     
-                    // Get filtered entries using StorageManager
+                    // Get filtered entries using StorageManager with Firebase support
                     let filteredHistory = [];
                     
                     try {
                         if (window.StorageManager && window.StorageManager.progress) {
-                            filteredHistory = window.StorageManager.progress.getMoodEntriesInRange(startDate, endDate);
-                            logMood('Filtered entries from StorageManager:', filteredHistory.length);
+                            filteredHistory = await window.StorageManager.progress.getMoodEntriesInRange(startDate, endDate);
+                            logMood('Filtered entries from Firebase/StorageManager:', filteredHistory.length);
                         } else {
                             // Fallback to manual filtering if StorageManager is not available
                             logMood('StorageManager not available, using manual filtering');
@@ -2908,34 +3094,40 @@
                 }
 
                 // Add mood entry and update chart
-                function addMoodEntry(mood) {
+                async function addMoodEntry(mood) {
                     logMood('Adding mood entry:', mood);
                     
                     try {
-                        // Use StorageManager to add mood entry
+                        // Use StorageManager to add mood entry with Firebase support
                         if (window.StorageManager && window.StorageManager.progress) {
-                            const success = window.StorageManager.progress.addMoodEntry(mood);
-                            logMood('Mood entry added to StorageManager:', success);
+                            const success = await window.StorageManager.progress.addMoodEntry(mood);
+                            logMood('Mood entry added to Firebase/StorageManager:', success);
                             
                             if (!success) {
                                 throw new Error('Failed to save mood entry');
                             }
                             
                             // Update gamification system
-                            GamificationSystem.updateStreak();
-                            GamificationSystem.addXP(10); // Base XP for logging mood
-                            GamificationSystem.updatePetGrowth();
+                            await GamificationSystem.updateStreak();
+                            await GamificationSystem.addXP(10); // Base XP for logging mood
+                            await GamificationSystem.updatePetGrowth();
+                            
+                            // Refresh mood history
+                            const progress = await window.StorageManager.progress.getProgress();
+                            if (progress && progress.moodEntries) {
+                                moodHistory = progress.moodEntries;
+                            }
                             
                             // Check for first mood badge
-                            if (moodHistory.length === 0) {
-                                GamificationSystem.awardBadge('firstMood');
+                            if (moodHistory.length === 1) {
+                                await GamificationSystem.awardBadge('firstMood');
                             }
                             
                             // Check for all moods badge
                             const uniqueMoods = new Set(moodHistory.map(entry => entry.mood));
                             uniqueMoods.add(mood);
                             if (uniqueMoods.size === 6) { // All 6 mood types
-                                GamificationSystem.awardBadge('allMoods');
+                                await GamificationSystem.awardBadge('allMoods');
                             }
                             
                         } else {
@@ -2962,7 +3154,7 @@
                     }
                     
                     // Update chart
-                    initMoodChart();
+                    await initMoodChart();
                 }
                 
                 // Add click handlers to mood buttons
@@ -3047,7 +3239,7 @@
                 top: 20px;
                 right: 20px;
                 background: linear-gradient(135deg, #ff4444, #ff6b6b);
-            color: white;
+                color: white;
                 padding: 20px;
                 border-radius: 15px;
                 z-index: 1000;
@@ -3092,8 +3284,8 @@
             }
 
             .error-tips span {
-            display: flex;
-            align-items: center;
+                display: flex;
+                align-items: center;
                 gap: 8px;
             }
 
@@ -3116,9 +3308,9 @@
             }
 
             .transition-content {
-            display: flex;
+                display: flex;
                 flex-direction: column;
-            align-items: center;
+                align-items: center;
                 gap: 15px;
             }
 
@@ -3292,8 +3484,8 @@
                     
                     // Add base questions that are always relevant
                     questions.push({
-                        text: "How would you rate your current stress level?",
-                        options: ["Very Low", "Low", "Moderate", "High", "Very High"]
+                            text: "How would you rate your current stress level?",
+                            options: ["Very Low", "Low", "Moderate", "High", "Very High"]
                     });
                     
                     // Add questions based on chat analysis
@@ -3545,7 +3737,7 @@
                 document.getElementById('next-question').disabled = true;
             },
 
-            nextQuestion() {
+            async nextQuestion() {
                 const selectedOption = document.querySelector('.answer-option.selected');
                 if (!selectedOption) return;
 
@@ -3559,11 +3751,11 @@
                 if (this.currentQuestion < this.questions.length) {
                     this.showQuestion();
                 } else {
-                    this.endSession();
+                    await this.endSession();
                 }
             },
 
-            endSession() {
+            async endSession() {
                 // Hide QnA modal
                 const modal = document.getElementById('qna-modal');
                 modal.classList.remove('active');
@@ -3585,8 +3777,8 @@
 
                 // Award XP and ensure UI update
                 if (window.GamificationSystem) {
-                    window.GamificationSystem.addXP(xpEarned);
-                    window.GamificationSystem.saveProgress();
+                    await window.GamificationSystem.addXP(xpEarned);
+                    await window.GamificationSystem.saveProgress();
                     window.GamificationSystem.updateUI();
                 }
 
@@ -3601,7 +3793,7 @@
 
                 // Show congratulations box if earned 50 XP
                 if (xpEarned >= 50) {
-                    this.showCongratulationsBox(xpEarned);
+                    await this.showCongratulationsBox(xpEarned);
                 }
 
                 // Remove message after 3 seconds
@@ -3631,13 +3823,32 @@
             showCongratulationsBox(xpEarned) {
             },
 
-            showCongratulationsBox(xpEarned) {
+            async showCongratulationsBox(xpEarned) {
                 const congratsBox = document.createElement('div');
                 congratsBox.className = 'congratulations-box';
+                
+                // Get user email if logged in
+                let userEmail = '';
+                try {
+                    if (window.StorageManager) {
+                        const isAuth = await window.StorageManager.isAuthenticated();
+                        if (isAuth) {
+                            const userId = await window.StorageManager.getCurrentUserId();
+                            const profile = await window.StorageManager.profile.getProfile();
+                            if (profile && profile.email) {
+                                userEmail = `<p>Great job, ${profile.email.split('@')[0]}!</p>`;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error getting user info:', error);
+                }
+                
                 congratsBox.innerHTML = `
                     <div class="congrats-content">
                         <div class="congrats-icon">🎉</div>
                         <h2>Congratulations!</h2>
+                        ${userEmail}
                         <p>You've earned the maximum ${xpEarned} XP by having an extensive conversation!</p>
                         <p>Keep engaging in meaningful discussions to earn more rewards.</p>
                         <button class="close-congrats-btn">Awesome!</button>
@@ -3969,7 +4180,7 @@
                         action,
                         date: new Date().toISOString()
                     });
-                this.updateStreak();
+                    this.updateStreak();
                     this.calculateImprovement();
                     this.updateUI();
                 },
@@ -4052,25 +4263,25 @@
             const skipBtn = document.getElementById('skip-question');
 
             if (nextBtn) {
-                nextBtn.addEventListener('click', () => QnASystem.nextQuestion());
+                nextBtn.addEventListener('click', async () => await QnASystem.nextQuestion());
             }
 
             if (skipBtn) {
-                skipBtn.addEventListener('click', () => {
+                skipBtn.addEventListener('click', async () => {
                     QnASystem.currentQuestion++;
                     if (QnASystem.currentQuestion < QnASystem.questions.length) {
                         QnASystem.showQuestion();
                     } else {
-                        QnASystem.endSession();
+                        await QnASystem.endSession();
                     }
                 });
             }
         });
 
         // Update confirmEndChat function
-        function confirmEndChat() {
+        async function confirmEndChat() {
             document.getElementById('end-chat-confirmation').classList.remove('active');
-            QnASystem.startSession();
+            await QnASystem.startSession();
         }
 
         // Add event listener for end chat button
