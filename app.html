@@ -1545,174 +1545,6 @@
                 grid-template-columns: 1fr;
             }
         }
-
-        .header {
-            background: linear-gradient(90deg, rgba(0, 0, 0, 0.5) 0%, rgba(0, 64, 128, 0.5) 50%, rgba(0, 128, 64, 0.5) 100%);
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .app-container {
-            background: rgba(0, 0, 0, 2.0) !important;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-        }
-
-        /* Header XP Display */
-        .xp-display {
-            background: linear-gradient(90deg, #4CAF50, #8BC34A);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            font-weight: 500;
-            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
-            margin-right: 1rem;
-        }
-
-        .xp-display i {
-            color: #FFD700;
-            animation: pulse 2s infinite;
-        }
-
-        /* Profile Dropdown Progress */
-        .user-progress {
-            margin-top: 0.8rem;
-            padding-top: 0.8rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .xp-mini-display, .level-mini-display {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            color: rgba(255, 255, 255, 0.9);
-            font-size: 0.9rem;
-        }
-
-        .xp-mini-display i, .level-mini-display i {
-            color: #FFD700;
-            font-size: 0.8rem;
-        }
-
-        .profile-dropdown .xp-progress {
-            margin: 0.5rem 0;
-        }
-
-        .profile-dropdown .xp-bar {
-            height: 4px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 2px;
-            overflow: hidden;
-        }
-
-        .profile-dropdown .xp-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4CAF50, #8BC34A);
-            transition: width 0.3s ease;
-        }
-
-        @media (max-width: 768px) {
-            .xp-display {
-                padding: 0.3rem 0.8rem;
-                font-size: 0.9rem;
-            }
-        }
-
-        /* Congratulations Box Styles */
-        .congratulations-box {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, #2c3e50, #3498db);
-            border-radius: 20px;
-            padding: 30px;
-            width: 90%;
-            max-width: 500px;
-            z-index: 1100;
-            color: white;
-            text-align: center;
-            animation: popIn 0.5s ease-out;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .congratulations-box.fade-out {
-            animation: fadeOut 0.5s ease-out forwards;
-        }
-
-        .congrats-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .congrats-icon {
-            font-size: 4em;
-            animation: bounce 1s infinite;
-        }
-
-        .congratulations-box h2 {
-            font-size: 2em;
-            margin: 0;
-            background: linear-gradient(90deg, #4CAF50, #8BC34A);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .congratulations-box p {
-            margin: 0;
-            font-size: 1.1em;
-            line-height: 1.5;
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .close-congrats-btn {
-            background: linear-gradient(90deg, #4CAF50, #8BC34A);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 12px 24px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .close-congrats-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
-        }
-
-        @keyframes popIn {
-            0% {
-                transform: translate(-50%, -50%) scale(0.8);
-                opacity: 0;
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
     </style>
 </head>
 
@@ -1774,7 +1606,6 @@
                 <h1>MindMuseAI</h1>
             </div>
             <div class="header-actions">
-                <!-- Removing XP display from here -->
                 <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
                     <i class="fas fa-sun"></i>
                 </button>
@@ -1808,24 +1639,7 @@
                     <span>Support</span>
                 </a>
                 <!-- New Logout Button -->
-                <a href="javascript:void(0);" class="nav-btn" id="visible-logout-btn" style="background-color: #aa324a;" onclick="(async function() { 
-                    try { 
-                        if(window.firebaseAuth) { 
-                            console.log('Signing out of Firebase auth...'); 
-                            await window.firebaseAuth.signOut(); 
-                            console.log('Firebase auth sign out successful'); 
-                        } 
-                    } catch(e) { 
-                        console.error('Firebase logout error:', e); 
-                    } 
-                    // Only clear session-specific data
-                    sessionStorage.clear(); 
-                    localStorage.removeItem('isLoggedIn'); 
-                    localStorage.removeItem('token'); 
-                    // Don't clear user data since it's now stored in Firebase
-                    console.log('Redirecting to index page...'); 
-                    window.location.href = 'index.html'; 
-                })();">
+                <a href="javascript:void(0);" class="nav-btn" id="visible-logout-btn" style="background-color: #aa324a;" onclick="(async function() { try { if(window.firebaseAuth) { await window.firebaseAuth.signOut(); } } catch(e) { console.error('Firebase logout error:', e); } localStorage.removeItem('isLoggedIn'); localStorage.removeItem('userEmail'); localStorage.removeItem('token'); sessionStorage.clear(); window.location.href = 'index.html'; })();">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Log out</span>
                 </a>
@@ -1838,45 +1652,13 @@
                         <div class="user-info">
                             <h4>Your Account</h4>
                             <div class="user-email" id="user-email">user@example.com</div>
-                        <div class="user-progress">
-                            <div class="xp-mini-display">
-                                <i class="fas fa-star"></i>
-                                <span class="xp-count">0XP</span>
-                            </div>
-                            <div class="level-mini-display">
-                                <i class="fas fa-trophy"></i>
-                                <span class="level">Level 1</span>
-                            </div>
-                            <div class="xp-progress">
-                                <div class="xp-bar">
-                                    <div class="xp-fill" style="width: 0%"></div>
-                                </div>
-                            </div>
-                        </div>
                         </div>
                         <div class="dropdown-divider"></div>
                         <a href="profile.html" class="dropdown-item">
                             <i class="fas fa-user-circle"></i>
                             <span>My Profile</span>
                         </a>
-                        <a href="javascript:void(0);" class="dropdown-item" id="logout-btn" onclick="(async function() { 
-                            try { 
-                                if(window.firebaseAuth) { 
-                                    console.log('Signing out of Firebase auth...'); 
-                                    await window.firebaseAuth.signOut(); 
-                                    console.log('Firebase auth sign out successful'); 
-                                } 
-                            } catch(e) { 
-                                console.error('Firebase logout error:', e); 
-                            } 
-                            // Only clear session-specific data
-                            sessionStorage.clear(); 
-                            localStorage.removeItem('isLoggedIn'); 
-                            localStorage.removeItem('token'); 
-                            // Don't clear user data since it's now stored in Firebase
-                            console.log('Redirecting to index page...'); 
-                            window.location.href = 'index.html'; 
-                        })();">
+                        <a href="javascript:void(0);" class="dropdown-item" id="logout-btn" onclick="(async function() { try { if(window.firebaseAuth) { await window.firebaseAuth.signOut(); } } catch(e) { console.error('Firebase logout error:', e); } localStorage.removeItem('isLoggedIn'); localStorage.removeItem('userEmail'); localStorage.removeItem('token'); sessionStorage.clear(); window.location.href = 'index.html'; })();">
                             <i class="fas fa-sign-out-alt"></i>
                             <span>Log out</span>
                         </a>
@@ -1902,10 +1684,10 @@
                     <!-- Add XP progress bar -->
                     <div class="xp-progress">
                         <div class="xp-bar">
-                            <div class="xp-fill" style="width: 0%"></div>
+                            <div class="xp-fill"></div>
                         </div>
                         <div class="xp-text">
-                            <span class="level">Level 1</span> - <span class="xp-count">0XP</span>
+                            <span class="level">Level 1</span> - <span class="xp-count">0</span> XP
                             <button class="view-rewards-btn" onclick="GamificationSystem.showRewards()">
                                 <i class="fas fa-trophy"></i> View Rewards
                             </button>
@@ -2145,14 +1927,14 @@
     <!-- End Chat Confirmation Modal -->
     <div class="confirmation-modal" id="end-chat-confirmation">
         <div class="confirmation-content">
-            <h3>Ready to End Chat?</h3>
-            <p>Would you like to take a quick mental health check-in to track your progress?</p>
+            <h3>End Chat Session?</h3>
+            <p>This will start a quick mental health check-in with 20 questions.</p>
             <div class="confirmation-actions">
                 <button class="cancel-btn" onclick="document.getElementById('end-chat-confirmation').classList.remove('active')">
-                    <i class="fas fa-times"></i> Continue Chat
+                    <i class="fas fa-times"></i> Cancel
                 </button>
                 <button class="confirm-btn" onclick="confirmEndChat()">
-                    <i class="fas fa-check"></i> Start Check-in
+                    <i class="fas fa-check"></i> End Chat
                 </button>
             </div>
         </div>
@@ -2312,132 +2094,6 @@
                 }
             },
             
-            // Pet growth stages
-            petStages: ['🌱', '🌿', '🌳', '🌟', '🔮'],
-            
-            // Badges data
-            badges: {
-                streak3: {
-                    title: "3-Day Streak!",
-                    description: "Logged your mood for 3 days in a row",
-                    icon: "🔥"
-                },
-                streak7: {
-                    title: "Weekly Warrior",
-                    description: "Logged your mood for 7 days in a row",
-                    icon: "📅"
-                },
-                firstMood: {
-                    title: "First Step",
-                    description: "Logged your first mood entry",
-                    icon: "👣"
-                },
-                allMoods: {
-                    title: "Emotional Range",
-                    description: "Experienced the full spectrum of emotions",
-                    icon: "🌈"
-                }
-            },
-            
-            // Initialize the system
-            async init() {
-                logMood('Initializing GamificationSystem');
-                // Try to load from Firebase first, then fallback to localStorage
-                try {
-                    if (window.StorageManager) {
-                        // Get progress data from StorageManager
-                        const progressData = await window.StorageManager.progress.getProgress();
-                        logMood('Retrieved progress data from StorageManager:', progressData ? true : false);
-                        
-                        if (progressData && progressData.gamification) {
-                            this.userProgress = {
-                                ...this.userProgress,
-                                ...progressData.gamification
-                            };
-                            logMood('Loaded gamification data from firebase/storage:', this.userProgress);
-                        } else {
-                            // Check localStorage for legacy data
-                            const savedProgress = localStorage.getItem('userProgress');
-                            if (savedProgress) {
-                                try {
-                                    const parsed = JSON.parse(savedProgress);
-                                    this.userProgress = {
-                                        ...this.userProgress,
-                                        ...parsed
-                                    };
-                                    logMood('Loaded legacy gamification data from localStorage:', this.userProgress);
-                                    
-                                    // Save to new format for future use
-                                    this.saveToFirebase();
-                                } catch (error) {
-                                    console.error('Error loading progress from localStorage:', error);
-                                }
-                            }
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error initializing GamificationSystem:', error);
-                }
-                
-                // Update UI with current progress
-                this.updateUI();
-                
-                // Check streak on initialization
-                this.updateStreak();
-            },
-            
-            // Save to Firebase
-            async saveToFirebase() {
-                logMood('Saving gamification data to Firebase');
-                try {
-                    if (window.StorageManager && window.StorageManager.progress) {
-                        // Get existing progress
-                        const existingProgress = await window.StorageManager.progress.getProgress() || {};
-                        
-                        // Update with gamification data
-                        const updatedProgress = {
-                            ...existingProgress,
-                            gamification: this.userProgress,
-                            lastUpdated: new Date().toISOString()
-                        };
-                        
-                        // Save to Firebase via StorageManager
-                        const saveResult = await window.StorageManager.progress.saveProgress(updatedProgress);
-                        logMood('Gamification data saved to Firebase:', saveResult);
-                        
-                        // Also save to localStorage as fallback
-                        this.saveToLocalStorage();
-                        
-                        return saveResult;
-                    } else {
-                        throw new Error('StorageManager not available');
-                    }
-                } catch (error) {
-                    console.error('Error saving to Firebase:', error);
-                    
-                    // Fallback to local storage
-                    this.saveToLocalStorage();
-                    return false;
-                }
-            },
-            
-            // Save to localStorage (as fallback)
-            saveToLocalStorage() {
-                try {
-                    localStorage.setItem('userProgress', JSON.stringify(this.userProgress));
-                    logMood('Gamification data saved to localStorage');
-                    return true;
-                } catch (error) {
-                    console.error('Error saving to localStorage:', error);
-                    return false;
-                }
-            },
-            
-            // Save progress (tries Firebase first, then localStorage)
-            async saveProgress() {
-                return this.saveToFirebase();
-            },
-            
             // Show rewards modal
             showRewards() {
                 const modal = document.getElementById('rewards-modal');
@@ -2495,8 +2151,7 @@
             },
             
             // Add XP and check for level up
-            async addXP(amount) {
-                console.log('Adding XP:', amount);
+            addXP(amount) {
                 this.userProgress.xp += amount;
                 
                 // Check for level up
@@ -2507,76 +2162,30 @@
                     this.checkNewRewards();
                 }
                 
-                await this.saveProgress();
+                this.saveProgress();
                 this.updateUI();
-                
-                // Dispatch XP update event
-                const event = new CustomEvent('xpUpdated', {
-                    detail: {
-                        xp: this.userProgress.xp,
-                        level: this.userProgress.level
-                    }
-                });
-                window.dispatchEvent(event);
-                
-                console.log('Updated progress:', this.userProgress);
             },
             
             // Update streak
-            async updateStreak() {
+            updateStreak() {
+                const lastEntry = localStorage.getItem('lastMoodEntry');
                 const today = new Date().toDateString();
                 
-                try {
-                    // Get last entry from StorageManager
-                    if (window.StorageManager && window.StorageManager.progress) {
-                        const progress = await window.StorageManager.progress.getProgress();
-                        const lastEntry = progress && progress.lastMoodEntry ? progress.lastMoodEntry : null;
-                        
-                        if (lastEntry === today) {
-                            return; // Already logged today
-                        }
-                        
-                        const yesterday = new Date();
-                        yesterday.setDate(yesterday.getDate() - 1);
-                        const yesterdayStr = yesterday.toDateString();
-                        
-                        if (lastEntry === yesterdayStr) {
-                            this.userProgress.streak++;
-                        } else {
-                            this.userProgress.streak = 1;
-                        }
-                        
-                        // Save the last mood entry date
-                        const updatedProgress = {
-                            ...progress,
-                            lastMoodEntry: today,
-                            gamification: this.userProgress
-                        };
-                        
-                        await window.StorageManager.progress.saveProgress(updatedProgress);
-                    } else {
-                        // Fallback to localStorage
-                        const lastEntry = localStorage.getItem('lastMoodEntry');
-                        
-                        if (lastEntry === today) {
-                            return; // Already logged today
-                        }
-                        
-                        const yesterday = new Date();
-                        yesterday.setDate(yesterday.getDate() - 1);
-                        const yesterdayStr = yesterday.toDateString();
-                        
-                        if (lastEntry === yesterdayStr) {
-                            this.userProgress.streak++;
-                        } else {
-                            this.userProgress.streak = 1;
-                        }
-                        
-                        localStorage.setItem('lastMoodEntry', today);
-                    }
-                } catch (error) {
-                    console.error('Error updating streak:', error);
+                if (lastEntry === today) {
+                    return; // Already logged today
                 }
+                
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                const yesterdayStr = yesterday.toDateString();
+                
+                if (lastEntry === yesterdayStr) {
+                    this.userProgress.streak++;
+                } else {
+                    this.userProgress.streak = 1;
+                }
+                
+                localStorage.setItem('lastMoodEntry', today);
                 
                 // Check for streak badges
                 if (this.userProgress.streak === 3 && !this.userProgress.badges.includes('streak3')) {
@@ -2585,16 +2194,16 @@
                     this.awardBadge('streak7');
                 }
                 
-                await this.saveProgress();
+                this.saveProgress();
                 this.updateUI();
             },
             
             // Award a badge
-            async awardBadge(badgeId) {
+            awardBadge(badgeId) {
                 if (!this.userProgress.badges.includes(badgeId)) {
                     this.userProgress.badges.push(badgeId);
                     this.showBadge(badgeId);
-                    await this.saveProgress();
+                    this.saveProgress();
                 }
             },
             
@@ -2657,43 +2266,29 @@
             
             // Update all UI elements
             updateUI() {
-                console.log('Updating UI with progress:', this.userProgress);
-                
                 // Update streak counter
                 const streakCount = document.querySelector('.streak-count');
                 if (streakCount) {
                     streakCount.textContent = this.userProgress.streak;
                 }
                 
-                // Update XP bar and text in all locations
-                const xpFills = document.querySelectorAll('.xp-fill');
-                const levelEls = document.querySelectorAll('.level');
-                const xpCounts = document.querySelectorAll('.xp-count');
+                // Update XP bar
+                const xpFill = document.querySelector('.xp-fill');
+                const levelEl = document.querySelector('.level');
+                const xpCount = document.querySelector('.xp-count');
                 
-                const currentLevel = this.userProgress.level;
-                const currentXP = this.userProgress.xp;
-                const nextLevel = currentLevel + 1;
-                const nextLevelXP = this.xpThresholds[nextLevel] || this.xpThresholds[currentLevel] * 2;
-                const currentLevelXP = this.xpThresholds[currentLevel];
-                const xpProgress = ((currentXP - currentLevelXP) / (nextLevelXP - currentLevelXP)) * 100;
-                
-                xpFills.forEach(fill => {
-                    if (fill) {
-                        fill.style.width = `${Math.min(xpProgress, 100)}%`;
-                    }
-                });
-                
-                levelEls.forEach(el => {
-                    if (el) {
-                        el.textContent = `Level ${currentLevel}`;
-                    }
-                });
-                
-                xpCounts.forEach(count => {
-                    if (count) {
-                        count.textContent = `${currentXP}XP`;
-                    }
-                });
+                if (xpFill && levelEl && xpCount) {
+                    const currentLevel = this.userProgress.level;
+                    const nextLevel = currentLevel + 1;
+                    const currentXP = this.userProgress.xp;
+                    const nextLevelXP = this.xpThresholds[nextLevel] || this.xpThresholds[currentLevel] * 2;
+                    const xpProgress = ((currentXP - this.xpThresholds[currentLevel]) / 
+                                      (nextLevelXP - this.xpThresholds[currentLevel])) * 100;
+                    
+                    xpFill.style.width = `${xpProgress}%`;
+                    levelEl.textContent = currentLevel;
+                    xpCount.textContent = currentXP;
+                }
                 
                 // Update pet sprite
                 const petSprite = document.querySelector('.pet-sprite');
@@ -2717,8 +2312,8 @@
             console.error('Failed to load StorageManager:', err);
         });
         
-        async function initMoodTracker() {
-            document.addEventListener('DOMContentLoaded', async function() {
+        function initMoodTracker() {
+            document.addEventListener('DOMContentLoaded', function() {
                 logMood('DOM loaded, initializing mood tracker');
                 
                 if (!window.StorageManager) {
@@ -2747,9 +2342,9 @@
                 let moodHistory = [];
                 
                 try {
-                    // Get progress data from StorageManager with Firebase support
-                    const progressData = await window.StorageManager.progress.getProgress();
-                    logMood('Retrieved progress data from Firebase/localStorage:', progressData ? true : false);
+                    // Get progress data from StorageManager
+                    const progressData = window.StorageManager.progress.getProgress();
+                    logMood('Retrieved progress data:', progressData ? true : false);
                     
                     if (progressData && progressData.moodEntries) {
                         moodHistory = progressData.moodEntries;
@@ -2772,7 +2367,7 @@
                                 }));
                                 
                                 // Save migrated data to new storage system
-                                const saved = await window.StorageManager.progress.saveProgress({ moodEntries: moodHistory });
+                                const saved = window.StorageManager.progress.saveProgress({ moodEntries: moodHistory });
                                 logMood('Migrated mood history to new storage system:', saved);
                                 
                                 // Remove old data
@@ -2855,7 +2450,7 @@
                     }
                 }
             
-                async function initMoodChart() {
+                function initMoodChart() {
                     if (!moodChart) {
                         console.error('Mood chart element not found');
                         return;
@@ -2875,24 +2470,13 @@
                     
                     logMood('Filtering mood entries for date range:', startDate, 'to', endDate);
                     
-                    // Get filtered entries using StorageManager with Firebase support
+                    // Get filtered entries using StorageManager
                     let filteredHistory = [];
                     
                     try {
                         if (window.StorageManager && window.StorageManager.progress) {
-                            // First, try to get all mood entries
-                            const progress = await window.StorageManager.progress.getProgress();
-                            if (progress && progress.moodEntries && progress.moodEntries.length > 0) {
-                                // Manually filter the entries by date range
-                                filteredHistory = progress.moodEntries.filter(entry => {
-                                    const entryDate = new Date(entry.timestamp);
-                                    return entryDate >= startDate && entryDate <= endDate;
-                                });
-                                
-                                logMood('Filtered entries from progress data:', filteredHistory.length);
-                            } else {
-                                logMood('No mood entries found in progress data');
-                            }
+                            filteredHistory = window.StorageManager.progress.getMoodEntriesInRange(startDate, endDate);
+                            logMood('Filtered entries from StorageManager:', filteredHistory.length);
                         } else {
                             // Fallback to manual filtering if StorageManager is not available
                             logMood('StorageManager not available, using manual filtering');
@@ -2906,24 +2490,13 @@
                         filteredHistory = [];
                     }
                     
-                    logMood('Filtered history after processing:', filteredHistory);
-
                     // Sort entries by date (oldest first)
                     filteredHistory.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
                     
-                    // Prepare data for chart with better formatted labels
+                    // Prepare data for chart with time labels instead of date
                     const timeLabels = filteredHistory.map(entry => {
                         const date = new Date(entry.timestamp);
-                        // Format as "Aug 15, 2:00 PM" for better readability
-                        return date.toLocaleDateString('en-US', { 
-                            month: 'short', 
-                            day: 'numeric'
-                        }) + ', ' + 
-                        date.toLocaleTimeString('en-US', { 
-                            hour: '2-digit', 
-                            minute: '2-digit',
-                            hour12: true
-                        });
+                        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
                     });
                     
                     const moodData = filteredHistory.map(entry => moodValues[entry.mood]);
@@ -2941,38 +2514,20 @@
                             const dayDate = new Date(startDate);
                             dayDate.setDate(dayDate.getDate() + i);
                             
-                            // Format date as "Aug 15"
-                            const dateStr = dayDate.toLocaleDateString('en-US', { 
-                                month: 'short', 
-                                day: 'numeric'
-                            });
-                            
                             // Add morning, afternoon, evening time points
                             const morning = new Date(dayDate);
                             morning.setHours(8, 0, 0, 0);
-                            timeSlots.push(`${dateStr}, ${morning.toLocaleTimeString('en-US', { 
-                                hour: '2-digit', 
-                                minute: '2-digit',
-                                hour12: true
-                            })}`);
+                            timeSlots.push(morning.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
                             emptyData.push(null);
                             
                             const afternoon = new Date(dayDate);
                             afternoon.setHours(14, 0, 0, 0);
-                            timeSlots.push(`${dateStr}, ${afternoon.toLocaleTimeString('en-US', { 
-                                hour: '2-digit', 
-                                minute: '2-digit',
-                                hour12: true
-                            })}`);
+                            timeSlots.push(afternoon.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
                             emptyData.push(null);
                             
                             const evening = new Date(dayDate);
                             evening.setHours(20, 0, 0, 0);
-                            timeSlots.push(`${dateStr}, ${evening.toLocaleTimeString('en-US', { 
-                                hour: '2-digit', 
-                                minute: '2-digit',
-                                hour12: true
-                            })}`);
+                            timeSlots.push(evening.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
                             emptyData.push(null);
                         }
                         
@@ -3130,55 +2685,34 @@
                 }
 
                 // Add mood entry and update chart
-                async function addMoodEntry(mood) {
+                function addMoodEntry(mood) {
                     logMood('Adding mood entry:', mood);
                     
                     try {
-                        // Create entry with current timestamp
-                        const entry = {
-                            mood: mood,
-                            timestamp: new Date().toISOString()
-                        };
-                        
-                        // Use StorageManager to add mood entry with Firebase support
+                        // Use StorageManager to add mood entry
                         if (window.StorageManager && window.StorageManager.progress) {
-                            // Get existing progress data
-                            const progress = await window.StorageManager.progress.getProgress() || {};
-                            
-                            // Add mood entry to moodEntries array
-                            const moodEntries = progress.moodEntries || [];
-                            moodEntries.push(entry);
-                            
-                            // Update progress data in Firebase/localStorage
-                            const success = await window.StorageManager.progress.saveProgress({
-                                ...progress,
-                                moodEntries: moodEntries
-                            });
-                            
-                            logMood('Mood entry added to progress data:', success);
+                            const success = window.StorageManager.progress.addMoodEntry(mood);
+                            logMood('Mood entry added to StorageManager:', success);
                             
                             if (!success) {
                                 throw new Error('Failed to save mood entry');
                             }
                             
-                            // Update local mood history
-                            moodHistory = moodEntries;
-                            
                             // Update gamification system
-                            await GamificationSystem.updateStreak();
-                            await GamificationSystem.addXP(10); // Base XP for logging mood
-                            await GamificationSystem.updatePetGrowth();
+                            GamificationSystem.updateStreak();
+                            GamificationSystem.addXP(10); // Base XP for logging mood
+                            GamificationSystem.updatePetGrowth();
                             
                             // Check for first mood badge
-                            if (moodHistory.length === 1) {
-                                await GamificationSystem.awardBadge('firstMood');
+                            if (moodHistory.length === 0) {
+                                GamificationSystem.awardBadge('firstMood');
                             }
                             
                             // Check for all moods badge
                             const uniqueMoods = new Set(moodHistory.map(entry => entry.mood));
                             uniqueMoods.add(mood);
                             if (uniqueMoods.size === 6) { // All 6 mood types
-                                await GamificationSystem.awardBadge('allMoods');
+                                GamificationSystem.awardBadge('allMoods');
                             }
                             
                         } else {
@@ -3205,7 +2739,7 @@
                     }
                     
                     // Update chart
-                    await initMoodChart();
+                    initMoodChart();
                 }
                 
                 // Add click handlers to mood buttons
@@ -3237,7 +2771,59 @@
 
         // Add this to your existing JavaScript
         function showEndChatConfirmation() {
-            // Show confirmation modal directly without validation
+            // Enhanced conversation validation
+            const chatMessages = document.getElementById('chat-messages');
+            const messages = chatMessages.querySelectorAll('.message');
+            
+            // More sophisticated validation
+            const userMessages = Array.from(messages).filter(msg => {
+                if (!msg.classList.contains('user-message')) return false;
+                
+                const messageText = msg.querySelector('.message-text').textContent.trim();
+                // Exclude initial greeting and empty messages
+                if (messageText.startsWith('Hello! I\'m MindMuseAI Bot')) return false;
+                if (messageText.length < 3) return false; // Minimum message length
+                
+                return true;
+            });
+
+            // Check for meaningful conversation
+            const hasMeaningfulConversation = userMessages.length >= 2; // At least 2 messages
+            const hasLongConversation = userMessages.some(msg => 
+                msg.querySelector('.message-text').textContent.trim().length > 20
+            );
+
+            if (!hasMeaningfulConversation || !hasLongConversation) {
+                // Enhanced error message
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'error-message';
+                errorMessage.innerHTML = `
+                    <div class="error-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <div class="error-content">
+                        <h4>Chat Session Too Short</h4>
+                        <p>Please have a meaningful conversation before ending the chat.</p>
+                        <div class="error-tips">
+                            <span><i class="fas fa-check-circle"></i> Share your thoughts</span>
+                            <span><i class="fas fa-check-circle"></i> Ask questions</span>
+                            <span><i class="fas fa-check-circle"></i> Express your feelings</span>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(errorMessage);
+                
+                // Remove error message after 5 seconds with fade out
+                setTimeout(() => {
+                    errorMessage.classList.add('fade-out');
+                    setTimeout(() => {
+                        errorMessage.remove();
+                    }, 500);
+                }, 5000);
+                return;
+            }
+
+            // If there's meaningful conversation, show confirmation
             const confirmationModal = document.getElementById('end-chat-confirmation');
             if (confirmationModal) {
                 confirmationModal.classList.add('active');
@@ -3411,234 +2997,49 @@
             questions: [],
             answers: [],
             score: 0,
-            chatAnalysis: null,
-            promptCount: 0,
 
             async startSession() {
                 this.currentQuestion = 0;
                 this.answers = [];
                 this.score = 0;
                 
-                // Count user prompts
-                const chatMessages = document.getElementById('chat-messages');
-                const userMessages = Array.from(chatMessages.querySelectorAll('.user-message'));
-                this.promptCount = userMessages.length;
-                
                 // Show QnA modal
                 const modal = document.getElementById('qna-modal');
                 modal.classList.add('active');
                 
-                // Analyze chat messages first
-                await this.analyzeChatContent();
-                
-                // Load questions based on chat analysis
+                // Load questions
                 await this.loadQuestions();
                 
                 // Show first question
                 this.showQuestion();
             },
 
-            async analyzeChatContent() {
-                // Get all chat messages
-                const chatMessages = document.getElementById('chat-messages');
-                const userMessages = Array.from(chatMessages.querySelectorAll('.user-message')).map(msg => 
-                    msg.querySelector('.message-text').textContent.trim()
-                );
-                
-                // Basic sentiment and topic analysis
-                const analysis = {
-                    topics: new Set(),
-                    sentiment: 'neutral',
-                    mentionedEmotions: new Set(),
-                    stressLevel: 'moderate',
-                    sleepMentioned: false,
-                    anxietyMentioned: false,
-                    depressionMentioned: false,
-                    relationshipsMentioned: false,
-                    relationshipType: {
-                        romantic: false,
-                        family: false,
-                        friendship: false
-                    },
-                    workMentioned: false
-                };
-
-                // Analyze each message
-                userMessages.forEach(msg => {
-                    const lowerMsg = msg.toLowerCase();
-                    
-                    // Check for emotions and sentiment
-                    if (lowerMsg.includes('happy') || lowerMsg.includes('great') || lowerMsg.includes('good')) {
-                        analysis.mentionedEmotions.add('positive');
-                        analysis.sentiment = 'positive';
-                    }
-                    if (lowerMsg.includes('sad') || lowerMsg.includes('depressed') || lowerMsg.includes('down')) {
-                        analysis.mentionedEmotions.add('negative');
-                        analysis.sentiment = 'negative';
-                    }
-                    
-                    // Enhanced relationship analysis
-                    if (lowerMsg.includes('relationship') || lowerMsg.includes('partner') || 
-                        lowerMsg.includes('love life') || lowerMsg.includes('dating') || 
-                        lowerMsg.includes('boyfriend') || lowerMsg.includes('girlfriend') || 
-                        lowerMsg.includes('spouse') || lowerMsg.includes('marriage') ||
-                        lowerMsg.includes('romantic') || lowerMsg.includes('breakup') ||
-                        lowerMsg.includes('ex') || lowerMsg.includes('crush')) {
-                        analysis.relationshipsMentioned = true;
-                        analysis.relationshipType.romantic = true;
-                        analysis.topics.add('romantic relationships');
-                    }
-                    if (lowerMsg.includes('family') || lowerMsg.includes('parent') || 
-                        lowerMsg.includes('sibling') || lowerMsg.includes('mother') || 
-                        lowerMsg.includes('father') || lowerMsg.includes('sister') || 
-                        lowerMsg.includes('brother')) {
-                        analysis.relationshipsMentioned = true;
-                        analysis.relationshipType.family = true;
-                        analysis.topics.add('family relationships');
-                    }
-                    if (lowerMsg.includes('friend') || lowerMsg.includes('friendship') || 
-                        lowerMsg.includes('social life')) {
-                        analysis.relationshipsMentioned = true;
-                        analysis.relationshipType.friendship = true;
-                        analysis.topics.add('friendships');
-                    }
-                    
-                    if (lowerMsg.includes('anxious') || lowerMsg.includes('anxiety') || lowerMsg.includes('worried')) {
-                        analysis.anxietyMentioned = true;
-                        analysis.topics.add('anxiety');
-                    }
-                    if (lowerMsg.includes('stress') || lowerMsg.includes('overwhelm')) {
-                        analysis.stressLevel = 'high';
-                        analysis.topics.add('stress');
-                    }
-                    if (lowerMsg.includes('sleep') || lowerMsg.includes('tired') || lowerMsg.includes('insomnia')) {
-                        analysis.sleepMentioned = true;
-                        analysis.topics.add('sleep');
-                    }
-                    if (lowerMsg.includes('depress')) {
-                        analysis.depressionMentioned = true;
-                        analysis.topics.add('depression');
-                    }
-                    if (lowerMsg.includes('work') || lowerMsg.includes('job') || lowerMsg.includes('career')) {
-                        analysis.workMentioned = true;
-                        analysis.topics.add('work');
-                    }
-                });
-
-                this.chatAnalysis = analysis;
-                return analysis;
-            },
-
             async loadQuestions() {
                 try {
-                    const questions = [];
-                    
-                    // Add base questions that are always relevant
-                    questions.push({
+                    // Base questions that will always be included
+                    const baseQuestions = [
+                        {
                             text: "How would you rate your current stress level?",
                             options: ["Very Low", "Low", "Moderate", "High", "Very High"]
-                    });
+                        },
+                        {
+                            text: "How well did you sleep last night?",
+                            options: ["Very Poor", "Poor", "Average", "Good", "Excellent"]
+                        }
+                    ];
+
+                    // Generate additional questions using AI
+                    const aiQuestions = await this.generateAIQuestions(18); // Generate 18 more questions
                     
-                    // Add questions based on chat analysis
-                    if (this.chatAnalysis) {
-                        // Add mood-related question if sentiment was detected
-                        if (this.chatAnalysis.sentiment !== 'neutral') {
-                            questions.push({
-                                text: "Compared to when we started chatting, how would you say your mood is now?",
-                                options: ["Much Better", "Slightly Better", "Same", "Slightly Worse", "Much Worse"]
-                            });
-                        }
-                        
-                        // Add anxiety-specific questions if mentioned
-                        if (this.chatAnalysis.anxietyMentioned) {
-                            questions.push({
-                                text: "How would you rate your current anxiety level?",
-                                options: ["Very Low", "Low", "Moderate", "High", "Very High"]
-                            });
-                            questions.push({
-                                text: "How well are you able to manage your anxiety right now?",
-                                options: ["Very Well", "Well", "Moderately", "Poorly", "Very Poorly"]
-                            });
-                        }
-                        
-                        // Add sleep-related questions if mentioned
-                        if (this.chatAnalysis.sleepMentioned) {
-                            questions.push({
-                                text: "How would you rate your sleep quality recently?",
-                                options: ["Very Good", "Good", "Fair", "Poor", "Very Poor"]
-                            });
-                        }
-                        
-                        // Add relationship questions if mentioned
-                        if (this.chatAnalysis.relationshipsMentioned) {
-                            if (this.chatAnalysis.relationshipType.romantic) {
-                                questions.push({
-                                    text: "How satisfied are you with your current love life?",
-                                    options: ["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied", "Very Dissatisfied"]
-                                });
-                                questions.push({
-                                    text: "How well are you able to communicate your feelings in your romantic relationship?",
-                                    options: ["Very Well", "Well", "Moderately", "Poorly", "Very Poorly"]
-                                });
-                                questions.push({
-                                    text: "How supported do you feel in your romantic relationship?",
-                                    options: ["Very Supported", "Supported", "Somewhat", "Little Support", "No Support"]
-                                });
-                            }
-                            if (this.chatAnalysis.relationshipType.family) {
-                                questions.push({
-                                    text: "How would you rate your family relationships right now?",
-                                    options: ["Very Good", "Good", "Fair", "Strained", "Very Strained"]
-                                });
-                            }
-                            if (this.chatAnalysis.relationshipType.friendship) {
-                                questions.push({
-                                    text: "How satisfied are you with your social connections?",
-                                    options: ["Very Satisfied", "Satisfied", "Neutral", "Dissatisfied", "Very Dissatisfied"]
-                                });
-                            }
-                        }
-                        
-                        // Add work-related questions if mentioned
-                        if (this.chatAnalysis.workMentioned) {
-                            questions.push({
-                                text: "How would you rate your work-life balance currently?",
-                                options: ["Excellent", "Good", "Fair", "Poor", "Very Poor"]
-                            });
-                        }
-                        
-                        // Add coping-related questions based on topics discussed
-                        if (this.chatAnalysis.topics.size > 0) {
-                            questions.push({
-                                text: "How effective do you find your current coping strategies?",
-                                options: ["Very Effective", "Effective", "Somewhat", "Not Very", "Not at All"]
-                            });
-                        }
-                    }
-                    
-                    // Add general well-being questions
-                    questions.push({
-                        text: "How would you rate your overall well-being right now?",
-                        options: ["Excellent", "Good", "Fair", "Poor", "Very Poor"]
-                    });
-                    
-                    questions.push({
-                        text: "How hopeful do you feel about managing your challenges?",
-                        options: ["Very Hopeful", "Hopeful", "Neutral", "Less Hopeful", "Not Hopeful"]
-                    });
-                    
-                    // Shuffle questions except for the first one (stress level)
-                    const firstQuestion = questions[0];
-                    const remainingQuestions = this.shuffleArray(questions.slice(1));
-                    this.questions = [firstQuestion, ...remainingQuestions];
-                    
+                    // Combine base questions with AI questions and shuffle them
+                    this.questions = this.shuffleArray([...baseQuestions, ...aiQuestions]);
                 } catch (error) {
                     console.error('Error loading questions:', error);
                     // Fallback to basic questions if generation fails
                     this.questions = [
                         {
-                            text: "How are you feeling right now?",
-                            options: ["Much Better", "Better", "Same", "Worse", "Much Worse"]
+                            text: "How are you feeling today?",
+                            options: ["Not Good", "Okay", "Good", "Very Good", "Excellent"]
                         }
                     ];
                 }
@@ -3788,7 +3189,7 @@
                 document.getElementById('next-question').disabled = true;
             },
 
-            async nextQuestion() {
+            nextQuestion() {
                 const selectedOption = document.querySelector('.answer-option.selected');
                 if (!selectedOption) return;
 
@@ -3802,133 +3203,35 @@
                 if (this.currentQuestion < this.questions.length) {
                     this.showQuestion();
                 } else {
-                    await this.endSession();
+                    this.endSession();
                 }
             },
 
-            async endSession() {
+            endSession() {
                 // Hide QnA modal
                 const modal = document.getElementById('qna-modal');
                 modal.classList.remove('active');
 
-                // Calculate XP based on prompt count
-                let xpEarned = 0;
-                if (this.promptCount >= 10) {
-                    xpEarned = 50;
-                } else if (this.promptCount >= 5) {
-                    xpEarned = 25;
-                } else {
-                    xpEarned = this.promptCount * 5;
-                }
+                // Calculate final score and XP
+                const averageScore = this.score / this.questions.length;
+                const xpEarned = Math.round(averageScore * 10); // 10-50 XP based on answers
 
-                console.log('QnA Session ended:', {
-                    promptCount: this.promptCount,
-                    xpEarned: xpEarned
-                });
+                // Award XP
+                GamificationSystem.addXP(xpEarned);
 
-                // Award XP and ensure UI update
-                if (window.GamificationSystem) {
-                    await window.GamificationSystem.addXP(xpEarned);
-                    await window.GamificationSystem.saveProgress();
-                    window.GamificationSystem.updateUI();
-                }
-
-                // Show completion message with XP earned
+                // Show completion message
                 const message = document.createElement('div');
                 message.className = 'completion-message';
                 message.innerHTML = `
                     <i class="fas fa-check-circle"></i>
-                    QnA Session Complete! Earned ${xpEarned} XP for ${this.promptCount} prompts
+                    QnA Session Complete! Earned ${xpEarned} XP
                 `;
                 document.body.appendChild(message);
-
-                // Show congratulations box if earned 50 XP
-                if (xpEarned >= 50) {
-                    await this.showCongratulationsBox(xpEarned);
-                }
 
                 // Remove message after 3 seconds
                 setTimeout(() => {
                     message.remove();
                 }, 3000);
-
-                // Update XP display immediately
-                const xpFill = document.querySelector('.xp-fill');
-                const levelEl = document.querySelector('.level');
-                const xpCount = document.querySelector('.xp-count');
-                
-                if (xpFill && levelEl && xpCount) {
-                    const currentXP = window.GamificationSystem.userProgress.xp;
-                    const currentLevel = window.GamificationSystem.userProgress.level;
-                    const nextLevel = currentLevel + 1;
-                    const nextLevelXP = window.GamificationSystem.xpThresholds[nextLevel] || window.GamificationSystem.xpThresholds[currentLevel] * 2;
-                    const xpProgress = ((currentXP - window.GamificationSystem.xpThresholds[currentLevel]) / 
-                                      (nextLevelXP - window.GamificationSystem.xpThresholds[currentLevel])) * 100;
-                    
-                    xpFill.style.width = `${xpProgress}%`;
-                    levelEl.textContent = `Level ${currentLevel}`;
-                    xpCount.textContent = currentXP;
-                }
-            },
-
-            showCongratulationsBox(xpEarned) {
-            },
-
-            async showCongratulationsBox(xpEarned) {
-                const congratsBox = document.createElement('div');
-                congratsBox.className = 'congratulations-box';
-                
-                // Get user email if logged in
-                let userEmail = '';
-                try {
-                    if (window.StorageManager) {
-                        const isAuth = await window.StorageManager.isAuthenticated();
-                        if (isAuth) {
-                            const userId = await window.StorageManager.getCurrentUserId();
-                            const profile = await window.StorageManager.profile.getProfile();
-                            if (profile && profile.email) {
-                                userEmail = `<p>Great job, ${profile.email.split('@')[0]}!</p>`;
-                            }
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error getting user info:', error);
-                }
-                
-                congratsBox.innerHTML = `
-                    <div class="congrats-content">
-                        <div class="congrats-icon">🎉</div>
-                        <h2>Congratulations!</h2>
-                        ${userEmail}
-                        <p>You've earned the maximum ${xpEarned} XP by having an extensive conversation!</p>
-                        <p>Keep engaging in meaningful discussions to earn more rewards.</p>
-                        <button class="close-congrats-btn">Awesome!</button>
-                    </div>
-                `;
-                document.body.appendChild(congratsBox);
-
-                // Add close button functionality
-                const closeBtn = congratsBox.querySelector('.close-congrats-btn');
-                closeBtn.addEventListener('click', () => {
-                    congratsBox.classList.add('fade-out');
-                    setTimeout(() => congratsBox.remove(), 500);
-                });
-
-                // Add confetti effect
-                this.addConfettiEffect();
-            },
-
-            addConfettiEffect() {
-                for (let i = 0; i < 100; i++) {
-                    const confetti = document.createElement('div');
-                    confetti.className = 'confetti';
-                    confetti.style.left = Math.random() * 100 + 'vw';
-                    confetti.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                    confetti.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                    document.body.appendChild(confetti);
-                    
-                    setTimeout(() => confetti.remove(), 5000);
-                }
             },
 
             async analyzeAnswers() {
@@ -4314,25 +3617,25 @@
             const skipBtn = document.getElementById('skip-question');
 
             if (nextBtn) {
-                nextBtn.addEventListener('click', async () => await QnASystem.nextQuestion());
+                nextBtn.addEventListener('click', () => QnASystem.nextQuestion());
             }
 
             if (skipBtn) {
-                skipBtn.addEventListener('click', async () => {
+                skipBtn.addEventListener('click', () => {
                     QnASystem.currentQuestion++;
                     if (QnASystem.currentQuestion < QnASystem.questions.length) {
                         QnASystem.showQuestion();
                     } else {
-                        await QnASystem.endSession();
+                        QnASystem.endSession();
                     }
                 });
             }
         });
 
         // Update confirmEndChat function
-        async function confirmEndChat() {
+        function confirmEndChat() {
             document.getElementById('end-chat-confirmation').classList.remove('active');
-            await QnASystem.startSession();
+            QnASystem.startSession();
         }
 
         // Add event listener for end chat button
@@ -4368,76 +3671,6 @@
                     const actionItem = e.target.closest('.action-item');
                     actionItem.classList.toggle('completed');
                 }
-            });
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize GamificationSystem
-            if (window.GamificationSystem) {
-                window.GamificationSystem.init();
-                
-                // Update initial XP display
-                const savedProgress = localStorage.getItem('userProgress');
-                if (savedProgress) {
-                    try {
-                        const progress = JSON.parse(savedProgress);
-                        const xpFills = document.querySelectorAll('.xp-fill');
-                        const levelEls = document.querySelectorAll('.level');
-                        const xpCounts = document.querySelectorAll('.xp-count');
-                        
-                        xpFills.forEach(fill => {
-                            if (fill) {
-                                const xpProgress = ((progress.xp - GamificationSystem.xpThresholds[progress.level]) / 
-                                    (GamificationSystem.xpThresholds[progress.level + 1] - GamificationSystem.xpThresholds[progress.level])) * 100;
-                                fill.style.width = `${Math.min(xpProgress, 100)}%`;
-                            }
-                        });
-                        
-                        levelEls.forEach(el => {
-                            if (el) {
-                                el.textContent = `Level ${progress.level}`;
-                            }
-                        });
-                        
-                        xpCounts.forEach(count => {
-                            if (count) {
-                                count.textContent = `${progress.xp}XP`;
-                            }
-                        });
-                    } catch (error) {
-                        console.error('Error updating initial XP display:', error);
-                    }
-                }
-            }
-            
-            // Listen for XP updates
-            window.addEventListener('xpUpdated', function(event) {
-                console.log('XP update event received:', event.detail);
-                const { xp, level } = event.detail;
-                
-                const xpFills = document.querySelectorAll('.xp-fill');
-                const levelEls = document.querySelectorAll('.level');
-                const xpCounts = document.querySelectorAll('.xp-count');
-                
-                xpFills.forEach(fill => {
-                    if (fill) {
-                        const xpProgress = ((xp - GamificationSystem.xpThresholds[level]) / 
-                            (GamificationSystem.xpThresholds[level + 1] - GamificationSystem.xpThresholds[level])) * 100;
-                        fill.style.width = `${Math.min(xpProgress, 100)}%`;
-                    }
-                });
-                
-                levelEls.forEach(el => {
-                    if (el) {
-                        el.textContent = `Level ${level}`;
-                    }
-                });
-                
-                xpCounts.forEach(count => {
-                    if (count) {
-                        count.textContent = `${xp}XP`;
-                    }
-                });
             });
         });
     </script>
