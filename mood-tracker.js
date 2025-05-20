@@ -21,72 +21,39 @@ import {
     onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+import { MoodManager } from './firebase-chat.js';
+
 // Declare local cache of mood history
 let moodHistory = [];
 let listeners = [];
 
 // Function to save mood entry to Firebase
-export async function saveMoodEntry(mood) {
+export async function saveMoodEntry(mood, note = '') {
     try {
-        const today = new Date().toISOString().split('T')[0];
-        const user = auth.currentUser;
+        console.log(`Saving mood '${mood}' with note: ${note}`);
         
-        if (!user) {
-            console.warn("Not logged in. Mood data will not be saved to Firebase.");
-            return { success: false, error: "User not logged in" };
-        }
+        // Save to Firebase
+        const success = await MoodManager.saveMoodEntry(mood, note);
         
-        console.log(`Saving mood '${mood}' for user ${user.uid} on ${today}`);
-        
-        // Create a new mood entry
-        const moodEntry = {
-            date: today,
-            mood: mood,
-            timestamp: new Date().toISOString()
-        };
-        
-        // Reference to user's mood data document
-        const userMoodRef = doc(db, "userMoods", user.uid);
-        
-        // Check if document exists
-        const docSnap = await getDoc(userMoodRef);
-        
-        if (docSnap.exists()) {
-            // Check if there's an entry for today
-            const existingData = docSnap.data();
-            const existingEntries = existingData.entries || [];
-            const todayEntryIndex = existingEntries.findIndex(entry => entry.date === today);
+        if (success) {
+            // Update local cache
+            const entry = {
+                mood,
+                note,
+                timestamp: new Date().toISOString()
+            };
+            moodHistory.unshift(entry);
             
-            if (todayEntryIndex !== -1) {
-                // Update today's entry
-                existingEntries[todayEntryIndex] = moodEntry;
-                
-                // Update the document
-                await updateDoc(userMoodRef, {
-                    entries: existingEntries,
-                    lastUpdated: new Date().toISOString()
-                });
-            } else {
-                // Add new entry
-                await updateDoc(userMoodRef, {
-                    entries: arrayUnion(moodEntry),
-                    lastUpdated: new Date().toISOString()
-                });
-            }
+            // Notify listeners
+            notifyListeners('moodAdded', entry);
+            
+            return { success: true };
         } else {
-            // Create new document
-            await setDoc(userMoodRef, {
-                userId: user.uid,
-                entries: [moodEntry],
-                created: new Date().toISOString(),
-                lastUpdated: new Date().toISOString()
-            });
+            console.warn("Failed to save mood entry to Firebase");
+            return { success: false, error: "Failed to save mood entry" };
         }
-        
-        console.log("Mood data saved successfully");
-        return { success: true };
     } catch (error) {
-        console.error("Error saving mood data:", error);
+        console.error('Error saving mood entry:', error);
         return { success: false, error: error.message };
     }
 }
@@ -381,4 +348,123 @@ auth.onAuthStateChanged(async (user) => {
 });
 
 // Initialize when module loads
-initMoodTracker(); 
+initMoodTracker();
+
+// Function to get mood entries for a date range
+export async function getMoodEntries(startDate, endDate) {
+    try {
+        console.log(`Getting mood entries from ${startDate} to ${endDate}`);
+        
+        // Get entries from Firebase
+        const entries = await MoodManager.getMoodEntries(startDate, endDate);
+        
+        // Update local cache
+        moodHistory = entries;
+        
+        return entries;
+    } catch (error) {
+        console.error('Error getting mood entries:', error);
+        return [];
+    }
+}
+
+// Function to get mood statistics
+export async function getMoodStats(startDate, endDate) {
+    try {
+        console.log(`Getting mood statistics from ${startDate} to ${endDate}`);
+        
+        // Get stats from Firebase
+        const stats = await MoodManager.getMoodStats(startDate, endDate);
+        
+        return stats;
+    } catch (error) {
+        console.error('Error getting mood statistics:', error);
+        return { total: 0, byMood: {} };
+    }
+}
+
+// Function to add a listener for mood changes
+export function addMoodListener(callback) {
+    listeners.push(callback);
+    return () => {
+        listeners = listeners.filter(cb => cb !== callback);
+    };
+}
+
+// Function to notify listeners of changes
+function notifyListeners(event, data) {
+    listeners.forEach(callback => {
+        try {
+            callback(event, data);
+        } catch (error) {
+            console.error('Error in mood listener:', error);
+        }
+    });
+}
+
+// Function to update mood UI
+function updateMoodUI(entries) {
+    // Get mood display elements
+    const moodDisplay = document.getElementById('mood-display');
+    const moodHistory = document.getElementById('mood-history');
+    
+    if (!moodDisplay || !moodHistory) {
+        console.warn('Mood display elements not found');
+        return;
+    }
+    
+    // Clear existing content
+    moodHistory.innerHTML = '';
+    
+    // Add mood entries to UI
+    entries.forEach(entry => {
+        const moodItem = document.createElement('div');
+        moodItem.classList.add('mood-item');
+        
+        const time = new Date(entry.timestamp).toLocaleTimeString([], { 
+            hour: '2-digit', 
+            minute: '2-digit' 
+        });
+        
+        moodItem.innerHTML = `
+            <div class="mood-emoji">${getMoodEmoji(entry.mood)}</div>
+            <div class="mood-info">
+                <div class="mood-label">${entry.mood}</div>
+                <div class="mood-time">${time}</div>
+                ${entry.note ? `<div class="mood-note">${entry.note}</div>` : ''}
+            </div>
+        `;
+        
+        moodHistory.appendChild(moodItem);
+    });
+    
+    // Update current mood display if there are entries
+    if (entries.length > 0) {
+        const latestMood = entries[0];
+        moodDisplay.innerHTML = `
+            <div class="current-mood">
+                <div class="mood-emoji large">${getMoodEmoji(latestMood.mood)}</div>
+                <div class="mood-label">${latestMood.mood}</div>
+            </div>
+        `;
+    }
+}
+
+// Helper function to get mood emoji
+function getMoodEmoji(mood) {
+    const moodEmojis = {
+        'happy': '😊',
+        'sad': '😔',
+        'angry': '😠',
+        'anxious': '😰',
+        'neutral': '😐',
+        'excited': '😃',
+        'tired': '😴',
+        'stressed': '😫'
+    };
+    
+    return moodEmojis[mood.toLowerCase()] || '😐';
+}
+
+// Initialize mood tracker when the page loads
+document.addEventListener('DOMContentLoaded', initMoodTracker); 

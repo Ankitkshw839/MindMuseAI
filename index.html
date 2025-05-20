@@ -640,6 +640,27 @@
         </section>
     </div>
 
+    <!-- Chat History Sidebar -->
+    <div id="chat-history-sidebar" class="chat-history-sidebar">
+        <div class="chat-history-header">
+            <h3 class="chat-history-title">Chat History</h3>
+            <button id="new-chat-btn" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Chat
+            </button>
+        </div>
+        <div id="chat-list" class="chat-list">
+            <!-- Chat items will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Sidebar Overlay (for mobile) -->
+    <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+    <!-- Toggle Sidebar Button -->
+    <button id="toggle-sidebar-btn" class="btn btn-icon">
+        <i class="fas fa-bars"></i>
+    </button>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Simple email validation
@@ -707,6 +728,9 @@
             window.addEventListener('scroll', handleScroll, { passive: true });
         });
     </script>
+
+    <!-- Add chat-history.js script -->
+    <script type="module" src="chat-history.js"></script>
 </body>
 
 </html>

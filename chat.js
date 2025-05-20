@@ -1488,4 +1488,389 @@ function initTextToSpeech() {
         stop: stopSpeaking,
         toggle: () => voiceToggle.click()
     };
-} 
+}
+
+// Chat functionality using Firebase for persistence
+import { ChatManager } from './firebase-chat.js';
+import { auth } from './firebase-config.js';
+
+// Initialize message history
+let messages = [
+    {
+        role: 'assistant',
+        content: "Hello! I'm MindMuseAI Bot, your mental health companion. How are you feeling today?"
+    }
+];
+
+let currentChatId = null;
+
+// Get current time in HH:MM format
+function getCurrentTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+}
+
+// Create message element
+function createMessageElement(message, sender, timestamp) {
+    const messageDiv = document.createElement('div');
+    messageDiv.classList.add('message', `${sender}-message`);
+    
+    const avatarDiv = document.createElement('div');
+    avatarDiv.classList.add('avatar');
+    avatarDiv.innerHTML = sender === 'bot' ? '<i class="fas fa-robot"></i>' : '<i class="fas fa-user"></i>';
+    
+    const contentDiv = document.createElement('div');
+    contentDiv.classList.add('message-content');
+    
+    const textDiv = document.createElement('div');
+    textDiv.classList.add('message-text');
+    textDiv.innerHTML = `<p>${message}</p>`;
+    
+    const timestampDiv = document.createElement('div');
+    timestampDiv.classList.add('message-timestamp');
+    timestampDiv.textContent = timestamp;
+    
+    contentDiv.appendChild(textDiv);
+    contentDiv.appendChild(timestampDiv);
+    
+    if (sender === 'bot') {
+        messageDiv.appendChild(contentDiv);
+        messageDiv.appendChild(avatarDiv);
+    } else {
+        messageDiv.appendChild(avatarDiv);
+        messageDiv.appendChild(contentDiv);
+    }
+    
+    return messageDiv;
+}
+
+// Add message to UI
+function addMessageToUI(message, sender) {
+    const time = getCurrentTime();
+    const messageElement = createMessageElement(message, sender, time);
+    const chatMessages = document.getElementById('chat-messages');
+    if (chatMessages) {
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+}
+
+// Initialize chat history
+async function initChatHistory() {
+    const chatList = document.getElementById('chat-list');
+    if (!chatList) return;
+
+    try {
+        const chats = await ChatManager.getAllChats();
+        chatList.innerHTML = '';
+
+        chats.forEach(chat => {
+            addChatToHistory(chat.title || 'New Chat', chat.lastUpdated, chat.id);
+        });
+    } catch (error) {
+        console.error('Error initializing chat history:', error);
+    }
+}
+
+// Add chat to history UI
+function addChatToHistory(title, timestamp, chatId) {
+    const chatList = document.getElementById('chat-list');
+    if (!chatList) return;
+
+    const chatItem = document.createElement('div');
+    chatItem.classList.add('chat-item');
+    chatItem.setAttribute('data-id', chatId);
+    
+    chatItem.innerHTML = `
+        <div class="chat-info">
+            <div class="chat-title">${title}</div>
+            <div class="chat-timestamp">${new Date(timestamp).toLocaleString()}</div>
+        </div>
+        <div class="chat-actions">
+            <button class="edit-chat-btn" aria-label="Edit chat">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button class="delete-chat-btn" aria-label="Delete chat">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    `;
+    
+    // Add click event to load chat
+    chatItem.addEventListener('click', () => loadChat(chatId));
+    
+    // Add delete button functionality
+    const deleteBtn = chatItem.querySelector('.delete-chat-btn');
+    deleteBtn.addEventListener('click', async (e) => {
+        e.stopPropagation();
+        await deleteChat(chatId);
+    });
+    
+    // Add edit button functionality
+    const editBtn = chatItem.querySelector('.edit-chat-btn');
+    editBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        renameChat(chatId);
+    });
+    
+    // Add to the top of the list
+    chatList.insertBefore(chatItem, chatList.firstChild);
+    
+    // Set as active if it's the current chat
+    if (chatId === currentChatId) {
+        setActiveChatInUI(chatId);
+    }
+}
+
+// Set active chat in UI
+function setActiveChatInUI(chatId) {
+    document.querySelectorAll('.chat-item').forEach(item => {
+        item.classList.remove('active');
+    });
+    
+    const activeChat = document.querySelector(`.chat-item[data-id="${chatId}"]`);
+    if (activeChat) {
+        activeChat.classList.add('active');
+    }
+}
+
+// Load a specific chat
+async function loadChat(chatId) {
+    const chat = await ChatManager.getChat(chatId);
+    if (!chat) return;
+    
+    // Update current chat ID
+    currentChatId = chatId;
+    
+    // Update message history
+    messages = chat.messages || [];
+    
+    // Display messages
+    const displayMessages = messages.map(msg => ({
+        sender: msg.role === 'assistant' ? 'bot' : 'user',
+        text: msg.content,
+        timestamp: new Date(msg.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }));
+    
+    renderMessages(displayMessages);
+    
+    // Update active chat in UI
+    setActiveChatInUI(chatId);
+}
+
+// Delete a chat
+async function deleteChat(chatId) {
+    try {
+        await ChatManager.deleteChat(chatId);
+        
+        // Remove from UI
+        const chatItem = document.querySelector(`.chat-item[data-id="${chatId}"]`);
+        if (chatItem) {
+            chatItem.remove();
+        }
+        
+        // If current chat was deleted, create a new one
+        if (currentChatId === chatId) {
+            createNewChat();
+        }
+    } catch (error) {
+        console.error('Error deleting chat:', error);
+    }
+}
+
+// Create a new chat
+async function createNewChat() {
+    // Create a new chat ID
+    currentChatId = 'chat_' + Date.now();
+    
+    // Reset message history with initial message
+    messages = [{
+        role: 'assistant',
+        content: "Hello! I'm MindMuseAI Bot, your mental health companion. How are you feeling today?"
+    }];
+    
+    // Save initial chat
+    await ChatManager.saveChat(currentChatId, {
+        title: 'New Chat',
+        messages,
+        created: new Date().toISOString()
+    });
+    
+    // Display initial message
+    renderMessages([{
+        sender: 'bot',
+        text: messages[0].content,
+        timestamp: getCurrentTime()
+    }]);
+    
+    // Add to chat history in UI
+    addChatToHistory('New Chat', new Date().toISOString(), currentChatId);
+    
+    // Close sidebar on mobile
+    const chatHistorySidebar = document.getElementById('chat-history-sidebar');
+    const sidebarOverlay = document.getElementById('sidebar-overlay');
+    if (window.innerWidth < 992 && chatHistorySidebar && chatHistorySidebar.classList.contains('active')) {
+        chatHistorySidebar.classList.remove('active');
+        if (sidebarOverlay) {
+            sidebarOverlay.classList.remove('active');
+        }
+    }
+}
+
+// Render messages in the chat
+function renderMessages(messages) {
+    const chatMessages = document.getElementById('chat-messages');
+    if (!chatMessages) return;
+    
+    chatMessages.innerHTML = '';
+    
+    messages.forEach(message => {
+        const messageElement = createMessageElement(message.text, message.sender, message.timestamp);
+        chatMessages.appendChild(messageElement);
+    });
+    
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Send a message
+async function sendMessage(e) {
+    if (e) e.preventDefault();
+    
+    const userInput = document.getElementById('user-input');
+    if (!userInput) return;
+    
+    const userMessage = userInput.value.trim();
+    if (!userMessage) return;
+    
+    // Create new chat if none exists
+    if (!currentChatId) {
+        await createNewChat();
+    }
+    
+    // Add user message to UI
+    addMessageToUI(userMessage, 'user');
+    userInput.value = '';
+    
+    // Add to messages array
+    const messageObj = {
+        role: 'user',
+        content: userMessage,
+        timestamp: new Date().toISOString()
+    };
+    messages.push(messageObj);
+    
+    // Save to Firebase
+    await ChatManager.addMessageToChat(currentChatId, messageObj);
+    
+    // Show typing indicator
+    showTypingIndicator();
+    
+    try {
+        // Get bot response from API
+        const botResponse = await generateBotResponse(userMessage);
+        
+        // Remove typing indicator
+        removeTypingIndicator();
+        
+        // Add bot response to UI
+        addMessageToUI(botResponse, 'bot');
+        
+        // Add bot response to messages array
+        const botMessageObj = {
+            role: 'assistant',
+            content: botResponse,
+            timestamp: new Date().toISOString()
+        };
+        messages.push(botMessageObj);
+        
+        // Save to Firebase
+        await ChatManager.addMessageToChat(currentChatId, botMessageObj);
+        
+        // Update chat title
+        const chatTitle = extractChatTitle(messages);
+        await ChatManager.saveChat(currentChatId, {
+            title: chatTitle,
+            messages
+        });
+        
+        // Update chat title in UI
+        const chatItem = document.querySelector(`.chat-item[data-id="${currentChatId}"]`);
+        if (chatItem) {
+            chatItem.querySelector('.chat-title').textContent = chatTitle;
+            chatItem.querySelector('.chat-timestamp').textContent = 'Now';
+        }
+    } catch (error) {
+        console.error('Error sending message:', error);
+        removeTypingIndicator();
+        addMessageToUI('Sorry, I encountered an error. Please try again.', 'bot');
+    }
+}
+
+// Show typing indicator
+function showTypingIndicator() {
+    const chatMessages = document.getElementById('chat-messages');
+    if (!chatMessages) return;
+    
+    const typingDiv = document.createElement('div');
+    typingDiv.classList.add('message', 'bot-message', 'typing-indicator');
+    typingDiv.innerHTML = `
+        <div class="message-content">
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="avatar">
+            <i class="fas fa-robot"></i>
+        </div>
+    `;
+    
+    chatMessages.appendChild(typingDiv);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+// Remove typing indicator
+function removeTypingIndicator() {
+    const indicator = document.querySelector('.typing-indicator');
+    if (indicator) {
+        indicator.remove();
+    }
+}
+
+// Extract chat title from first user message
+function extractChatTitle(messages) {
+    const firstUserMessage = messages.find(msg => msg.role === 'user');
+    if (firstUserMessage) {
+        const title = firstUserMessage.content.substring(0, 30);
+        return title.length === 30 ? title + '...' : title;
+    }
+    return 'New Chat';
+}
+
+// Initialize chat functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const messageForm = document.getElementById('message-form');
+    const clearChatBtn = document.getElementById('clear-chat');
+    const newChatBtn = document.getElementById('new-chat');
+    
+    // Initialize chat history
+    initChatHistory();
+    
+    // Add event listeners
+    if (messageForm) {
+        messageForm.addEventListener('submit', sendMessage);
+    }
+    
+    if (clearChatBtn) {
+        clearChatBtn.addEventListener('click', createNewChat);
+    }
+    
+    if (newChatBtn) {
+        newChatBtn.addEventListener('click', createNewChat);
+    }
+    
+    // Create initial chat if none exists
+    if (!currentChatId) {
+        createNewChat();
+    }
+}); 

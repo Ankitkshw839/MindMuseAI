@@ -1567,6 +1567,70 @@
             -webkit-backdrop-filter: blur(10px);
         }
 
+        /* Header XP Display */
+        .xp-display {
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-weight: 500;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+            margin-right: 1rem;
+        }
+
+        .xp-display i {
+            color: #FFD700;
+            animation: pulse 2s infinite;
+        }
+
+        /* Profile Dropdown Progress */
+        .user-progress {
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .xp-mini-display, .level-mini-display {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+        }
+
+        .xp-mini-display i, .level-mini-display i {
+            color: #FFD700;
+            font-size: 0.8rem;
+        }
+
+        .profile-dropdown .xp-progress {
+            margin: 0.5rem 0;
+        }
+
+        .profile-dropdown .xp-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .profile-dropdown .xp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .xp-display {
+                padding: 0.3rem 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
         /* Congratulations Box Styles */
         .congratulations-box {
             position: fixed;
@@ -1710,6 +1774,11 @@
                 <h1>MindMuseAI</h1>
             </div>
             <div class="header-actions">
+                <div class="xp-display">
+                    <i class="fas fa-star"></i>
+                    <span class="xp-count">0XP</span>
+                    <span class="level">Level 1</span>
+                </div>
                 <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
                     <i class="fas fa-sun"></i>
                 </button>
@@ -1753,10 +1822,25 @@
                         <i class="fas fa-user-circle"></i>
                     </button>
                     <div class="profile-dropdown" id="profile-dropdown">
-                        <div class="user-info">
-                            <h4>Your Account</h4>
-                            <div class="user-email" id="user-email">user@example.com</div>
+                                            <div class="user-info">
+                        <h4>Your Account</h4>
+                        <div class="user-email" id="user-email">user@example.com</div>
+                        <div class="user-progress">
+                            <div class="xp-mini-display">
+                                <i class="fas fa-star"></i>
+                                <span class="xp-count">0XP</span>
+                            </div>
+                            <div class="level-mini-display">
+                                <i class="fas fa-trophy"></i>
+                                <span class="level">Level 1</span>
+                            </div>
+                            <div class="xp-progress">
+                                <div class="xp-bar">
+                                    <div class="xp-fill" style="width: 0%"></div>
+                                </div>
+                            </div>
                         </div>
+                    </div>
                         <div class="dropdown-divider"></div>
                         <a href="profile.html" class="dropdown-item">
                             <i class="fas fa-user-circle"></i>
@@ -2963,7 +3047,7 @@
                 top: 20px;
                 right: 20px;
                 background: linear-gradient(135deg, #ff4444, #ff6b6b);
-                color: white;
+            color: white;
                 padding: 20px;
                 border-radius: 15px;
                 z-index: 1000;
@@ -3008,8 +3092,8 @@
             }
 
             .error-tips span {
-                display: flex;
-                align-items: center;
+            display: flex;
+            align-items: center;
                 gap: 8px;
             }
 
@@ -3032,9 +3116,9 @@
             }
 
             .transition-content {
-                display: flex;
+            display: flex;
                 flex-direction: column;
-                align-items: center;
+            align-items: center;
                 gap: 15px;
             }
 
