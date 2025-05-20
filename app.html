@@ -2031,14 +2031,14 @@
     <!-- End Chat Confirmation Modal -->
     <div class="confirmation-modal" id="end-chat-confirmation">
         <div class="confirmation-content">
-            <h3>End Chat Session?</h3>
-            <p>This will start a quick mental health check-in with 20 questions.</p>
+            <h3>Ready to End Chat?</h3>
+            <p>Would you like to take a quick mental health check-in to track your progress?</p>
             <div class="confirmation-actions">
                 <button class="cancel-btn" onclick="document.getElementById('end-chat-confirmation').classList.remove('active')">
-                    <i class="fas fa-times"></i> Cancel
+                    <i class="fas fa-times"></i> Continue Chat
                 </button>
                 <button class="confirm-btn" onclick="confirmEndChat()">
-                    <i class="fas fa-check"></i> End Chat
+                    <i class="fas fa-check"></i> Start Check-in
                 </button>
             </div>
         </div>
@@ -2910,59 +2910,7 @@
 
         // Add this to your existing JavaScript
         function showEndChatConfirmation() {
-            // Enhanced conversation validation
-            const chatMessages = document.getElementById('chat-messages');
-            const messages = chatMessages.querySelectorAll('.message');
-            
-            // More sophisticated validation
-            const userMessages = Array.from(messages).filter(msg => {
-                if (!msg.classList.contains('user-message')) return false;
-                
-                const messageText = msg.querySelector('.message-text').textContent.trim();
-                // Exclude initial greeting and empty messages
-                if (messageText.startsWith('Hello! I\'m MindMuseAI Bot')) return false;
-                if (messageText.length < 3) return false; // Minimum message length
-                
-                return true;
-            });
-
-            // Check for meaningful conversation
-            const hasMeaningfulConversation = userMessages.length >= 2; // At least 2 messages
-            const hasLongConversation = userMessages.some(msg => 
-                msg.querySelector('.message-text').textContent.trim().length > 20
-            );
-
-            if (!hasMeaningfulConversation || !hasLongConversation) {
-                // Enhanced error message
-                const errorMessage = document.createElement('div');
-                errorMessage.className = 'error-message';
-                errorMessage.innerHTML = `
-                    <div class="error-icon">
-                        <i class="fas fa-exclamation-circle"></i>
-                    </div>
-                    <div class="error-content">
-                        <h4>Chat Session Too Short</h4>
-                        <p>Please have a meaningful conversation before ending the chat.</p>
-                        <div class="error-tips">
-                            <span><i class="fas fa-check-circle"></i> Share your thoughts</span>
-                            <span><i class="fas fa-check-circle"></i> Ask questions</span>
-                            <span><i class="fas fa-check-circle"></i> Express your feelings</span>
-                        </div>
-                    </div>
-                `;
-                document.body.appendChild(errorMessage);
-                
-                // Remove error message after 5 seconds with fade out
-                setTimeout(() => {
-                    errorMessage.classList.add('fade-out');
-                    setTimeout(() => {
-                        errorMessage.remove();
-                    }, 500);
-                }, 5000);
-                return;
-            }
-
-            // If there's meaningful conversation, show confirmation
+            // Show confirmation modal directly without validation
             const confirmationModal = document.getElementById('end-chat-confirmation');
             if (confirmationModal) {
                 confirmationModal.classList.add('active');
