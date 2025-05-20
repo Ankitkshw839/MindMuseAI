@@ -1774,11 +1774,7 @@
                 <h1>MindMuseAI</h1>
             </div>
             <div class="header-actions">
-                <div class="xp-display">
-                    <i class="fas fa-star"></i>
-                    <span class="xp-count">0XP</span>
-                    <span class="level">Level 1</span>
-                </div>
+                <!-- Removing XP display from here -->
                 <button id="theme-toggle" class="theme-toggle" aria-label="Toggle dark mode">
                     <i class="fas fa-sun"></i>
                 </button>
@@ -2884,8 +2880,19 @@
                     
                     try {
                         if (window.StorageManager && window.StorageManager.progress) {
-                            filteredHistory = await window.StorageManager.progress.getMoodEntriesInRange(startDate, endDate);
-                            logMood('Filtered entries from Firebase/StorageManager:', filteredHistory.length);
+                            // First, try to get all mood entries
+                            const progress = await window.StorageManager.progress.getProgress();
+                            if (progress && progress.moodEntries && progress.moodEntries.length > 0) {
+                                // Manually filter the entries by date range
+                                filteredHistory = progress.moodEntries.filter(entry => {
+                                    const entryDate = new Date(entry.timestamp);
+                                    return entryDate >= startDate && entryDate <= endDate;
+                                });
+                                
+                                logMood('Filtered entries from progress data:', filteredHistory.length);
+                            } else {
+                                logMood('No mood entries found in progress data');
+                            }
                         } else {
                             // Fallback to manual filtering if StorageManager is not available
                             logMood('StorageManager not available, using manual filtering');
@@ -2899,13 +2906,24 @@
                         filteredHistory = [];
                     }
                     
+                    logMood('Filtered history after processing:', filteredHistory);
+
                     // Sort entries by date (oldest first)
                     filteredHistory.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
                     
-                    // Prepare data for chart with time labels instead of date
+                    // Prepare data for chart with better formatted labels
                     const timeLabels = filteredHistory.map(entry => {
                         const date = new Date(entry.timestamp);
-                        return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                        // Format as "Aug 15, 2:00 PM" for better readability
+                        return date.toLocaleDateString('en-US', { 
+                            month: 'short', 
+                            day: 'numeric'
+                        }) + ', ' + 
+                        date.toLocaleTimeString('en-US', { 
+                            hour: '2-digit', 
+                            minute: '2-digit',
+                            hour12: true
+                        });
                     });
                     
                     const moodData = filteredHistory.map(entry => moodValues[entry.mood]);
@@ -2923,20 +2941,38 @@
                             const dayDate = new Date(startDate);
                             dayDate.setDate(dayDate.getDate() + i);
                             
+                            // Format date as "Aug 15"
+                            const dateStr = dayDate.toLocaleDateString('en-US', { 
+                                month: 'short', 
+                                day: 'numeric'
+                            });
+                            
                             // Add morning, afternoon, evening time points
                             const morning = new Date(dayDate);
                             morning.setHours(8, 0, 0, 0);
-                            timeSlots.push(morning.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+                            timeSlots.push(`${dateStr}, ${morning.toLocaleTimeString('en-US', { 
+                                hour: '2-digit', 
+                                minute: '2-digit',
+                                hour12: true
+                            })}`);
                             emptyData.push(null);
                             
                             const afternoon = new Date(dayDate);
                             afternoon.setHours(14, 0, 0, 0);
-                            timeSlots.push(afternoon.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+                            timeSlots.push(`${dateStr}, ${afternoon.toLocaleTimeString('en-US', { 
+                                hour: '2-digit', 
+                                minute: '2-digit',
+                                hour12: true
+                            })}`);
                             emptyData.push(null);
                             
                             const evening = new Date(dayDate);
                             evening.setHours(20, 0, 0, 0);
-                            timeSlots.push(evening.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }));
+                            timeSlots.push(`${dateStr}, ${evening.toLocaleTimeString('en-US', { 
+                                hour: '2-digit', 
+                                minute: '2-digit',
+                                hour12: true
+                            })}`);
                             emptyData.push(null);
                         }
                         
@@ -3098,25 +3134,40 @@
                     logMood('Adding mood entry:', mood);
                     
                     try {
+                        // Create entry with current timestamp
+                        const entry = {
+                            mood: mood,
+                            timestamp: new Date().toISOString()
+                        };
+                        
                         // Use StorageManager to add mood entry with Firebase support
                         if (window.StorageManager && window.StorageManager.progress) {
-                            const success = await window.StorageManager.progress.addMoodEntry(mood);
-                            logMood('Mood entry added to Firebase/StorageManager:', success);
+                            // Get existing progress data
+                            const progress = await window.StorageManager.progress.getProgress() || {};
+                            
+                            // Add mood entry to moodEntries array
+                            const moodEntries = progress.moodEntries || [];
+                            moodEntries.push(entry);
+                            
+                            // Update progress data in Firebase/localStorage
+                            const success = await window.StorageManager.progress.saveProgress({
+                                ...progress,
+                                moodEntries: moodEntries
+                            });
+                            
+                            logMood('Mood entry added to progress data:', success);
                             
                             if (!success) {
                                 throw new Error('Failed to save mood entry');
                             }
                             
+                            // Update local mood history
+                            moodHistory = moodEntries;
+                            
                             // Update gamification system
                             await GamificationSystem.updateStreak();
                             await GamificationSystem.addXP(10); // Base XP for logging mood
                             await GamificationSystem.updatePetGrowth();
-                            
-                            // Refresh mood history
-                            const progress = await window.StorageManager.progress.getProgress();
-                            if (progress && progress.moodEntries) {
-                                moodHistory = progress.moodEntries;
-                            }
                             
                             // Check for first mood badge
                             if (moodHistory.length === 1) {
